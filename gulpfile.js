@@ -64,7 +64,7 @@ gulp.task('watch', () => {
 
 gulp.task('nodemon', ['build'], () => {
     return $.nodemon({
-        exec: 'cd ./dist && node',
+        exec: 'cd ./dist && node --inspect',
         //cwd: './dist',
         script: 'server.js',
         watch: CONFIG.dist.base,
@@ -77,10 +77,10 @@ gulp.task('nodemon', ['build'], () => {
     //gulp.src([]).pipe(inspector(CONFIG.nodeInspector));
 //});
 
-//gulp.task('lib', () => {
-    //return gulp.src(CONFIG.libs)
-               //.pipe(gulp.dest(CONFIG.out.base + '/lib/'));
-//});
+gulp.task('libs', () => {
+    return gulp.src(CONFIG.libs)
+               .pipe(gulp.dest(CONFIG.dist.client));
+});
 
 //gulp.task('semantic', semantic);
 
@@ -91,7 +91,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('semantic', semantic);
-gulp.task('init', ['semantic']);
+gulp.task('init', ['semantic', 'libs']);
 
 gulp.task('build', ['webpack', 'pug', 'server-js']);
 

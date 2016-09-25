@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.14.0",
+    "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
@@ -48,12 +49,16 @@
   },
   "dependencies": {
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.13.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
+    "express-session": "^1.14.1",
     "jquery": "^3.1.1",
     "mongoose": "^4.6.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "semantic-ui": "^2.2.4",
-    "vue": "^1.0.27"
+    "vue": "^1.0.27",
+    "vue-resource": "^1.0.3"
   }
 }

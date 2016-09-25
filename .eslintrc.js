@@ -1,5 +1,6 @@
 // For client side
 module.exports = {
+    parser: 'babel-eslint',
     parserOptions: {
         ecmaVersion: 7,
         sourceType: 'module',
@@ -11,5 +12,6 @@ module.exports = {
     },
     env: {
         "browser": true,
+        "jquery": true,
     }
 }

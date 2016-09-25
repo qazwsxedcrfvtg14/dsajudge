@@ -6,4 +6,4 @@
     a.item Ranking
     a.item Resource
     .right.menu
-      a.item {{ user ? 'logout' : 'login' }}
+      a.item( @click="clickLogin" ) {{ user ? 'logout' : 'login' }}
