@@ -2,8 +2,11 @@
   .ui.container
     a.item.active Home
     a.item Homeworks
-    a.item Problems
+    a.item( v-link="'/problems'" ) Problems
     a.item Ranking
     a.item Resource
-    .right.menu
-      a.item( @click="clickLogin" ) {{ user ? 'logout' : 'login' }}
+    .right.menu( v-if="user" )
+      a.item( @click="clickLogin" ) {{user.email}}
+      a.item( @click="clickLogout" ) Logout
+    .right.menu( v-else="user" )
+      a.item( v-if="!user" @click="clickLogin" ) Login

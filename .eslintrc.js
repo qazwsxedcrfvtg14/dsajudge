@@ -8,10 +8,13 @@ module.exports = {
     extends: "eslint:recommended",
     rules: {
         "no-console": "off",
+        "no-unused-vars": 0,
         "semi": ["error", "always"],
     },
     env: {
         "browser": true,
         "jquery": true,
+        "node": true,
+        "es6": true,
     }
 }

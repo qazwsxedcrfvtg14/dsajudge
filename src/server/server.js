@@ -1,18 +1,37 @@
+import 'babel-polyfill';
 import express from 'express';
 import config from './config';
 import auth from './auth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
+import mongoose from 'mongoose';
+import problemRouter from './routers/problem';
+const MongoStore = require('connect-mongo')(expressSession); 
+
+mongoose.connect('mongodb://localhost/adajudge');
+mongoose.Promise = Promise;
 
 const app = express();
 
 app.use(express.static('static'));
 app.use(cookieParser());
-app.use(expressSession({secret: 'aabbccaabbddaaeeff'}));
+app.use(expressSession({
+    secret: 'aabbccaabbddaaeeff',
+    maxAge: 1000 * 3600 * 1000,
+    secure: false,
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({
+        url: 'mongodb://localhost/adajudge',
+        touchAfter: 3600,
+    }),
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 auth(app);
+
+app.use('/problem', problemRouter);
 
 app.get('/me', (req, res) => {
     if (req.user) {
