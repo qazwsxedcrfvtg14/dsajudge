@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import html from './problem.pug';
 import marked from 'marked';
+import sleep from 'sleep-promise';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
@@ -19,6 +20,7 @@ export default Vue.extend({
         (async () => {
             this.problem = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
             console.log(this.problem.desc);
+            await sleep(500);
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         })();
     },

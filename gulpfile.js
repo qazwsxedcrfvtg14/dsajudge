@@ -60,7 +60,6 @@ gulp.task('watch', () => {
     gulp.watch([
         CONFIG.src.client.css, 
         CONFIG.src.client.js,
-        CONFIG.src.client.vue,
     ], ['webpack']);
     gulp.watch([CONFIG.src.server.js], ['server-js']);
 });

@@ -4,9 +4,8 @@ const CONFIG = {
         client: {
             base: 'src/client',
             pug: 'pug/**/*.pug',
-            js: 'js/**/*.js',
+            js: 'js/**/*.*',
             css: 'css/**/*.css',
-            vue: 'js/**/*.pug',
         },
         server: {
             base: 'src/server/',
@@ -25,6 +24,9 @@ const CONFIG = {
     libs: [
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/mathjax/MathJax.js',
+        'node_modules/ace-builds/src-min-noconflict/ace.js',
+        'node_modules/ace-builds/src-min-noconflict/theme-monokai.js',
+        'node_modules/ace-builds/src-min-noconflict/mode-c_cpp.js',
         'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js',
     ],
     linkDirs: [

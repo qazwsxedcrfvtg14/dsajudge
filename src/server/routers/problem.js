@@ -16,6 +16,7 @@ router.get('/all', wrap(async (req, res) => {
 
 router.get('/:id', wrap(async (req, res) => {
     const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.sendStatus(404);
     let problem;
     if (req.user && _.includes(req.user.roles, 'admin'))
         problem = await Problem.findOne({_id: id});

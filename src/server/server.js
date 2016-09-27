@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 import mongoose from 'mongoose';
 import problemRouter from './routers/problem';
+import submitRouter from './routers/submit';
 const MongoStore = require('connect-mongo')(expressSession); 
 
 mongoose.connect('mongodb://localhost/adajudge');
@@ -32,6 +33,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 auth(app);
 
 app.use('/problem', problemRouter);
+app.use('/submit', submitRouter);
 
 app.get('/me', (req, res) => {
     if (req.user) {

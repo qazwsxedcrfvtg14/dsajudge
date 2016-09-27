@@ -18,6 +18,7 @@ module.exports = {
         "es6": true,
     },
     globals: {
-        MathJax: true
+        MathJax: true,
+        ace: true,
     },
 }
