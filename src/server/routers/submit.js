@@ -2,11 +2,11 @@ import express from 'express';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
 import Problem from '/schema/problem';
-import {requestLogin} from '/utils';
+import {requireLogin} from '/utils';
 
 const router = express.Router();
 
-router.post('/:id', requestLogin, wrap(async (req, res) => {
+router.post('/:id', requireLogin, wrap(async (req, res) => {
     const id = parseInt(req.params.id);
     console.log(id);
     let problem;

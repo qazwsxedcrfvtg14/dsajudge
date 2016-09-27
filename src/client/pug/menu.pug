@@ -5,6 +5,7 @@
     a.item( v-link="'/problems'" ) Problems
     a.item Ranking
     a.item Resource
+    a.item( v-if="isAdmin" v-link="{name: 'admin'}" ) Admin
     .right.menu( v-if="user" )
       .item {{user.email}}
       a.item( @click="clickLogout" ) Logout

@@ -4,5 +4,8 @@ export default {
     dirs: {
         problems: path.join(__dirname, './problems'),
         submissions: path.join(__dirname, './submissions'),
+    },
+    mongo: {
+        url: 'mongodb://localhost/adajudge',
     }
 };

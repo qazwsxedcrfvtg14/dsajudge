@@ -10,10 +10,12 @@ const schema = Schema({
     name: {
         type: String,
         required: true,
+        default: 'Hao123',
     },
     visible: {
         type: Boolean,
         required: true,
+        default: false,
     },
     meta: {
         timeLimit: Number,
@@ -26,7 +28,8 @@ const schema = Schema({
             points: Number,
             tests: [String],
         }]
-    }
+    },
+    testFiles: [String],
 });
 
 const Problem = mongoose.model('Problem', schema);

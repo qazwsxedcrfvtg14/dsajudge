@@ -8,9 +8,10 @@ import expressSession from 'express-session';
 import mongoose from 'mongoose';
 import problemRouter from './routers/problem';
 import submitRouter from './routers/submit';
+import adminRouter from './routers/admin';
 const MongoStore = require('connect-mongo')(expressSession); 
 
-mongoose.connect('mongodb://localhost/adajudge');
+mongoose.connect(config.mongo.url);
 mongoose.Promise = Promise;
 
 const app = express();
@@ -34,6 +35,7 @@ auth(app);
 
 app.use('/problem', problemRouter);
 app.use('/submit', submitRouter);
+app.use('/admin', adminRouter);
 
 app.get('/me', (req, res) => {
     if (req.user) {

@@ -32,6 +32,7 @@ const CONFIG = {
     linkDirs: [
         'problems',
         'submissions',
+        'judger',
     ]
 };
 

@@ -2,9 +2,9 @@
     min-height: 70vh;
 }
 
-#source-file {
+input[type="file"] {
     display: none;
 }
-#filename-text {
+.filename-text {
     margin-left: 10px;
 }

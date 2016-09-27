@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
@@ -36,6 +37,7 @@ const App = Vue.extend({
     data() {
         return {
             user: null,
+            isAdmin: false,
         };
     },
     //components: {
@@ -79,16 +81,15 @@ const App = Vue.extend({
         clickLogin() {
             this.$loginModal.modal('show');
         },
-        clickLogout() {
+        async clickLogout() {
             this.user = null;
-            (async () => {
-                this.$http.post('/logout');
-            })();
+            this.$http.post('/logout');
         },
         async getUser() {
             const result = (await this.$http.get('/me')).data;
             if (result.login) {
                 this.user = result.user;
+                this.isAdmin = _.includes(this.user.roles, 'admin');
             }
         }
     },

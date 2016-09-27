@@ -9,13 +9,7 @@
           | Submit
 
   .ui.bottom.attached.active.tab.segment( data-tab="editor" )
-    #editor.
-      #include &lt;bits/stdc++.h&gt;
-      using namespace std;
-
-      int main() {
-          return 0;
-      }
+    #editor
     .ui.error.message( v-if="errEditor" ) {{ errEditor }}
 
   .ui.bottom.attached.tab.segment( data-tab="upload" )
@@ -23,5 +17,5 @@
       i.file.icon
       | Open File
     input#source-file(type="file" v-model="filename" )
-    span#filename-text {{ filename | getPath }}
+    span.filename-text {{ filename | getPath }}
     .ui.error.message( v-if="errFile" ) {{ errFile }}

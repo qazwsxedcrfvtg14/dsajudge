@@ -1,0 +1,15 @@
+.ui.container
+  table.ui.celled.table.selectable.pointer
+    thead
+      tr
+        th ID
+        th Problem Name
+    tbody
+      tr( v-for="x of problems" v-link="{ path: '/admin/problem', params: { id: x._id }}")
+        td {{ x._id }}
+        td {{ x.name }}
+      tr
+        td.positive.center.aligned( colspan="2" v-link="{ path: '/admin/newProblem' }" ) 
+          i.plus.icon
+          | Add new problem
+
