@@ -7,7 +7,11 @@ const userSchema = Schema({
         index: true,
         unique: true,
     },
-    password: String,
+    password: {
+        type: String,
+        required: true,
+    },
+    roles: [String],
 });
 
 const User = mongoose.model('User', userSchema);

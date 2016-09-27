@@ -1,0 +1,13 @@
+.ui.text.container
+  component( v-if="problem" )
+    .ui.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
+      h1.ui.left.floated.header {{ problem.name }}
+        .sub.header Time Limit: {{ problem.meta.timeLimit }}
+      .ui.right.floated.header(style="padding-top: 20px")
+        div
+          .hack
+          button.ui.right.labeled.icon.primary.button 
+            i.send.icon
+            | Submit
+
+    .mathjax( v-html="problem.desc | marked" )

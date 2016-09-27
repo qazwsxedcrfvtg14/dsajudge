@@ -23,7 +23,7 @@ passport.use(new LocalStrategy({
     console.log(user);
     let res = await bcrypt.compareAsync(password, user.password);
     if (res) {
-        done(null, {email: user.email, _id: user._id});
+        done(null, {email: user.email, _id: user._id, roles: user.roles});
     } else {
         done(null, false, { message: 'Incorrect password.' });
     }

@@ -6,7 +6,7 @@ const CONFIG = {
             pug: 'pug/**/*.pug',
             js: 'js/**/*.js',
             css: 'css/**/*.css',
-            vue: 'vue/**/*.pug',
+            vue: 'js/**/*.pug',
         },
         server: {
             base: 'src/server/',
@@ -24,7 +24,13 @@ const CONFIG = {
     },
     libs: [
         'node_modules/jquery/dist/jquery.min.js',
+        'node_modules/mathjax/MathJax.js',
+        'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js',
     ],
+    linkDirs: [
+        'problems',
+        'submissions',
+    ]
 };
 
 CONFIG.babel = {

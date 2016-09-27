@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import html from '/vue/problems.pug';
+import html from './problems.pug';
 
 export default Vue.extend({
     data() {
@@ -11,6 +11,7 @@ export default Vue.extend({
     ready() {
         (async () => {
             this.problems = (await this.$http.get('/problem/all')).data; 
+            //console.log(this.problems.body);
         })();
     },
 });

@@ -16,5 +16,8 @@ module.exports = {
         "jquery": true,
         "node": true,
         "es6": true,
-    }
+    },
+    globals: {
+        MathJax: true
+    },
 }

@@ -8,6 +8,7 @@ const del = require('del');
 const browserSync = require('browser-sync');
 const inspector = require('gulp-node-inspector');
 const semantic = require('./semantic/tasks/build');
+const path = require('path');
 
 function logError(err) {
     $.util.log($.util.colors.red('[Error]'), err.toString());
@@ -41,6 +42,7 @@ gulp.task('pug', () =>
         .pipe(browserSync.stream())
 );
 
+let nodemon;
 gulp.task('server-js', () =>
     gulp.src(CONFIG.src.server.js)
         .pipe($.eslint())
@@ -48,6 +50,9 @@ gulp.task('server-js', () =>
         .pipe($.babel(CONFIG.babel))
         .on('error', logError)
         .pipe(gulp.dest(CONFIG.dist.base))
+        .on('end', () => {
+            if (nodemon) nodemon.emit('restart', 0.5);
+        })
 );
 
 gulp.task('watch', () => {
@@ -61,15 +66,15 @@ gulp.task('watch', () => {
 });
 
 
-
 gulp.task('nodemon', ['build'], () => {
-    return $.nodemon({
+    nodemon = $.nodemon({
         exec: 'cd ./dist && node --inspect',
         //cwd: './dist',
         script: 'server.js',
-        watch: CONFIG.dist.base,
+        watch: false,
         ignore: CONFIG.dist.client,
     });
+    return nodemon;
 });
 
 // Not compatible with Node 6 QQ
@@ -82,16 +87,18 @@ gulp.task('libs', () => {
                .pipe(gulp.dest(CONFIG.dist.client));
 });
 
-//gulp.task('semantic', semantic);
+gulp.task('links', () => 
+    gulp.src(CONFIG.linkDirs)
+        .pipe($.sym(CONFIG.linkDirs.map(x => path.join(CONFIG.dist.base, x)), {force: true}))
+);
 
-//gulp.task('init', ['semantic', 'lib']);
 
 gulp.task('clean', () => {
     del([CONFIG.dist.base])
 });
 
 gulp.task('semantic', semantic);
-gulp.task('init', ['semantic', 'libs']);
+gulp.task('init', ['semantic', 'libs', 'links']);
 
 gulp.task('build', ['webpack', 'pug', 'server-js']);
 

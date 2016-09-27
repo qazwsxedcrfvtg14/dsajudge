@@ -15,6 +15,18 @@ const schema = Schema({
         type: Boolean,
         required: true,
     },
+    meta: {
+        timeLimit: Number,
+    },
+    testdata: {
+        count: Number,
+        points: Number,
+        groups: [{
+            count: Number,
+            points: Number,
+            tests: [String],
+        }]
+    }
 });
 
 const Problem = mongoose.model('Problem', schema);
