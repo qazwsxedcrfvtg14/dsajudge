@@ -5,7 +5,7 @@
         th ID
         th Problem Name
     tbody
-      tr( v-for="x of problems" v-link="{ path: '/admin/problem', params: { id: x._id }}")
+      tr( v-for="x of problems" v-link="{ name: 'admin.problem', params: { id: x._id }}")
         td {{ x._id }}
         td {{ x.name }}
       tr

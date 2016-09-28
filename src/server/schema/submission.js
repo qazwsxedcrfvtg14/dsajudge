@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
+
 const Schema = mongoose.Schema;
 
 const schema = Schema({
@@ -11,6 +13,10 @@ const schema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+    },
+    ts: {
+        type: Date,
+        default: Date.now,
     },
     status: {
         type: String,

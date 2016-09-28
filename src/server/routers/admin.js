@@ -8,6 +8,8 @@ import multer from 'multer';
 import path from 'path';
 import config from '/config';
 import fs from 'fs';
+import {updateMeta} from '/parseProblem';
+import winston from 'winston';
 
 const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
@@ -26,14 +28,21 @@ router.post('/newProblem', upload.single('problem-file'), wrap(async (req, res) 
     problem._id = await Problem.count();
     problem.save();
 
-    //const k
     try {
-        await targz().extract(file.path, path.join(config.dirs.problems, problem._id.toString()));
+        await targz({}, {strip: 1}).extract(file.path, path.join(config.dirs.problems, problem._id.toString()));
     } catch (e) {
         return res.status(404).send(e.toString());
     } finally {
         fs.unlink(file.path, () => {});
     }
+
+    try {
+        await updateMeta(problem._id, problem);
+        await problem.save();
+    } catch(e) {
+        console.log(e);
+    }
+    await problem.save();
 
     res.send({id: problem._id});
 }));
@@ -43,10 +52,23 @@ router.get('/problems', wrap(async (req, res) => {
     res.send(problems);
 }));
 
-router.get('/admin/problem/:id', wrap(async (req, res) => {
-    const problem = await Problem.find({_id: req.params.id});
+router.get('/problem/:id', wrap(async (req, res) => {
+    const problem = await Problem.findOne({_id: req.params.id});
     if (!problem) return res.status(404).send('Problem not found');
     res.send(problem);
+}));
+
+router.put('/problem/:id/settings', wrap(async (req, res) => {
+    const upd = req.body;
+    if ('_id' in upd) _.remove(upd, '_id');
+    if ('__v' in upd) _.remove(upd, '__v');
+
+    const problem = await Problem.findOne({_id: req.params.id});
+    if (!problem) return res.status(404).send('Problem not found');
+    _.assignWith(problem, upd);
+    problem.save();
+
+    res.send(`Successfully update problem #${req.params.id}!`);
 }));
 
 export default router;

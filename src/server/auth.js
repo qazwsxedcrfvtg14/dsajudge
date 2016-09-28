@@ -20,7 +20,6 @@ passport.use(new LocalStrategy({
         return done(null, false, { message: 'Incorrect username.' });
     }
 
-    console.log(user);
     let res = await bcrypt.compareAsync(password, user.password);
     if (res) {
         done(null, {email: user.email, _id: user._id, roles: user.roles});
@@ -30,11 +29,20 @@ passport.use(new LocalStrategy({
 }));
 
 passport.serializeUser( (user,done) => {
-    done(null, user);
+    done(null, user._id);
 });
 
 passport.deserializeUser( (user, done) => {
-    done(null, user);
+    (async () => {
+        let u;
+        try {
+            u = await User.findOne({_id: user});
+        } catch(e) {
+            done(e, null);
+            return;
+        }
+        done(null, u);
+    })();
 });
 
 export default (app) => {

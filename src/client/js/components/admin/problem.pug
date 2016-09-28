@@ -1,0 +1,30 @@
+.ui.text.container( v-if="problem" )
+  h2.ui.dividing.header Problem settings
+  h3.ui.dividing.header Directly upload tar
+  iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
+  form.ui.form( action="/admin/newProblem" method="POST" 
+      enctype="multipart/form-data" target="dummyframe" @submit.prevent="updateProblem" )
+    label.ui.icon.button( for="problem-file" )
+      i.file.icon
+      | Open File
+    input#problem-file(type="file" v-model="filename" name="problem-file" )
+    span.filename-text {{ filename | getPath }}
+    button.primary.right.floated.right.labeled.icon.ui.button(type="submit") 
+      i.right.arrow.icon
+      | Submit
+
+  h3.ui.dividing.header Settings
+  .ui.form
+    .field
+      label Name
+      input(type="text" v-model="problem.name") 
+    .field
+      label TimeLimit
+      input(type="text" v-model="problem.meta.timeLimit") 
+    .field
+      .ui.toggle.checkbox
+        input(type="checkbox" v-model="problem.visible")
+        label Visible to non-admin
+    .ui.submit.primary.left.labeled.icon.button( @click="updateProblemSettings" )
+      i.right.arrow.icon
+      | Submit

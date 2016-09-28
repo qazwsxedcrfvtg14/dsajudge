@@ -19,7 +19,6 @@ export default Vue.extend({
     ready() {
         (async () => {
             this.problem = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
-            console.log(this.problem.desc);
             await sleep(500);
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         })();

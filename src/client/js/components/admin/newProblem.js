@@ -6,11 +6,9 @@ export default Vue.extend({
     template,
     data() {
         return { 
-            problems: [],
         };
     },
     ready() {
-        this.$http.post('/admin/newProblem');
     },
     filters: {
         getPath(x) {
@@ -20,7 +18,6 @@ export default Vue.extend({
     },
     methods: {
         async postNewProblem(ev) {
-            console.log(ev);
             const formData = new FormData(ev.target);
             let result;
             try {
@@ -31,7 +28,13 @@ export default Vue.extend({
                 else console.log(e);
                 return;
             }
-            console.log(result.body.id);
+            console.log(result.data.id);
+            this.$router.go({
+                name: 'admin.problem',
+                params: {
+                    id: result.data.id,
+                },
+            });
         }
     }
 });

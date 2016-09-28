@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import problemRouter from './routers/problem';
 import submitRouter from './routers/submit';
 import adminRouter from './routers/admin';
+import logger from './logger';
+
 const MongoStore = require('connect-mongo')(expressSession); 
 
 mongoose.connect(config.mongo.url);
@@ -50,4 +52,6 @@ app.get('/me', (req, res) => {
     }
 });
 
-app.listen(config.port, () => console.log(`Server start @ ${config.port}`));
+app.listen(config.port, () => logger.info(`Server start @ ${config.port}`));
+
+import problemParse from './parseProblem';

@@ -86,7 +86,10 @@ const App = Vue.extend({
             this.$http.post('/logout');
         },
         async getUser() {
+            console.log('zzz');
+            console.log(this.$http.get('/me').then((x, y) => console.log(x, y)));
             const result = (await this.$http.get('/me')).data;
+            console.log('zzz');
             if (result.login) {
                 this.user = result.user;
                 this.isAdmin = _.includes(this.user.roles, 'admin');

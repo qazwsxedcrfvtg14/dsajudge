@@ -34,6 +34,7 @@ router.map({
                 component: Admin.index,
             },
             '/problem/:id': {
+                name: 'admin.problem',
                 component: Admin.problem,
             },
             '/newProblem': {
