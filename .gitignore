@@ -1,5 +1,4 @@
 node_modules/
-dist/
-semantic/
-judger/
-submissions/
+/dist/
+/semantic/
+/submissions
