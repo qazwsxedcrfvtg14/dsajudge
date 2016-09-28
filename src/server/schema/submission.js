@@ -4,10 +4,10 @@ import autoIncrement from 'mongoose-auto-increment';
 const Schema = mongoose.Schema;
 
 const schema = Schema({
-    _id: {
+    problem: {
         type: Number,
-        index: true,
-        unique: true,
+        ref: 'Problem',
+        required: true,
     },
     submittedBy: {
         type: Schema.Types.ObjectId,
@@ -21,17 +21,19 @@ const schema = Schema({
     status: {
         type: String,
     },
-    points: {
-        type: Number,
-    },
     results: {
-        type: {
-            main: String,
+        result: String,
+        points: Number, 
+        groups: [{
+            result: String,
+            points: Number,
             tests: [String],
-        },
+        }],
     },
 });
 
-const Submission = mongoose.model('Submission', Submission);
+autoIncrement.initialize(mongoose.connection);
+schema.plugin(autoIncrement.plugin, 'Submission');
+const Submission = mongoose.model('Submission', schema);
 export default Submission;
 

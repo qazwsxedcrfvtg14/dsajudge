@@ -27,7 +27,7 @@ async function updateMeta(id, prob) {
             count: 0,
             points: 0,
             groups: [],
-        }
+        };
         const groups = prob.testdata.groups;
         for (let group of json.testdata) {
             if (!_.has(group, 'tests')) continue;

@@ -5,7 +5,13 @@ import auth from './auth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
+
 import mongoose from 'mongoose';
+mongoose.connect(config.mongo.url);
+mongoose.Promise = Promise;
+
+import autoIncrement from 'mongoose-auto-increment';
+
 import problemRouter from './routers/problem';
 import submitRouter from './routers/submit';
 import adminRouter from './routers/admin';
@@ -13,8 +19,6 @@ import logger from './logger';
 
 const MongoStore = require('connect-mongo')(expressSession); 
 
-mongoose.connect(config.mongo.url);
-mongoose.Promise = Promise;
 
 const app = express();
 
@@ -54,4 +58,5 @@ app.get('/me', (req, res) => {
 
 app.listen(config.port, () => logger.info(`Server start @ ${config.port}`));
 
-import problemParse from './parseProblem';
+import judger from '/judger';
+judger();

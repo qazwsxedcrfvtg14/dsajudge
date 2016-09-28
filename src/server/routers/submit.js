@@ -1,24 +1,40 @@
+import config from '/config';
+import path from 'path';
 import express from 'express';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
 import Problem from '/schema/problem';
+import Submission from '/schema/submission';
 import {requireLogin} from '/utils';
+import fs from 'fs-promise';
 
 const router = express.Router();
 
 router.post('/:id', requireLogin, wrap(async (req, res) => {
-    const id = parseInt(req.params.id);
-    console.log(id);
+    const probId = parseInt(req.params.id);
     let problem;
-    if (req.user && _.includes(req.user.roles, 'admin'))
-        problem = await Problem.findOne({_id: id});
+    if (req.user && req.user.isAdmin())
+        problem = await Problem.findOne({_id: probId});
     else
-        problem = await Problem.findOne({_id: id, visible: true});
+        problem = await Problem.findOne({_id: probId, visible: true});
     
     if (!problem) {
-        return res.sendStatus(404);
+        return res.status(404).send(`Problem #${req.params.id} not found.`);
     }
-    console.log(req.body);
+
+    const submission = new Submission({
+        problem: problem._id,
+        submittedBy: req.user._id,
+        status: 'pending',
+        points: 0,
+    });
+    await submission.save();
+    const subId = submission._id;
+    await fs.writeFile(path.join(config.dirs.submissions, `${subId}.cpp`), req.body.file);
+
+    res.send({
+        id: subId,
+    });
 }));
 
 export default router;

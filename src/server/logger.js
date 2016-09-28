@@ -9,7 +9,6 @@ const logger = new (winston.Logger)({
                 return moment().tz('Asia/Taipei').format('MM/DD hh:mm:ss');
             },
             formatter: function(options) {
-                console.log(options.level);
                 const {level, message, meta} = options;
                 const levelStr = wsconf.colorize(options.level, '[' + options.level.toUpperCase() + ']');
                 const messageStr = wsconf.colorize(options.level, message || '');
