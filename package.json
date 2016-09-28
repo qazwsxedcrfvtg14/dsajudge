@@ -36,6 +36,7 @@
     "gulp-sym": "0.0.14",
     "gulp-util": "^3.0.7",
     "gulp-wait": "0.0.2",
+    "json-loader": "^0.5.4",
     "postcss-cssnext": "^2.8.0",
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",

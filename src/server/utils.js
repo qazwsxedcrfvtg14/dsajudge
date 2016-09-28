@@ -7,8 +7,8 @@ export const requireLogin = (req, res, next) => {
 };
 
 export const requireAdmin = (req, res, next) => {
-    if (!req.user) return res.sendStatus(401);
-    if (!req.user.roles && !_.contains(req.user.roles, 'admin')) return res.sendStatus(401);
+    if (!req.user) return res.status(401).send(`You are not logged in`);
+    if (!req.user.isAdmin()) return res.status(401).send(`You are not admin`);
 
     next();
 };

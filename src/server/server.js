@@ -12,6 +12,7 @@ mongoose.Promise = Promise;
 
 import autoIncrement from 'mongoose-auto-increment';
 
+import submissionRouter from './routers/submission';
 import problemRouter from './routers/problem';
 import submitRouter from './routers/submit';
 import adminRouter from './routers/admin';
@@ -42,6 +43,7 @@ auth(app);
 app.use('/problem', problemRouter);
 app.use('/submit', submitRouter);
 app.use('/admin', adminRouter);
+app.use('/submission', submissionRouter);
 
 app.get('/me', (req, res) => {
     if (req.user) {

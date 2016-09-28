@@ -41,6 +41,10 @@ module.exports = {
                 test: /\.pug$/, 
                 loaders: ['pug-html-loader'],
             },
+            {
+                test: /\.json$/, 
+                loaders: ['json-loader'],
+            },
         ]
     },
     postcss: () => [precss, cssnext, cssnano],

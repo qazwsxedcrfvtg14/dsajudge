@@ -1,0 +1,46 @@
+.ui.text.container
+  component( v-if="submission" )
+    .ui.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
+      .ui.basic.segment
+        .ui.grid.two.column.row.divided
+          .column.center.aligned
+            .ui.statistic
+              .value {{ submission.results.points }}
+              .label Points
+          .column.center.aligned
+            .ui.statistic
+              .value.text {{ submission.result | toResultString }}
+              .label Result
+
+      table.ui.definition.table
+        tbody
+          tr
+            td.collapsing Problem name
+            td {{ submission.problem.name }}
+          tr
+            td.collapsing Submitted by
+            td {{ submission.submittedBy.email }}
+          tr
+            td.collapsing Submission time
+            td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
+            
+    h2.ui.dividing.header Results
+    .ui.divided.items
+      .item( v-for="(gid, group) in submission.results.groups" )
+        .content
+          .dividing.header {{ 'Group #' + gid }}
+          .meta
+            span points: {{ group.points }}
+          .description
+            table.ui.table
+              thead
+                th.collapsing Testcase
+                th Result
+              tbody
+                tr( v-for="(tid, result) of group.tests")
+                  td {{ tid }}
+                  td( :class="[result == 'AC' ? 'positive' : 'negative']" )  
+                    i.checkmark.icon( v-show="result == AC" )
+                    i.remove.icon( v-show="result == AC" )
+                    | {{ result ? result : 'Judging' }}
+

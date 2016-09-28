@@ -55,7 +55,12 @@ export default Vue.extend({
             const result = await this.$http.post(`/submit/${this.$route.params.id}`, {
                 file: str,
             });
-            console.log(result.body);
+            this.$route.router.go({
+                name: 'submission',
+                params: {
+                    id: result.data.id,
+                },
+            });
         },
     }
 });

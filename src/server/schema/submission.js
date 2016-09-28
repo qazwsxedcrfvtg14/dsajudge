@@ -23,7 +23,10 @@ const schema = Schema({
     },
     results: {
         result: String,
-        points: Number, 
+        points: {
+            type: Number,
+            default: 0, 
+        },
         groups: [{
             result: String,
             points: Number,

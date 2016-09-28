@@ -5,6 +5,8 @@ import Problems from './components/problems';
 import Problem from './components/problem';
 import Submit from './components/submit';
 import Admin from './components/admin';
+import Submissions from './components/submissions';
+import Submission from './components/submission';
 
 const router = new VueRouter({
     linkActiveClass: 'active',
@@ -12,12 +14,20 @@ const router = new VueRouter({
 
 router.map({
     '/problems': {
-        name: 'problem',
+        name: 'problems',
         component: Problems,
     },
     '/problem/:id': {
         name: 'problem',
         component: Problem,
+    },
+    '/submissions': {
+        name: 'submissions',
+        component: Submissions,
+    },
+    '/submission/:id': {
+        name: 'submission',
+        component: Submission,
     },
     '/submit/:id': {
         name: 'submit',
