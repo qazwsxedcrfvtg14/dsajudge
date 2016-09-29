@@ -28,7 +28,7 @@ module.exports = {
                         'transform-es2015-modules-commonjs',
                         'transform-strict-mode',
                         ['babel-root-slash-import', {
-                            rootPathSuffix: CONFIG.src.client.base,
+                            rootPathSuffix: path.join(CONFIG.src.client.base, 'js'),
                         }],
                     ]
                 }

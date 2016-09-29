@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import template from './problem.pug';
-import {errToast, okToast} from '/js/utils';
+import {errToast, okToast} from '/utils';
 import toastr from 'toastr';
 
 export default Vue.extend({
