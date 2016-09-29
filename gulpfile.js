@@ -58,7 +58,6 @@ gulp.task('server-js', () =>
 gulp.task('watch', () => {
     gulp.watch([CONFIG.src.client.pug], ['pug']);
     gulp.watch([
-        CONFIG.src.client.css, 
         CONFIG.src.client.js,
     ], ['webpack']);
     gulp.watch([CONFIG.src.server.js], ['server-js']);

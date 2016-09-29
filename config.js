@@ -5,7 +5,6 @@ const CONFIG = {
             base: 'src/client',
             pug: 'pug/**/*.pug',
             js: 'js/**/*.*',
-            css: 'css/**/*.css',
         },
         server: {
             base: 'src/server/',

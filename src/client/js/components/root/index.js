@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
+import _ from 'lodash';
+import './index.css';
 
 const formValidateObj = {
     email: {
