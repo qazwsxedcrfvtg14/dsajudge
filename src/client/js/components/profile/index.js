@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import _ from 'lodash';
-import './index.css';
-import store, {userLogin, userLogout, getUser} from '/store';
+import {getUser} from '/store';
 
 const formValidateObj = {
     email: {
@@ -30,7 +29,7 @@ const formValidateObj = {
 export default Vue.extend({
     data() {
         return {
-            //user: null,
+            user: null,
             isAdmin: false,
         };
     },
@@ -74,14 +73,14 @@ export default Vue.extend({
             this.$loginModal.modal('show');
         },
         async clickLogout() {
-            this.userLogout();
+            this.user = null;
             this.$route.router.go('/');
             this.$http.post('/logout');
         },
         async getUser() {
             const result = (await this.$http.get('/me')).data;
             if (result.login) {
-                this.userLogin(result.user);
+                this.user = result.user;
                 this.isAdmin = _.includes(this.user.roles, 'admin');
             }
         }
@@ -89,19 +88,9 @@ export default Vue.extend({
     ready() {
         this.init();
     },
-    store,
     vuex: {
-        actions: {
-            userLogin,
-            userLogout,
-        },
-        getters: {
+        getter: {
             user: getUser,
-        }
+        },
     },
-});
-
-import logoHtml from './logo.pug';
-export const Logo = Vue.extend({
-    template: logoHtml,
 });

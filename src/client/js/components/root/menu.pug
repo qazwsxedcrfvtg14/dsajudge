@@ -9,6 +9,7 @@
     a.item Resource
     a.item( v-if="isAdmin" v-link="{name: 'admin'}" ) Admin
     .right.menu( v-if="user" )
+      a.item( v-link="{ name: 'profile' }" ) Profile
       .item {{user.email}}
       a.item( @click="clickLogout" ) Logout
     .right.menu( v-else="user" )

@@ -8,6 +8,7 @@ import Admin from './components/admin';
 import Submissions from './components/submissions';
 import Submission from './components/submission';
 import {Logo} from './components/root';
+import Profile from './components/profile';
 
 const router = new VueRouter({
     linkActiveClass: 'active',
@@ -56,6 +57,10 @@ router.map({
             },
         },
     },
+    '/profile': {
+        name: 'profile',
+        component: Profile,
+    }
 });
 
 router.redirect({
