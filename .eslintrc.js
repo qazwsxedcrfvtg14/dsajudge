@@ -9,6 +9,7 @@ module.exports = {
     rules: {
         "no-console": "off",
         "no-unused-vars": 0,
+        "no-constant-condition": 0,
         "semi": ["error", "always"],
     },
     env: {

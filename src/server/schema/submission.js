@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import autoIncrement from 'mongoose-auto-increment';
+import autoIncrement from './autoIncrement';
 
 const Schema = mongoose.Schema;
 
@@ -35,7 +35,6 @@ const schema = Schema({
     },
 });
 
-autoIncrement.initialize(mongoose.connection);
 schema.plugin(autoIncrement.plugin, 'Submission');
 const Submission = mongoose.model('Submission', schema);
 export default Submission;

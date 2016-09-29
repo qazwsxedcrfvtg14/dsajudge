@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import autoIncrement from './autoIncrement';
+
 const Schema = mongoose.Schema;
 
 const schema = Schema({
@@ -32,6 +34,7 @@ const schema = Schema({
     testFiles: [String],
 });
 
+schema.plugin(autoIncrement.plugin, 'Problem');
 const Problem = mongoose.model('Problem', schema);
 export default Problem;
 

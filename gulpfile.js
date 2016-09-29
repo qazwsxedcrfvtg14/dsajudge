@@ -90,6 +90,21 @@ gulp.task('links', () =>
         .pipe($.sym(CONFIG.linkDirs.map(x => path.join(CONFIG.dist.base, x)), {force: true}))
 );
 
+const zboxMake = new $.run.Command('make', {cwd: './judger'});
+gulp.task('zbox:cp', () => {
+    gulp.src('./judger/zbox')
+        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')))
+    return;
+});
+
+const mkJail = new $.run.Command('mkdir jail', {cwd: path.join(CONFIG.dist.base, 'judger')});
+gulp.task('zbox:mkjail', () => {
+    mkJail.exec()
+    return;
+});
+
+gulp.task('zbox', $.sequence(['cp', 'mkjail'].map(x => `zbox:${x}`)));
+
 
 gulp.task('clean', () => {
     del([CONFIG.dist.base])

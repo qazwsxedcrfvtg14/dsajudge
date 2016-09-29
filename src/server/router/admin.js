@@ -16,36 +16,51 @@ const router = express.Router();
 
 router.use('/', requireAdmin);
 
-router.post('/newProblem', upload.single('problem-file'), wrap(async (req, res) => {
+function checkGzip(req, res, next) {
     const file = req.file;
     if (!file) {
         return res.status(404).send(`Please upload a file`);
     }
-    if (file.mimetype != 'application/gzip') {
+    if (!file.mimetype.match(/application\/(x-)?gzip/)) {
         return res.status(404).send(`Please upload a gzip file, you uploaded ${file.mimetype}`);
     }
-    const problem = new Problem();
-    problem._id = await Problem.count();
-    problem.save();
+    next();
+}
 
+async function updateProblemByGzip(id, file) {
     try {
-        await targz({}, {strip: 1}).extract(file.path, path.join(config.dirs.problems, problem._id.toString()));
+        await targz({}, {strip: 1}).extract(file.path, path.join(config.dirs.problems, id.toString()));
     } catch (e) {
-        return res.status(404).send(e.toString());
+        throw e;
     } finally {
         fs.unlink(file.path, () => {});
     }
+}
 
-    try {
-        await updateMeta(problem._id, problem);
+router.post('/newProblem',
+    upload.single('problem-file'),
+    checkGzip,
+    wrap(async (req, res) => {
+        const problem = new Problem();
         await problem.save();
-    } catch(e) {
-        console.log(e);
-    }
-    await problem.save();
+        console.log(problem._id);
 
-    res.send({id: problem._id});
-}));
+        const id = problem._id;
+        const file = req.file;
+
+        try {
+            await updateProblemByGzip(id, file);
+            await updateMeta(problem._id, problem);
+            await problem.save();
+        } catch(e) {
+            console.log(e);
+            return res.status(500).send(e.toString());
+        }
+        await problem.save();
+
+        return res.send({id: problem._id});
+    }
+));
 
 router.get('/problems', wrap(async (req, res) => {
     const problems = await Problem.find({});

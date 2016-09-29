@@ -1,7 +1,9 @@
 .ui.text.container
-  .ui.two.item.menu
+  .ui.four.item.menu
+    a.item( v-link="{path: '/admin/homeworks'}" ) Homeworks
     a.item( v-link="{path: '/admin/problems'}" ) Problems
     a.item( v-link="{path: '/admin/submissions'}" ) Submissions
+    a.item( v-link="{path: '/admin/submissions'}" ) Users
 
   router-view
 

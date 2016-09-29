@@ -27,7 +27,7 @@ async function _startJudge(sub) {
             remains.push(x.count);
             sub.results.groups[i] = {
                 points: 0,
-                tests: ((l) => {let ls = []; ls.length = l; return ls})(x.count),
+                tests: ((l) => {let ls = []; ls.length = l; return ls;})(x.count),
             };
             x.tests.forEach((y, j) => tds.push({
                 gid: i,

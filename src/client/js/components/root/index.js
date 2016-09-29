@@ -79,7 +79,7 @@ export default Vue.extend({
             this.$http.post('/logout');
         },
         async getUser() {
-            const result = (await this.$http.get('/me')).data;
+            const result = (await this.$http.get('/user/me')).data;
             if (result.login) {
                 this.userLogin(result.user);
                 this.isAdmin = _.includes(this.user.roles, 'admin');
