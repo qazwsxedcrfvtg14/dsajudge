@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import html from './problem.pug';
+import html from './index.pug';
 import marked from 'marked';
 import sleep from 'sleep-promise';
 

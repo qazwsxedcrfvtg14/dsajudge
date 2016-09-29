@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import html from './submit.pug';
-import './submit.css';
+import html from './index.pug';
+import './index.css';
 
 export default Vue.extend({
     data() {
