@@ -8,18 +8,14 @@ npm install -g gulp
 # Install package, it would take a while
 npm install
 
+# Make zbox
+(cd judger && make)
+
 gulp init
 # Semantic auto install is bugged
 # So choose extend my settings > automatic manually when prompted
 
 gulp build
-
-# TODO: auto set mbox
-cp judger/{mbox.c,Makefile} dist/judger
-cd dist/judger
-make
-mkdir jail
-cd ../..
 
 # Run server
 cd dist

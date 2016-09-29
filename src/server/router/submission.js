@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get('/all', requireLogin, wrap(async (req, res) => {
     const skip = req.body.skip || 0;
+    
     const data = await Submission
         .find({submittedBy: req.user._id})
         .limit(10).skip(skip)
