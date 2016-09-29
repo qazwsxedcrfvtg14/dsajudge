@@ -7,12 +7,16 @@ import Submit from './components/submit';
 import Admin from './components/admin';
 import Submissions from './components/submissions';
 import Submission from './components/submission';
+import {Logo} from './components/root';
 
 const router = new VueRouter({
     linkActiveClass: 'active',
 });
 
 router.map({
+    '/': {
+        component: Logo,
+    },
     '/problems': {
         name: 'problems',
         component: Problems,

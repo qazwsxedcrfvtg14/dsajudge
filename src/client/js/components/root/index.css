@@ -8,6 +8,23 @@
     background-color: white;
 }
 
+#main-header {
+    margin-top: 10vh;
+    font-size: 6rem !important;
+}
+
+@media screen and (max-width: 767px) {
+    #main-header {
+        margin-top: 0;
+    }
+}
+
 table.ui.table.selectable.pointer td {
     cursor: pointer;
+}
+
+.menu-font {
+    font-family: 'Geo', sans-serif !important;
+    font-size: 2.2rem !important;
+    padding: 0.4rem 1rem !important;
 }

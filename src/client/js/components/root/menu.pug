@@ -1,13 +1,11 @@
 #top-menu.ui.fixed.top.secondary.pointing.blue.menu
   .ui.container
-    a.item.menu-font
+    div.item.menu-font( style="color: #2185D0 !important;" )
       i.terminal.icon
-      | ADA 2016
+      | ADA Judge
     a.item( v-link="{ path: '/', exact: true }" ) Home
-    a.item Homeworks
     a.item( v-link="'/problems'" ) Problems
     a.item( v-link="'/submissions'" ) Submissions
-    a.item Ranking
     a.item Resource
     a.item( v-if="isAdmin" v-link="{name: 'admin'}" ) Admin
     .right.menu( v-if="user" )

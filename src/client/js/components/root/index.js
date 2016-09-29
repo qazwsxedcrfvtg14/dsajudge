@@ -91,3 +91,8 @@ export default Vue.extend({
         this.init();
     },
 });
+
+import logoHtml from './logo.pug';
+export const Logo = Vue.extend({
+    template: logoHtml,
+});
