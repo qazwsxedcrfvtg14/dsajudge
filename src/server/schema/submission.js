@@ -25,12 +25,18 @@ const schema = Schema({
         result: String,
         points: {
             type: Number,
-            default: 0, 
+            default: 0,
         },
+        runtime: Number,
         groups: [{
             result: String,
             points: Number,
-            tests: [String],
+            runtime: Number,
+            tests: [{
+                result: String,
+                points: Number,
+                runtime: Number,
+            }],
         }],
     },
 });

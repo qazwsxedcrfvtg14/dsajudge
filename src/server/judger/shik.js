@@ -5,6 +5,9 @@ import _ from 'lodash';
 import fs from 'fs-promise';
 import YAML from 'yamljs';
 import {diffWords} from 'diff';
+import temp from 'temp';
+import {promisify} from 'bluebird';
+import {InvalidOperationError} from 'common-errors';
 
 const zbox = path.join(__dirname, 'zbox');
 const jail = path.join(__dirname, 'jail');
@@ -15,127 +18,114 @@ const GPP = [
     '-O2',
 ];
 
-export async function compile(file) {
-    const bn = path.basename(file);
-    const fn = bn.split('.')[0];
-    const dest = path.join(jail, bn);
-    await fs.copy(file, dest);
-
-    let result;
-    const opt = {
-        cpu: 30,
-        wall: 60,
-        mem: 1<<30,
-        chdir: jail, 
-    };
-    const _opt = [
-        ..._.flatMap(_.map(opt, (val, key) => ['--'+key, val])),
-        ...[...GPP, '-o', fn, bn]
-    ];
-
-    try {
-        result = await new Promise( (resolve, reject) => {
-            execFile(
-                zbox,
-                _opt,
-                (err, stdout, stderr) => {
-                    if (err) return reject(err);
-                    resolve({stdout, stderr});
-                }
-            );
-        });
-    } catch (e) {
-        throw e;
-    } finally {
-        fs.unlink(dest);
-    }
-
-    const stat = YAML.parse(result.stdout);
-    const errMsg = result.stderr;
-    if (stat.RE) {
-        return {
-            result: 'CE',
-            errMsg,
-        };
-    } else {
-        return {
-            result: 'OK',
-            errMsg,
-            exec: fn,
-        };
-    }
+async function copyToDir(src, dest) {
+    await fs.copy(src, path.join(dest, path.basename(src)));
 }
 
-export async function run(exec, inFile, timeLimit=1.0) {
-    const _in = path.basename(inFile);
-    const _out = `${_in.split('.')[0]}.user.out`;
-    await fs.copy(inFile, path.join(jail, _in));
-
-    const timeLimitCeil = Math.ceil(timeLimit);
-
-    let result;
-    const opt = {
-        cpu: timeLimitCeil,
-        wall: timeLimitCeil*2,
-        mem: 1<<30,
-        chroot: jail, 
-        stdin: _in,
-        stdout: _out,
-    };
-    const _opt = [
-        ..._.flatMap(_.map(opt, (val, key) => ['--'+key, val])),
-        `./${exec}`,
-    ];
-    try {
-        result = await new Promise( (resolve, reject) => {
-            execFile(
-                zbox,
-                _opt,
-                (err, stdout, stderr) => {
-                    if (err) return reject(err);
-                    resolve({stdout, stderr});
-                }
-            );
-        });
-    } catch(e) {
-        throw e;
-    } finally {
-        fs.unlink(path.join(jail, _in));
-    }
-
-    const stat = YAML.parse(result.stdout);
-    stat.outFile = path.join(jail, _out);
-    return stat;
+function zBoxWrap(opt) {
+    return new Promise((resolve, reject) => {
+        execFile(
+            zbox,
+            opt,
+            (err, stdout, stderr) => {
+                if (err) return reject(err);
+                resolve({
+                    stdout,
+                    stderr,
+                    stat: YAML.parse(stdout),
+                });
+            }
+        );
+    });
 }
 
-export async function judge(exec, inFile, ansFile, timeLimit) {
-    let res = await run(exec, inFile, timeLimit);
-    if (res.TLE || res.cpu_time_usage > timeLimit + 0.01) {
-        return {
-            result: 'TLE',
-        };
-    }
-    if (res.RE) {
-        return {
-            result: 'RE',
-        };
+export class CppExec {
+    constructor(cppSource) {
+        this.cpp = cppSource;
+        this.cppBase = path.basename(cppSource);
+        this.name = this.cppBase.split('.')[0];
+        this.ended = false;
+        this.status = null;
+        this.exec = null;
     }
 
-    res = await compare(res.outFile, ansFile);
-    return res;
-}
+    async init() {
+        this.rootDir = await promisify(temp.mkdir)({dir: jail});
+        this.status = 'initialized';
+    }
 
-export async function compare(outFile, ansFile) {
-    const [out, ans] = (await Promise.all([fs.readFile(outFile), fs.readFile(ansFile)])).map(x => x.toString());
-    const res = diffWords(ans, out);
-    for (let x of res) {
-        if (x.added || x.removed) {
-            return {
-                result: 'WA',
-            };
+    async prepareFiles(files) {
+        await Promise.all(files.map(f => copyToDir(f, this.rootDir)));
+    }
+
+    async compile(opt={}) {
+        if (this.status !== 'initialized') {
+            await this.init();
         }
+
+        _.defaults(opt, {
+            cpu: 20,
+            wall: 30,
+            mem: 1<<30,
+            chdir: this.rootDir, 
+            stdout: 'compile.out',
+            stderr: 'compile.err',
+        });
+
+        await copyToDir(this.cpp, this.rootDir);
+        this.exec = path.join(this.rootDir, this.name);
+        
+        const _opt = [
+            ..._.flatMap(_.map(opt, (val, key) => ['--'+key, val])),
+            ...[...GPP, '-o', this.name, this.cppBase]
+        ];
+
+        const result = await zBoxWrap(_opt);
+
+        if (result.stat.RE) this.status = 'compile error';
+        else this.status = 'compiled';
+
+        this.execBase = this.name;
+        return result;
     }
-    return {
-        result: 'AC',
-    };
+
+    async run(inFile, timeLimit=1.0, memLimit=(1<<30), args=[]) {
+        if (this.status !== 'compiled') {
+            throw InvalidOperationError('source not compiled');
+        }
+        const timeLimitCeil = Math.ceil(timeLimit);
+
+        let result;
+        const opt = {
+            cpu: timeLimitCeil,
+            wall: timeLimitCeil*2,
+            mem: memLimit,
+            chroot: this.rootDir, 
+            stdout: 'std.out',
+            stderr: 'std.err',
+        };
+        if (inFile) {
+            await copyToDir(inFile, this.rootDir);
+            opt.stdin = path.basename(inFile);
+        }
+
+        const _opt = [
+            ..._.flatten(_.map(opt, (val, key) => ['--'+key, val])),
+            `./${this.execBase}`,
+            ...args,
+        ];
+
+        result = await zBoxWrap(_opt);
+        if (!result.RE && !result.TLE && result.cpu_time_usage >= timeLimit + 0.001) {
+            this.TLE = true;
+        }
+
+        return _.assignIn(result, {
+            outFile: path.join(this.rootDir, 'std.out'),
+            errFile: path.join(this.rootDir, 'std.err'),
+        });
+    }
+    async clean() {
+        await fs.remove(this.rootDir);
+    }
 }
