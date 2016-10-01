@@ -8,23 +8,26 @@ import _ from 'lodash';
 import logger from '/logger';
 import {Error} from 'common-errors';
 import fs from 'fs-promise';
+import Worker from './pool';
 
 const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
 const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
 
-async function runAndCheck(userExec, checkExec, inFile, ansFile, timeLimit, memLimit) {
-    let res = await userExec.run(inFile, timeLimit, memLimit);
+async function runAndCheck(id, userExec, checkExec, inFile, ansFile, timeLimit, memLimit) {
+    let res = await userExec.run(`user-${id}`, inFile, timeLimit, memLimit);
     const ret = {runtime: res.stat.cpu_time_usage};
-    if (res.stat.TLE) return _.assignIn({result: 'TLE'}, ret);
+    if (res.stat.TLE) return _.assignIn(ret, {result: 'TLE', runtime: timeLimit});
     if (res.stat.RE) return _.assignIn({result: 'RE'}, ret);
 
     const neededFiles = [inFile, res.outFile, ansFile];
     checkExec.prepareFiles(neededFiles);
+    console.log(neededFiles);
     let checkRes = await checkExec.run(
-        undefined, 30, 1<<30, neededFiles.map(x => path.basename(x)));
+        `checker-${id}`, undefined, 30, 1<<30, neededFiles.map(x => path.basename(x)));
+    console.log('Run finished');
 
-    if (res.stat.TLE) throw Error('Checker time limit exceeded');
-    if (res.stat.RE) return _.assignIn({result: 'WA'}, ret);
+    if (checkRes.stat.TLE) throw Error('Checker time limit exceeded');
+    if (checkRes.stat.RE) return _.assignIn({result: 'WA'}, ret);
 
     return _.assignIn({result: 'AC'}, ret);
 }
@@ -41,7 +44,7 @@ function resultReducer(res, x) {
           xW = _.get(resultMap, x.result, 1e9);
     const res_ = {};
     res_.result = resW > xW ? res.result : x.result;
-    res_.runtime = Math.max(res.runtime, x.cpu_time_usage);
+    res_.runtime = Math.max(res.runtime, x.runtime);
     return res_;
 }
 
@@ -56,7 +59,7 @@ async function _startJudge(sub) {
         sub.results.result = 'CE';
         sub.results.points = 0;
         await sub.save();
-        await fs.copy(compileResult.stderr,
+        await fs.copy(compileResult.errFile,
             path.join(config.dirs.submissions, `${sub._id}.compile.err`));
         userExec.clean();
         return sub;
@@ -86,9 +89,8 @@ async function _startJudge(sub) {
                 points: 0,
                 tests: ((l) => {
                     let ls = []; 
-                    for (let i=0; i<l; i++) ls.push(undefined);
+                    ls.length = l;
                     return ls;
-                    //ls.length = l; return ls;
                 })(x.count),
             };
             x.tests.forEach((y, j) => tds.push({
@@ -105,12 +107,16 @@ async function _startJudge(sub) {
     const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
     const {timeLimit} = sub.problem.meta;
 
-    for (let td of tds) {
+    const promises = tds.map((td, idx) => (async () => {
+        const [inFile, ansFile] = ['in', 'out'].map(ext => path.join(probDir, `${td.testName}.${ext}`));
+        const judgeResult = await runAndCheck(
+            `${td.testName}.${idx}`, userExec, checkerExec, inFile, ansFile, timeLimit
+        );
+        return [td, judgeResult];
+    }));
+
+    const updateFunc = async (td, judgeResult) => {
         const {gid, tid, testName} = td;
-        const [inFile, ansFile] = ['in', 'out'].map(ext => path.join(probDir, `${testName}.${ext}`));
-        const judgeResult = (await runAndCheck(
-            userExec, checkerExec, inFile, ansFile, timeLimit
-        ));
         const gRes = sub.results.groups[gid];
         gRes.tests.set(tid, judgeResult);
 
@@ -118,19 +124,51 @@ async function _startJudge(sub) {
         if (!remains[gid]) {
             console.log(sub.results.groups[gid].tests);
             const res = _.reduce(
-                gRes.tests, resultReducer, {result: 'AC', runtime: 0});
+                gRes.tests, resultReducer, {result: 'AC', runtime: 0}
+            );
+            console.log('res = ', res);
             gRes.result = res.result;
-            gRes.points = res.runtime;
+            gRes.runtime = res.runtime;
             gRes.points = (res.result === 'AC' ? sub.problem.testdata.groups[gid].points : 0);
         }
         sub.markModified('results.groups');
         await sub.save();
+    };
+
+    const workers = [];
+    for (let i=0; i<config.maxWorkers; i++) {
+        workers.push(new Worker());
+    }
+
+    let error = null;
+    for (let task of promises) {
+        const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
+        worker.run(task, (err) => {
+            if (err) {
+                logger.error('Judge error', error);
+                error = err;
+            }
+        });
+        if (ret) await updateFunc(...ret);
+    }
+    if (error) {
+        throw Error('Judge error when running exec.');
+    }
+    const finalList = await Promise.all(workers.map(x => x.finish()));
+    for (let {worker, ret} of finalList) {
+        await updateFunc(...ret);
     }
 
     console.log(sub.results.groups);
+    const reducedResult = _.reduce(
+        sub.results.groups, resultReducer, {result: 'AC', runtime: 0}
+    );
+
+    sub.results.result = reducedResult.result;
+    sub.results.runtime = reducedResult.runtime;
     sub.results.points = _.reduce(sub.results.groups, (v, x) => v + x.points, 0);
-    sub.results.result = mergeResult(_.map(sub.results.groups, (x) => x.result));
     await sub.save();
+    return sub;
 }
 
 async function startJudge(sub) {

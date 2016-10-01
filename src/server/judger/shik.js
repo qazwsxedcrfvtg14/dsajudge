@@ -51,6 +51,7 @@ export class CppExec {
 
     async init() {
         this.rootDir = await promisify(temp.mkdir)({dir: jail});
+        console.log(this.rootDir);
         this.status = 'initialized';
     }
 
@@ -63,13 +64,15 @@ export class CppExec {
             await this.init();
         }
 
+        const stdout = 'compile.out';
+        const stderr = 'compile.err';
         _.defaults(opt, {
             cpu: 20,
             wall: 30,
             mem: 1<<30,
             chdir: this.rootDir, 
-            stdout: 'compile.out',
-            stderr: 'compile.err',
+            stdout,
+            stderr,
         });
 
         await copyToDir(this.cpp, this.rootDir);
@@ -86,23 +89,28 @@ export class CppExec {
         else this.status = 'compiled';
 
         this.execBase = this.name;
-        return result;
+        return _.assignIn(result, {
+            outFile: path.join(this.rootDir, stdout),
+            errFile: path.join(this.rootDir, stderr),
+        });
     }
 
-    async run(inFile, timeLimit=1.0, memLimit=(1<<30), args=[]) {
+    async run(id, inFile, timeLimit=1.0, memLimit=(1<<30), args=[]) {
         if (this.status !== 'compiled') {
             throw InvalidOperationError('source not compiled');
         }
         const timeLimitCeil = Math.ceil(timeLimit);
 
         let result;
+        const stdout = `${id}.out`;
+        const stderr = `${id}.err`;
         const opt = {
             cpu: timeLimitCeil,
             wall: timeLimitCeil*2,
             mem: memLimit,
             chroot: this.rootDir, 
-            stdout: 'std.out',
-            stderr: 'std.err',
+            stdout,
+            stderr,
         };
         if (inFile) {
             await copyToDir(inFile, this.rootDir);
@@ -121,8 +129,8 @@ export class CppExec {
         }
 
         return _.assignIn(result, {
-            outFile: path.join(this.rootDir, 'std.out'),
-            errFile: path.join(this.rootDir, 'std.err'),
+            outFile: path.join(this.rootDir, stdout),
+            errFile: path.join(this.rootDir, stderr),
         });
     }
     async clean() {

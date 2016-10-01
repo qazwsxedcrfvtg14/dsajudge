@@ -42,6 +42,7 @@ router.post('/newProblem',
     checkGzip,
     wrap(async (req, res) => {
         const problem = new Problem();
+        console.log(problem._id);
         await problem.save();
         console.log(problem._id);
 

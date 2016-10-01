@@ -8,5 +8,6 @@ export default {
     },
     mongo: {
         url: 'mongodb://localhost/adajudge',
-    }
+    },
+    maxWorkers: 4,
 };
