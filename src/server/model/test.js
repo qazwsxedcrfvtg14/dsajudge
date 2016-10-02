@@ -1,21 +1,28 @@
 import mongoose from 'mongoose';
-mongoose.connect('mongodb://localhost/adajudge');
+//mongoose.connect('mongodb://localhost/adajudge');
 import User from './user';
 import Problem from './problem';
 import bcrypt from 'bcrypt';
 
 let password = bcrypt.hashSync('123123', 10);
 
-let test = new User({
-    email: 'bobogei81123@gmail.com',
-    password,
-});
-test.save((err, x) => console.log(err, x));
-
-//let test = new Problem({
-    //_id: 0,
-    //name: 'Download Hao123',
-    //visible: false,
-//});
-//test.save((err, x) => console.log(err, x));
-console.log(test);
+import 'babel-polyfill';
+import moment from 'moment-timezone';
+import config from '/config';
+import Homework from './homework';
+if (require.main === module) {
+    mongoose.connect(config.mongo.url);
+    (async () => {
+    let h = new Homework({
+        name: 'Homework #0',
+        due: moment().add('2', 'days'),
+        problems: [7, 8, 9],
+        visible: true,
+        meta: {
+            //pdfLink: 'hao123.com',
+        }
+    });
+    await h.save();
+    console.log(123);
+    })();
+}
