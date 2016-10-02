@@ -21,6 +21,7 @@ const schema = Schema({
     },
     meta: {
         timeLimit: Number,
+        hasSpecialJudge: Boolean,
     },
     testdata: {
         count: Number,

@@ -19,9 +19,11 @@ async function updateMeta(id, prob) {
     }
     if (!stat.isFile()) return;
     const json = await promisify(jsonfile.readFile)(metaFile);
+    console.log(json);
 
 
-    if (_.has(json, 'timeLimit')) prob.timeLimit = _.get(json, 'timeLimit');
+    if (_.has(json, 'timeLimit')) prob.meta.timeLimit = _.get(json, 'timeLimit');
+    if (_.has(json, 'hasSpecialJudge')) prob.meta.hasSpecialJudge = _.get(json, 'hasSpecialJudge');
     if (_.has(json, 'testdata')) {
         prob.testdata = {
             count: 0,

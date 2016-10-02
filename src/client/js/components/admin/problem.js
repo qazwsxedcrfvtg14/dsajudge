@@ -36,10 +36,11 @@ export default Vue.extend({
             const formData = new FormData(ev.target);
             let result;
             try {
-                result = await this.$http.post(`/admin/updateProblem/${this.id}`, formData);
+                result = await this.$http.put(`/admin/problem/${this.id}`, formData);
             } catch (e) {
                 return errToast(e);
             }
+            okToast(result);
         },
         async updateProblemSettings(ev) {
             let result;

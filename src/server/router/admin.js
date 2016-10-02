@@ -63,6 +63,31 @@ router.post('/newProblem',
     }
 ));
 
+
+router.put('/problem/:id',
+    upload.single('problem-file'),
+    checkGzip,
+    wrap(async (req, res) => {
+        const problem = await Problem.findById(req.params.id);
+        if (!problem) res.status(404).send(`Problem #${req.params.id} not found`);
+
+        const id = problem._id;
+        const file = req.file;
+
+        console.log(id);
+        try {
+            await updateProblemByGzip(id, file);
+            await updateMeta(problem._id, problem);
+            await problem.save();
+        } catch(e) {
+            console.log(e);
+            return res.status(500).send(e.toString());
+        }
+        await problem.save();
+
+        return res.send(`Successfully update problem #${id}`);
+    }
+));
 router.get('/problems', wrap(async (req, res) => {
     const problems = await Problem.find({});
     res.send(problems);
