@@ -1,6 +1,7 @@
 import path from 'path';
 import config from '/config';
-import Submission from '/schema/submission';
+import Submission from '/model/submission';
+import Result from '/model/submission';
 import sleep from 'sleep-promise';
 import {CppExec, compile, judge} from './shik';
 import {mergeResult} from './utils';
@@ -21,10 +22,9 @@ async function runAndCheck(id, userExec, checkExec, inFile, ansFile, timeLimit, 
 
     const neededFiles = [inFile, res.outFile, ansFile];
     checkExec.prepareFiles(neededFiles);
-    console.log(neededFiles);
     let checkRes = await checkExec.run(
-        `checker-${id}`, undefined, 30, 1<<30, neededFiles.map(x => path.basename(x)));
-    console.log('Run finished');
+        `checker-${id}`, undefined, 30, 1<<30, neededFiles.map(x => path.basename(x))
+    );
 
     if (checkRes.stat.TLE) throw Error('Checker time limit exceeded');
     if (checkRes.stat.RE) return _.assignIn({result: 'WA'}, ret);
@@ -50,12 +50,13 @@ function resultReducer(res, x) {
 
 async function _startJudge(sub) {
 
+    // Compile
     const cppFile = path.join(config.dirs.submissions, `${sub._id}.cpp`);
     const userExec = new CppExec(cppFile);
     await userExec.init();
     const compileResult = await userExec.compile();
 
-    if (compileResult.stat.RE) {
+    if (userExec.status === 'compile error') {
         sub.results.result = 'CE';
         sub.results.points = 0;
         await sub.save();
@@ -65,7 +66,7 @@ async function _startJudge(sub) {
         return sub;
     }
 
-
+    // Compile checker
     let checker;
     if (sub.problem.meta.hasSpecialJudge) {
         checker = path.join(config.dirs.problems, `${sub.problem._id}`, 'checker.cpp');
@@ -80,6 +81,7 @@ async function _startJudge(sub) {
         throw Error('Checker compiled failed');
     }
 
+    // Load testdatas
     const tds = [];
     const remains = [];
     sub.problem.testdata.groups.forEach(
@@ -107,6 +109,7 @@ async function _startJudge(sub) {
     const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
     const {timeLimit} = sub.problem.meta;
 
+    // Make promises
     const promises = tds.map((td, idx) => (async () => {
         const [inFile, ansFile] = ['in', 'out'].map(ext => path.join(probDir, `${td.testName}.${ext}`));
         const judgeResult = await runAndCheck(
@@ -122,11 +125,9 @@ async function _startJudge(sub) {
 
         remains[gid] --;
         if (!remains[gid]) {
-            console.log(sub.results.groups[gid].tests);
             const res = _.reduce(
                 gRes.tests, resultReducer, {result: 'AC', runtime: 0}
             );
-            console.log('res = ', res);
             gRes.result = res.result;
             gRes.runtime = res.runtime;
             gRes.points = (res.result === 'AC' ? sub.problem.testdata.groups[gid].points : 0);
@@ -135,6 +136,7 @@ async function _startJudge(sub) {
         await sub.save();
     };
 
+    // Load workers
     const workers = [];
     for (let i=0; i<config.maxWorkers; i++) {
         workers.push(new Worker());
@@ -149,17 +151,18 @@ async function _startJudge(sub) {
                 error = err;
             }
         });
+        if (error) break;
         if (ret) await updateFunc(...ret);
     }
     if (error) {
         throw Error('Judge error when running exec.');
     }
+
     const finalList = await Promise.all(workers.map(x => x.finish()));
     for (let {worker, ret} of finalList) {
         await updateFunc(...ret);
     }
 
-    console.log(sub.results.groups);
     const reducedResult = _.reduce(
         sub.results.groups, resultReducer, {result: 'AC', runtime: 0}
     );

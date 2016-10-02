@@ -1,4 +1,4 @@
-import User from './schema/user';
+import User from '/model/user';
 import _ from 'lodash';
 
 export const requireLogin = (req, res, next) => {

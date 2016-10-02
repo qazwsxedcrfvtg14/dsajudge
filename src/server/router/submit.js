@@ -3,8 +3,8 @@ import path from 'path';
 import express from 'express';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
-import Problem from '/schema/problem';
-import Submission from '/schema/submission';
+import Problem from '/model/problem';
+import Submission from '/model/submission';
 import {requireLogin} from '/utils';
 import fs from 'fs-promise';
 

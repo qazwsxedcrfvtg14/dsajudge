@@ -2,7 +2,7 @@ import passport from 'passport';
 import {Strategy as LocalStrategy} from 'passport-local';
 import {promisifyAll} from 'bluebird';
 import bcrypt from 'bcrypt';
-import User from '/schema/user';
+import User from '/model/user';
 
 promisifyAll(bcrypt);
 

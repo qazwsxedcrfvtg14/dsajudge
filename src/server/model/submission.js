@@ -21,24 +21,10 @@ const schema = Schema({
     status: {
         type: String,
     },
-    results: {
-        result: String,
-        points: {
-            type: Number,
-            default: 0,
-        },
-        runtime: Number,
-        groups: [{
-            result: String,
-            points: Number,
-            runtime: Number,
-            tests: [{
-                result: String,
-                points: Number,
-                runtime: Number,
-            }],
-        }],
-    },
+    result: {
+        type: Schema.Types.ObjectId,
+        ref: 'Result',
+    }, 
 });
 
 schema.plugin(autoIncrement.plugin, 'Submission');

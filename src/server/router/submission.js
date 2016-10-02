@@ -1,5 +1,5 @@
 import express from 'express';
-import Submission from '/schema/submission';
+import Submission from '/model/submission';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
 import config from '/config';
