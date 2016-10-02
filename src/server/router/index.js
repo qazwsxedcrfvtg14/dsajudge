@@ -4,6 +4,7 @@ const routes = [
     'problem',
     'submit',
     'admin',
+    'homework',
 ];
 
 export default function(app) {

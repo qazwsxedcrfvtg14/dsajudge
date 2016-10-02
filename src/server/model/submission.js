@@ -18,14 +18,23 @@ const schema = Schema({
         type: Date,
         default: Date.now,
     },
-    status: {
-        type: String,
-    },
-    result: {
+    judgeTs: Date,
+    status: String,
+    result: String,
+    points: Number,
+    runtime: Number,
+    _result: {
         type: Schema.Types.ObjectId,
         ref: 'Result',
-    }, 
+    },
 });
+
+schema.methods.populateResult = function() {
+    return this.populate('_result')
+        .populate('_result.subresults')
+        .populate('_result.subresults.subresults')
+    ;
+};
 
 schema.plugin(autoIncrement.plugin, 'Submission');
 const Submission = mongoose.model('Submission', schema);

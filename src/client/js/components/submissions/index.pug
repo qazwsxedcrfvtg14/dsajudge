@@ -1,5 +1,8 @@
 .ui.text.container
-  table.ui.celled.table
+  .ui.top.attached.pagination.menu
+    a.item( v-for="idx of tabRange", :class="[idx == curTabId ? 'active' : '']", @click="changeTab(idx)" ) {{ idx }}
+    a.item ...
+  table.ui.attached.celled.table
     thead
       tr
         th ID
@@ -12,6 +15,6 @@
           a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
         td.selectable 
           a( v-link="{name: 'problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
-        td {{ sub | getResult }}
-        td {{ sub | getPoints }}
+        td {{ this.probUtils.getResultString(sub) }}
+        td {{ this.probUtils.getPointsString(sub) }}
 

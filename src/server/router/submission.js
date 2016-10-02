@@ -5,31 +5,81 @@ import _ from 'lodash';
 import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
+import fs from 'fs-promise';
 
 const router = express.Router();
 
 router.get('/all', requireLogin, wrap(async (req, res) => {
-    const skip = req.body.skip || 0;
-    
+    const skip = parseInt(req.query.start) || 0;
+
+    console.log(skip);
     const data = await Submission
         .find({submittedBy: req.user._id})
-        .limit(10).skip(skip)
-        .populate('problem', 'name');
+        .sort('-_id')
+        .limit(15).skip(skip*15)
+        .populate('problem', 'name')
+    ;
     res.send(data);
+}));
+
+const MAX_COMPILE_LOG_LEN = 10000;
+async function loadCompileErr(id) {
+    try {
+        const buf = await fs.readFile(path.join(config.dirs.submissions, `${id}.compile.err`));
+        const str = buf.toString();
+        console.log(str.length);
+        if (str.length > MAX_COMPILE_LOG_LEN) return str.slice(0, MAX_COMPILE_LOG_LEN) + '\n... [The remained was omitted]\n';
+        return str;
+    } catch(e) {
+        return 'Compiler log unavailable.';
+    }
+}
+
+async function loadSourceCode(id) {
+    try {
+        const buf = await fs.readFile(path.join(config.dirs.submissions, `${id}.cpp`));
+        const str = buf.toString();
+        return str;
+    } catch(e) {
+        return 'Source code unavailable.';
+    }
+}
+
+router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
+    const id = req.params.id;
+    const submission = await Submission.findById(id);
+    if (!submission) return res.status(404).send(`Submission ${id} not found.`);
+    if (!submission.submittedBy.equals(req.user._id)) 
+        return res.status(403).send(`Permission denided.`);
+    const src = await loadSourceCode(id);
+    res.send(src);
 }));
 
 router.get('/:id', requireLogin, wrap(async (req, res) => {
 
     const id = req.params.id;
     let submission;
-    submission = await Submission.findById(id).populate('problem', 'name').populate('submittedBy', 'email');
-
+    submission = await Submission.findById(id)
+        .populate('problem', 'name testdata.points')
+        .populate('submittedBy', 'email')
+        .populate({
+            path: '_result',
+            populate: {
+                path: 'subresults',
+                populate: {
+                    path: 'subresults',
+                },
+            },
+        })
+    ;
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
     if (!submission.submittedBy.equals(req.user._id)) return res.status(403).send(`Permission denided.`);
 
     submission = submission.toObject();
-    submission.result = (submission.status !== 'finished' ? submission.status : submission.results.result);
+    if (submission.result === 'CE') {
+        submission.compilationLog = await loadCompileErr(submission._id);
+    }
 
     res.send(submission);
 }));

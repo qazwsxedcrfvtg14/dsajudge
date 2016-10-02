@@ -1,15 +1,22 @@
 .ui.text.container
   component( v-if="submission" )
-    .ui.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
+    .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
       .ui.basic.segment
         .ui.grid.two.column.row.divided
           .column.center.aligned
             .ui.statistic
-              .value {{ submission.results.points }}
+              .value {{ this.probUtils.getPointsString(submission) }}
+                small(style='font-size: 40%; margin-left: 4px;') / {{submission.problem.testdata.points}}
               .label Points
           .column.center.aligned
-            .ui.statistic
-              .value.text {{ submission.result | toResultString }}
+            .ui.statistic( :class="[ \
+                  probUtils.isAC(submission) ? 'green' : '', \
+                  probUtils.isNotAC(submission) ? 'red' : '' \
+                ]")
+              .value.text
+                //-( :data-tooltip="probUtils.getTips(probUtils.getResultString(submission, false))"
+                //-data-position="right center" )
+                | {{ this.probUtils.getResultString(submission) }}
               .label Result
 
       table.ui.definition.table
@@ -23,24 +30,52 @@
           tr
             td.collapsing Submission time
             td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
+
+    .ui.divider
+    component( v-if="submission.compilationLog" )
+      h2.ui.dividing.header Compilation Log
+      .ui.segment
+        pre
+          code {{submission.compilationLog}}
             
-    h2.ui.dividing.header Results
-    .ui.divided.items
-      .item( v-for="(gid, group) in submission.results.groups" )
-        .content
-          .dividing.header {{ 'Group #' + gid }}
-          .meta
-            span points: {{ group.points }}
-          .description
-            table.ui.table
-              thead
-                th.collapsing Testcase
-                th Result
-              tbody
-                tr( v-for="(tid, result) of group.tests")
-                  td {{ tid }}
-                  td( :class="[result == 'AC' ? 'positive' : 'negative']" )  
-                    i.checkmark.icon( v-show="result == AC" )
-                    i.remove.icon( v-show="result == AC" )
-                    | {{ result ? result : 'Judging' }}
+    component( v-if="showResult" )
+      h2.ui.dividing.header Results
+      .ui.divided.items
+        .item( v-for="(gid, group) in submission._result.subresults" )
+          .content
+            .dividing.header {{ 'Group #' + gid }}
+            .description
+              table.ui.table.result-table
+                thead
+                  th Testcase
+                  th Result
+                  th.collapsing Runtime
+                  th.collapsing.center.aligned Points
+                tbody
+                  tr
+                    td Overall
+                    td( :class="[ \
+                        this.probUtils.isAC(group) ? 'positive' : '', \
+                        this.probUtils.isNotAC(group) ? 'negative' : '' \
+                      ]" )  
+                      i.checkmark.icon( v-show="this.probUtils.isAC(group)" )
+                      i.remove.icon( v-show="this.probUtils.isNotAC(group)" )
+                      | {{ group.result }}
+                    td.collapsing {{ group.runtime }}
+                    td.collapsing.center.aligned {{ group.points }}
+
+                  tr( v-for="(tid, test) of group.subresults")
+                    td {{ test.name }}
+                    td( :class="[ \
+                      probUtils.isAC(test) ? 'positive' : '', \
+                      probUtils.isNotAC(test) ? 'negative' : '' \
+                    ]" )  
+                      i.checkmark.icon( v-show="probUtils.isAC(test)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(test)" )
+                      | {{ test.result }}
+                    td.collapsing {{ test.runtime }}
+                    td.collapsing.center.aligned {{ test.points }}
+
+  h2.ui.dividing.header Source Code
+  #editor
 

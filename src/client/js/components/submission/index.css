@@ -1,0 +1,6 @@
+.result-table {
+    tbody > tr:first-child  {
+        font-size: 110%;
+        font-weight: bold;
+    }
+}

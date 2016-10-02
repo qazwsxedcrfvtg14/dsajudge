@@ -7,3 +7,4 @@ toastr.options = {
     progressBar: true,
     positionClass: "toast-bottom-right",
 };
+

@@ -1,26 +1,27 @@
 .ui.text.container
   .ui.segment
-    form.ui.form
+    form#profile-form.ui.form
       .field
         label User Email
-        input( readonly="" type="text", :value="user.email")
+        input( readonly="" type="text", :value="user ? user.email : ''" )
 
       h4.ui.dividing.header Change password
       .two.fields
         .field
           label new password
-          input( placeholder="Input new password" type="password" )
+          input( name="new-password" placeholder="Input new password" type="password" )
         .field
           label confirm
-          input( placeholder="Comfirm new password" type="password" )
+          input( name="confirm-password" placeholder="Comfirm new password" type="password" )
 
-      h4.ui.dividing.header Send changes
+      h4.ui.dividing.header Submit changes
       .field
         .two.fields
           .twelve.wide.field
             label current password
-            input( placeholder="Input current password" type="password" )
+            input( name="current-password" placeholder="Input current password" type="password" )
           .four.wide.field( style="align-self: flex-end;" )
             button.ui.fluid.primary.left.icon.labeled.button
               i.send.icon
               | send
+      .ui.error.message

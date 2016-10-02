@@ -100,8 +100,3 @@ export default Vue.extend({
         }
     },
 });
-
-import logoHtml from './logo.pug';
-export const Logo = Vue.extend({
-    template: logoHtml,
-});

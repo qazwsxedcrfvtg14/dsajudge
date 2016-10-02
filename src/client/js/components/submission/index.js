@@ -1,50 +1,78 @@
 import Vue from 'vue';
 import html from './index.pug';
+import './index.css';
 import sleep from 'sleep-promise';
+import probUtils from '/components/mixins/probUtils';
+
 
 export default Vue.extend({
+    mixins: [probUtils],
     data() {
         return { 
             id: null,
             submission: null,
+            showResult: false,
+            sourceCode: null,
         };
     },
     template: html,
     ready() {
         this.id = this.$route.params.id;
         this.fetch();
+        this.fetchSrc();
     },
     methods: {
         async fetch() {
             await this.getSubmission();
-            while (this.submission.result === 'pending' || this.submission.result === 'judging') {
-                await sleep(1000);
+
+            while (this.submission.status === 'pending' || this.submission.status === 'judging') {
+                await sleep(3000);
                 await this.getSubmission();
                 console.log('tick');
             }
             
         },
-        async getSubmission() {
+        async fetchSrc() {
             let result;
             try {
-                result = await this.$http.get(`/submission/${this.id}`);
+                result = await this.$http.get(`/submission/sourceCode/${this.id}`);
             } catch(e) {
                 console.log(e);
             }
-            console.log(JSON.stringify(result.data, null, 2));
-            this.submission = result.data;
-        }
-    },
-    filters: {
-        getResult(sub) {
-            if (sub.status !== 'finished') {
-                return sub.status;
-            }
-            return sub.results.result;
+            const editor = ace.edit('editor');
+            const session = editor.getSession();
+            session.setValue(result.data);
+            session.setMode('ace/mode/c_cpp');
+            editor.setReadOnly(true);
         },
-        getPoints(sub) {
-            if (sub.status != 'finished') return '-';
-            return sub.results.points;
+        async getSubmission() {
+            let _result;
+            try {
+                _result = await this.$http.get(`/submission/${this.id}`);
+            } catch(e) {
+                console.log(e);
+            }
+            const data = _result.data; 
+            console.log(this.showResult);
+            if (data._result) {
+                const transform = x => {
+                    if (!x.result) {
+                        x.result = 'Judging';
+                        x.points = x.runtime = '?';
+                    } else {
+                        x.result = this.probUtils.toHumanString(x.result);
+                        x.runtime = this.probUtils.toDisplayTime(x.runtime);
+                    }
+                };
+                data._result.subresults.forEach(x => {
+                    transform(x);
+                    x.subresults.forEach(y => transform(y));
+                });
+            }
+            this.submission = data;
+            this.showResult = (this.submission 
+                && this.submission.status !== 'pending' 
+                && this.submission.result !== 'CE')
         }
     },
 });

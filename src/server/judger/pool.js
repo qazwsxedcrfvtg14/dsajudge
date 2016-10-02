@@ -27,7 +27,6 @@ export default class Worker {
         this.ret = null;
         return taskFactory().then((ret) => {
             this.ret = ret;
-            console.log(ret);
             this.isIdle = true;
         }).catch(e => {
             this.isIdle = true;

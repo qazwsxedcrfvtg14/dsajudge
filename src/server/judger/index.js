@@ -1,7 +1,7 @@
 import path from 'path';
 import config from '/config';
 import Submission from '/model/submission';
-import Result from '/model/submission';
+import Result from '/model/result';
 import sleep from 'sleep-promise';
 import {CppExec, compile, judge} from './shik';
 import {mergeResult} from './utils';
@@ -21,7 +21,7 @@ async function runAndCheck(id, userExec, checkExec, inFile, ansFile, timeLimit, 
     if (res.stat.RE) return _.assignIn({result: 'RE'}, ret);
 
     const neededFiles = [inFile, res.outFile, ansFile];
-    checkExec.prepareFiles(neededFiles);
+    await checkExec.prepareFiles(neededFiles);
     let checkRes = await checkExec.run(
         `checker-${id}`, undefined, 30, 1<<30, neededFiles.map(x => path.basename(x))
     );
@@ -39,34 +39,30 @@ const resultMap = {
     'TLE': 100,
     'AC': 1,
 };
-function resultReducer(res, x) {
+const resultReducer = (pointReducer = (p1, p2) => Math.min(p1 || 0, p2 || 0)) => ((res, x) => {
     const resW = _.get(resultMap, res.result, 1e9),
-          xW = _.get(resultMap, x.result, 1e9);
+        xW = _.get(resultMap, x.result, 1e9);
     const res_ = {};
     res_.result = resW > xW ? res.result : x.result;
     res_.runtime = Math.max(res.runtime, x.runtime);
+    res_.points = pointReducer(res.points, x.points);
     return res_;
-}
+});
 
 async function _startJudge(sub) {
 
-    // Compile
+    // Init mainResult
+    const problemId = sub.problem._id;
+    const mainResult = new Result({
+        name: problemId,
+        maxPoints: sub.problem.testdata.points,
+    });
+    sub._result = mainResult._id;
+    await mainResult.save();
+    await sub.save();
+
     const cppFile = path.join(config.dirs.submissions, `${sub._id}.cpp`);
     const userExec = new CppExec(cppFile);
-    await userExec.init();
-    const compileResult = await userExec.compile();
-
-    if (userExec.status === 'compile error') {
-        sub.results.result = 'CE';
-        sub.results.points = 0;
-        await sub.save();
-        await fs.copy(compileResult.errFile,
-            path.join(config.dirs.submissions, `${sub._id}.compile.err`));
-        userExec.clean();
-        return sub;
-    }
-
-    // Compile checker
     let checker;
     if (sub.problem.meta.hasSpecialJudge) {
         checker = path.join(config.dirs.problems, `${sub.problem._id}`, 'checker.cpp');
@@ -74,120 +70,161 @@ async function _startJudge(sub) {
         checker = DEFAULT_CHECKER;
     }
     const checkerExec = new CppExec(checker);
-    await checkerExec.init();
-    await checkerExec.prepareFiles([TESTLIB]);
-    await checkerExec.compile();
-    if (checkerExec.status !== 'compiled') {
-        throw Error('Checker compiled failed');
-    }
 
-    // Load testdatas
-    const tds = [];
-    const remains = [];
-    sub.problem.testdata.groups.forEach(
-        (x, i) => {
-            remains.push(x.count);
-            sub.results.groups[i] = {
-                points: 0,
-                tests: ((l) => {
-                    let ls = []; 
-                    ls.length = l;
-                    return ls;
-                })(x.count),
-            };
-            x.tests.forEach((y, j) => tds.push({
-                gid: i,
-                tid: j,
-                testName: y,
-            }));
+    try {
+        // Compile
+        await userExec.init();
+        const compileResult = await userExec.compile();
+
+        if (userExec.status === 'compile error') {
+            mainResult.result = 'CE';
+            mainResult.points = 0;
+            await sub.save();
+            await fs.copy(compileResult.errFile,
+                path.join(config.dirs.submissions, `${sub._id}.compile.err`));
+            userExec.clean();
+            return mainResult;
         }
-    );
 
-    sub.markModified('results.groups');
-    await sub.save();
-
-    const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
-    const {timeLimit} = sub.problem.meta;
-
-    // Make promises
-    const promises = tds.map((td, idx) => (async () => {
-        const [inFile, ansFile] = ['in', 'out'].map(ext => path.join(probDir, `${td.testName}.${ext}`));
-        const judgeResult = await runAndCheck(
-            `${td.testName}.${idx}`, userExec, checkerExec, inFile, ansFile, timeLimit
-        );
-        return [td, judgeResult];
-    }));
-
-    const updateFunc = async (td, judgeResult) => {
-        const {gid, tid, testName} = td;
-        const gRes = sub.results.groups[gid];
-        gRes.tests.set(tid, judgeResult);
-
-        remains[gid] --;
-        if (!remains[gid]) {
-            const res = _.reduce(
-                gRes.tests, resultReducer, {result: 'AC', runtime: 0}
-            );
-            gRes.result = res.result;
-            gRes.runtime = res.runtime;
-            gRes.points = (res.result === 'AC' ? sub.problem.testdata.groups[gid].points : 0);
+        // Compile checker
+        await checkerExec.init();
+        await checkerExec.prepareFiles([TESTLIB]);
+        await checkerExec.compile();
+        if (checkerExec.status !== 'compiled') {
+            throw Error('Checker compiled failed');
         }
-        sub.markModified('results.groups');
-        await sub.save();
-    };
 
-    // Load workers
-    const workers = [];
-    for (let i=0; i<config.maxWorkers; i++) {
-        workers.push(new Worker());
-    }
+        // Load testdatas
+        const testObjs = [];
+        const groupObjs = [];
+        const remains = [];
 
-    let error = null;
-    for (let task of promises) {
-        const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
-        worker.run(task, (err) => {
-            if (err) {
-                logger.error('Judge error', error);
-                error = err;
+        for (let [gid, group] of sub.problem.testdata.groups.entries()) {
+            remains.push(group.count);
+            const groupResult = new Result({
+                name: `${problemId}_${gid}`,
+                maxPoints: group.points,
+            });
+            mainResult.subresults.push(groupResult._id);
+            const tests = [];
+
+            for (let [tid, testName] of group.tests.entries()) {
+                const testResult = new Result({
+                    name: `${problemId}_${gid}_${testName}`,
+                    maxPoints: group.points,
+                });
+                await testResult.save();
+                const _obj = {
+                    gid,
+                    fileName: testName,
+                    model: testResult,
+                };
+                tests.push(testResult);
+                testObjs.push(_obj);
+                groupResult.subresults.push(testResult._id);
             }
-        });
-        if (error) break;
-        if (ret) await updateFunc(...ret);
-    }
-    if (error) {
-        throw Error('Judge error when running exec.');
+            await groupResult.save();
+            groupObjs.push({
+                tests,
+                model: groupResult,
+            });
+        }
+        await mainResult.save();
+
+        const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
+        const {timeLimit} = sub.problem.meta;
+
+        const promises = testObjs.map((td, idx) => (async () => {
+            const testModel = td.model;
+            const gid = td.gid;
+            const [inFile, ansFile] = ['in', 'out'].map(ext => path.join(probDir, `${td.fileName}.${ext}`));
+            const testResult = await runAndCheck(
+                `${td.fileName}.${idx}`, userExec, checkerExec, inFile, ansFile, timeLimit
+            );
+
+            _.assignIn(testModel, testResult);
+            if (testResult.result === 'AC') testModel.points = testModel.maxPoints;
+            await testModel.save();
+            remains[gid] --;
+
+            if (!remains[gid]) {
+                const gObj = groupObjs[gid];
+                const groupResult = _.reduce(
+                    gObj.tests, resultReducer(), {result: 'AC', runtime: 0, points: gObj.model.maxPoints}
+                );
+                _.assignIn(gObj.model, groupResult);
+                await gObj.model.save();
+            }
+        }));
+
+
+        // Load workers
+        const workers = [];
+        for (let i=0; i<config.maxWorkers; i++) {
+            workers.push(new Worker());
+        }
+
+        let error = null;
+        for (let task of promises) {
+            const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
+            worker.run(task, (err) => {
+                if (err) {
+                    logger.error('Judge error', error);
+                    error = err;
+                }
+            });
+            if (error) break;
+        }
+
+        const finalList = await Promise.all(workers.map(x => x.finish()));
+        if (error) {
+            throw Error('Judge error when running exec.');
+        }
+
+        const reducedResult = _.reduce(
+            groupObjs.map(x => x.model), resultReducer((x, y) => x+y), {result: 'AC', runtime: 0, points: 0}
+        );
+        _.assignIn(mainResult, reducedResult);
+        await mainResult.save();
+    } catch(e) {
+        throw e;
+    } finally {
+        userExec.clean();
+        checkerExec.clean();
     }
 
-    const finalList = await Promise.all(workers.map(x => x.finish()));
-    for (let {worker, ret} of finalList) {
-        await updateFunc(...ret);
-    }
-
-    const reducedResult = _.reduce(
-        sub.results.groups, resultReducer, {result: 'AC', runtime: 0}
-    );
-
-    sub.results.result = reducedResult.result;
-    sub.results.runtime = reducedResult.runtime;
-    sub.results.points = _.reduce(sub.results.groups, (v, x) => v + x.points, 0);
-    await sub.save();
-    return sub;
+    return mainResult;
 }
 
 async function startJudge(sub) {
     sub.status = 'judging';
+    sub.judgeTs = Date.now();
+    if (sub.result) {
+        const _result = await Result.findById(sub._result);
+        if (_result) {
+            await _result.purge();
+        }
+    }
     await sub.save();
+
+    let result;
     try {
         logger.info(`judging #${sub._id}`);
-        await _startJudge(sub);
+        result = await _startJudge(sub);
     } catch(e) {
         sub.status = 'error';
+        sub.result = 'JE';
+        sub.points = 0;
         logger.error(`#${sub._id} judge error`, e);
         await sub.save();
         return;
     }
     sub.status = 'finished';
-    logger.info(`judge #${sub._id} finished, result = ${sub.results.result}`);
+    ['result', 'points', 'runtime'].forEach(x => {
+        sub[x] = result[x];
+    });
+    console.log(sub);
+    logger.info(`judge #${sub._id} finished, result = ${result.result}`);
     await sub.save();
 }
 
@@ -195,8 +232,7 @@ async function mainLoop() {
     while (true) {
         const pending = await (
             Submission.findOne({status: 'pending'})
-                .populate('problem')
-                .populate('submittedBy')
+            .populate('problem')
         );
         if (!pending) {
             await sleep(1000);

@@ -2,20 +2,33 @@ import Vue from 'vue';
 import html from './index.pug';
 import _ from 'lodash';
 import {getUser} from '/store';
+import toastr from 'toastr';
+
+$.fn.form.settings.rules.emptyOrMinLength = function(value, length) {
+  return value === "" || value.length >= 8;
+};
 
 const formValidateObj = {
-    email: {
-        identifier: 'email',
+    'new-password': {
+        identifier: 'new-password',
         rules: [
             {
-                type: 'regExp',
-                value: /\w+@\w+/,
-                prompt: `Not a valid email`,
+                type: 'emptyOrMinLength[8]',
+                prompt: `Password too short`,
             },
         ],
     },
-    password: {
-        identifier: 'password',
+    "confirm-password": {
+        identifier: 'confirm-password',
+        rules: [
+            {
+                type: 'match[new-password]',
+                prompt: `New password didn't matched`,
+            },
+        ],
+    },
+    "current-password": {
+        identifier: 'current-password',
         rules: [
             {
                 type: 'empty',
@@ -29,67 +42,45 @@ const formValidateObj = {
 export default Vue.extend({
     data() {
         return {
-            user: null,
-            isAdmin: false,
         };
     },
     template: html,
     methods: {
         init() {
-            this.$loginModal = $('#login-modal');
-            this.$loginForm = $('#login-form');
-
-            (async () => {
-                await Promise.all([this.getUser(), this.initComponents()]);
-            })();
+            this.initComponents();
         },
-        async initComponents() {
+        initComponents() {
             const me = this;
 
-            this.$loginModal.modal('setting', {
-                onApprove() {
-                    me.$loginForm.form('validate form');
-                    return false;
-                },
-            });  
-
-            this.$loginForm.form({
+            const $form = $('#profile-form');
+            $form.form({
                 fields: formValidateObj,
                 async onSuccess(e, fields) {
+                    console.log(fields);
                     let res;
                     try {
-                        res = await me.$http.post('/login', fields);
-                        me.$loginModal.modal('hide');
-                        await me.getUser();
-                    } catch (err) {
-                        if ('status' in err && err.status == 401) {
-                            me.$loginForm.form('add errors', ['Username or Password incorrect']);
-                        }
+                        res = await me.$http.post('/user/changePassword', fields);
+                    } catch(err) {
+                        if ('body' in err) toastr.error(err.body);
+                        else toastr.error(err);
                     }
+                    toastr.success(res.body);
+                    ['current', 'new', 'confirm'].forEach(x => {
+                        $form.form('set value', `${x}-password`, '');
+                    });
+                    e.preventDefault();
                 }
             });
         },
         clickLogin() {
             this.$loginModal.modal('show');
         },
-        async clickLogout() {
-            this.user = null;
-            this.$route.router.go('/');
-            this.$http.post('/logout');
-        },
-        async getUser() {
-            const result = (await this.$http.get('/user/me')).data;
-            if (result.login) {
-                this.user = result.user;
-                this.isAdmin = _.includes(this.user.roles, 'admin');
-            }
-        }
     },
     ready() {
         this.init();
     },
     vuex: {
-        getter: {
+        getters: {
             user: getUser,
         },
     },

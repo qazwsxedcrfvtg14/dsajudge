@@ -7,7 +7,7 @@ import Submit from './components/submit';
 import Admin from './components/admin';
 import Submissions from './components/submissions';
 import Submission from './components/submission';
-import {Logo} from './components/root';
+import Home from './components/home';
 import Profile from './components/profile';
 
 const router = new VueRouter({
@@ -16,7 +16,7 @@ const router = new VueRouter({
 
 router.map({
     '/': {
-        component: Logo,
+        component: Home,
     },
     '/problems': {
         name: 'problems',
