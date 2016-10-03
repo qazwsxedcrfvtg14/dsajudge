@@ -21,7 +21,7 @@ export default Vue.extend({
             const formData = new FormData(ev.target);
             let result;
             try {
-                result = await this.$http.post('/admin/newProblem', formData);
+                result = await this.$http.put('/admin/problem/', formData);
             } catch (e) {
                 if ('body' in e)
                     toastr.error(e.body);

@@ -132,7 +132,7 @@ async function _startJudge(sub) {
 
         await mainResult.save();
 
-        const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
+        const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdata');
         const {timeLimit} = sub.problem;
 
         const promises = testObjs.map((td, idx) => (async () => {

@@ -46,7 +46,7 @@ async function updateMeta(id, prob) {
 }
 
 async function updateTestdata(id, prob) {
-    const testsDir = path.join(config.dirs.problems, `${id}`, 'testdatas');
+    const testsDir = path.join(config.dirs.problems, `${id}`, 'testdata');
     const files = await fs.readdir(testsDir);
 
     const _in = [], _out = new Set();
