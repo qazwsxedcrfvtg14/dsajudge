@@ -70,6 +70,11 @@
               .twelve.wide.field
                 label Points
                 input(type="number", v-model="group.points" number) 
+        .ui.attached.bottom.segment
+          .ui.right.labeled.icon.green.button( @click="addNewGroup" )
+            i.plus.icon
+            | Add new groups
+
     .ui.segment.clear-after
       h3.ui.dividing.header Problem Statement
       .ui.top.attached.tabular.menu#problem-statement-tab

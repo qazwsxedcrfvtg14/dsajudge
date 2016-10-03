@@ -100,5 +100,16 @@ export default Vue.extend({
             for (let grp of this.problem.testdata.groups) pts += grp.points;
             return pts;
         },
+        async addNewGroup() {
+            this.problem.testdata.groups.push({
+                count: 0,
+                points: 0,
+                tests: [],
+            });
+            await sleep(500);
+            $('.ui.dropdown')
+                .dropdown()
+            ;
+        },
     },
 });
