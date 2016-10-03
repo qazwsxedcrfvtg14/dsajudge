@@ -20,7 +20,7 @@ export default Vue.extend({
         async getSubmissions() {
             let result;
             try {
-                result = await this.$http.get('/submission/all', {params: {start: this.curTabId}});
+                result = await this.$http.get('/submission/', {params: {start: this.curTabId}});
             } catch(e) {
                 console.log(e);
             }

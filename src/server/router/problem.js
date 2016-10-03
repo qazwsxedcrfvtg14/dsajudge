@@ -9,7 +9,7 @@ import marked from 'marked';
 
 const router = express.Router();
 
-router.get('/all', wrap(async (req, res) => {
+router.get('/', wrap(async (req, res) => {
     const data = await Problem.find({visible: true});
     res.send(data);
 }));

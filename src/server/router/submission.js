@@ -9,7 +9,7 @@ import fs from 'fs-promise';
 
 const router = express.Router();
 
-router.get('/all', requireLogin, wrap(async (req, res) => {
+router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
     console.log(skip);

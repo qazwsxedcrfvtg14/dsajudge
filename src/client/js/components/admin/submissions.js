@@ -38,7 +38,7 @@ export default Vue.extend({
             if (filter.probID) params.probID = filter.probID;
             if (filter.user) params.user = filter.user;
             try {
-                result = await this.$http.get('/admin/submission/all', { params });
+                result = await this.$http.get('/admin/submission/', { params });
             } catch(e) {
                 console.log(e);
             }

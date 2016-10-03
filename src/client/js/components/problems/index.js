@@ -10,7 +10,7 @@ export default Vue.extend({
     template: html,
     ready() {
         (async () => {
-            this.problems = (await this.$http.get('/problem/all')).data; 
+            this.problems = (await this.$http.get('/problem/')).data; 
             //console.log(this.problems.body);
         })();
     },

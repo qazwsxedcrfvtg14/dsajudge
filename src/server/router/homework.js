@@ -39,7 +39,7 @@ async function proceedHw(hw, userID) {
     return ret;
 }
 
-router.get('/all', requireLogin, wrap(async (req, res) => {
+router.get('/', requireLogin, wrap(async (req, res) => {
     const _data = await Homework.find()
         .where('visible').equals(true)
         .where('due').gt(Date.now())

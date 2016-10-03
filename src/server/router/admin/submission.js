@@ -10,7 +10,7 @@ import fs from 'fs-promise';
 
 const router = express.Router();
 
-router.get('/all', wrap(async (req, res) => {
+router.get('/', wrap(async (req, res) => {
     const skipPage = parseInt(req.query.skipPage) || 0;
 
     let query = Submission.find()

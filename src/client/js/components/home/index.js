@@ -11,7 +11,7 @@ export default Vue.extend({
     template: html,
     ready() {
         (async () => {
-            this.homeworks = (await this.$http.get('/homework/all')).data; 
+            this.homeworks = (await this.$http.get('/homework/')).data; 
             console.log(JSON.stringify(this.homeworks, null, 4));
         })();
     },
