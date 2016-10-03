@@ -2,6 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import marked from 'marked';
 import sleep from 'sleep-promise';
+import probUtils from '/mixins/probUtils';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
@@ -10,6 +11,7 @@ renderer.heading = (text, level) => {
 };
 
 export default Vue.extend({
+    mixins: [probUtils],
     data() {
         return { 
             problem: null,

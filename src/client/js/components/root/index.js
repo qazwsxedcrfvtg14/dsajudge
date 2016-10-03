@@ -61,7 +61,7 @@ export default Vue.extend({
                     try {
                         res = await me.$http.post('/login', fields);
                         me.$loginModal.modal('hide');
-                        await me.getUser();
+                        location.reload();
                     } catch (err) {
                         if ('status' in err && err.status == 401) {
                             me.$loginForm.form('add errors', ['Username or Password incorrect']);
@@ -77,6 +77,7 @@ export default Vue.extend({
             this.userLogout();
             this.$route.router.go('/');
             this.$http.post('/logout');
+            location.reload();
         },
         async getUser() {
             const result = (await this.$http.get('/user/me')).data;

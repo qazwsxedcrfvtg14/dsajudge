@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import probMixin from '/components/mixins/probUtils';
+import probMixin from '/mixins/probUtils';
 
 export default Vue.extend({
     mixins: [probMixin],

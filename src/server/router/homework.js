@@ -12,23 +12,26 @@ import {requireLogin} from '/utils';
 
 const router = express.Router();
 
-async function proceedHw(hw) {
+async function proceedHw(hw, userID) {
     await hw.populate('problems', 'name visible', {visible: true}).execPopulate();
     const ret = hw.toObject();
     let totalPoints = 0, totalAC = 0;
     for (let [idx, prob] of hw.problems.entries()) {
         const subs = (await Submission.find().limit(1)
+            .where('submittedBy').equals(userID)
             .where('ts').lt(hw.due)
             .where('problem').equals(prob)
             .sort('-points'))[0];
 
-        const points = subs.points;
-        const AC = (subs.result === 'AC');
+        let points = 0, AC = 0;
+        if (subs) {
+            [points, AC] = [subs.points, (subs.result === 'AC')]
+        }
         _.assignIn(ret.problems[idx], {
             userPoints: points,
             AC,
         });
-        totalPoints += subs.points;
+        totalPoints += points;
         if (AC) totalAC += 1;
     }
     ret.userPoints = totalPoints;
@@ -42,7 +45,7 @@ router.get('/all', requireLogin, wrap(async (req, res) => {
         .where('due').gt(Date.now())
         .populate('problems')
     ;
-    const data = await Promise.all(_data.map(hw => proceedHw(hw)));
+    const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id)));
     console.log(data);
     res.send(data);
 }));

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
 import sleep from 'sleep-promise';
-import probUtils from '/components/mixins/probUtils';
+import probUtils from '/mixins/probUtils';
 
 
 export default Vue.extend({

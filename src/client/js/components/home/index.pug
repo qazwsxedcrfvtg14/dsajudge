@@ -41,7 +41,7 @@
             th Problem Name
             th Your points
         tbody
-          tr( v-for="problem of hw.problems" )
+          tr( v-for="problem of hw.problems" v-link="{name: 'problem', params: {id: problem._id}}" )
             td {{ problem._id }}
             td {{ problem.name }}
             td {{ problem.userPoints }}
