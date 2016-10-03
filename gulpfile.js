@@ -87,7 +87,7 @@ gulp.task('libs', () => {
 
 gulp.task('links', () => 
     gulp.src(CONFIG.linkDirs)
-        .pipe($.sym(CONFIG.linkDirs.map(x => path.join(CONFIG.dist.base, x)), {force: true}))
+        .pipe($.sym(x => path.join(CONFIG.dist.base, path.basename(x.relative)), {force: true}))
 );
 
 const zboxMake = new $.run.Command('make', {cwd: './judger'});
