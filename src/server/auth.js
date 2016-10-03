@@ -62,6 +62,7 @@ export default (app) => {
         (req, res) => {
             req.session.destroy();
             req.logout();
+            res.sendStatus(203);
         } 
     );
 };
