@@ -2,19 +2,18 @@ import express from 'express';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
 import Problem from '/model/problem';
+import Submission from '/model/submission';
 import {requireAdmin} from '/utils';
 import targz from 'tar.gz';
 import multer from 'multer';
 import path from 'path';
 import config from '/config';
-import fs from 'fs';
-import {updateMeta} from '/parseProblem';
+import fs from 'fs-promise';
+import {updateMeta} from './parseProblem';
 import winston from 'winston';
 
-const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
-
-router.use('/', requireAdmin);
+const upload = multer({ dest: 'uploads/' });
 
 function checkGzip(req, res, next) {
     const file = req.file;
@@ -37,14 +36,33 @@ async function updateProblemByGzip(id, file) {
     }
 }
 
-router.post('/newProblem',
+router.get('/all', wrap(async (req, res) => {
+    const problems = await Problem.find({});
+    res.send(problems);
+}));
+
+router.get('/:id', wrap(async (req, res) => {
+    let problem = await Problem.findOne({_id: req.params.id});
+    if (!problem) return res.status(404).send('Problem not found');
+
+    problem = problem.toObject();
+
+    let fl = await fs.readFile(
+        path.join(config.dirs.problems, req.params.id, 'prob.md')
+    );
+
+    problem.desc = fl.toString();
+
+    res.send(problem);
+}));
+
+// New problem
+router.put('/',
     upload.single('problem-file'),
     checkGzip,
     wrap(async (req, res) => {
         const problem = new Problem();
-        console.log(problem._id);
         await problem.save();
-        console.log(problem._id);
 
         const id = problem._id;
         const file = req.file;
@@ -63,8 +81,7 @@ router.post('/newProblem',
     }
 ));
 
-
-router.put('/problem/:id',
+router.put('/:id',
     upload.single('problem-file'),
     checkGzip,
     wrap(async (req, res) => {
@@ -74,13 +91,11 @@ router.put('/problem/:id',
         const id = problem._id;
         const file = req.file;
 
-        console.log(id);
         try {
             await updateProblemByGzip(id, file);
             await updateMeta(problem._id, problem);
             await problem.save();
         } catch(e) {
-            console.log(e);
             return res.status(500).send(e.toString());
         }
         await problem.save();
@@ -88,28 +103,54 @@ router.put('/problem/:id',
         return res.send(`Successfully update problem #${id}`);
     }
 ));
-router.get('/problems', wrap(async (req, res) => {
-    const problems = await Problem.find({});
-    res.send(problems);
-}));
 
-router.get('/problem/:id', wrap(async (req, res) => {
-    const problem = await Problem.findOne({_id: req.params.id});
-    if (!problem) return res.status(404).send('Problem not found');
-    res.send(problem);
-}));
-
-router.put('/problem/:id/settings', wrap(async (req, res) => {
+router.put('/:id/settings', wrap(async (req, res) => {
     const upd = req.body;
     if ('_id' in upd) _.remove(upd, '_id');
     if ('__v' in upd) _.remove(upd, '__v');
+    let desc;
+    if ('desc' in upd) {
+        desc = upd.desc;
+        _.remove(upd, 'desc');
+    }
 
     const problem = await Problem.findOne({_id: req.params.id});
     if (!problem) return res.status(404).send('Problem not found');
     _.assignWith(problem, upd);
+
+    problem.testdata.count = problem.testdata.points = 0;
+    for (let grp of problem.testdata.groups) {
+        grp.count = grp.tests.length;
+        problem.testdata.count += grp.count;
+        problem.testdata.points += grp.points;
+    }
+
     problem.save();
 
+    if (desc) {
+        await fs.writeFile(
+            path.join(config.dirs.problems, req.params.id, 'prob.md'),
+            desc,
+        );
+    }
+
     res.send(`Successfully update problem #${req.params.id}!`);
+}));
+
+// Rejudge
+router.post('/:id/rejudge', wrap(async (req, res) => {
+
+    try {
+        await Submission.update(
+            {problem: req.params.id},
+            {$set: {status: 'pending'}},
+            {multi: true},
+        );
+    } catch (e) {
+        winston.error(e);
+    }
+
+    res.send(`Successfully rejudge problem #${req.params.id}!`);
 }));
 
 export default router;

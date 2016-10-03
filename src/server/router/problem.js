@@ -2,10 +2,10 @@ import express from 'express';
 import Problem from '/model/problem';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
-import fs from 'fs';
-import bluebird from 'bluebird';
+import fs from 'fs-promise';
 import config from '/config';
 import path from 'path';
+import marked from 'marked';
 
 const router = express.Router();
 
@@ -29,10 +29,12 @@ router.get('/:id', wrap(async (req, res) => {
 
     problem = problem.toObject();
 
-    let fl = await bluebird.promisify(fs.readFile)(
-        path.join(config.dirs.problems, req.params.id, 'prob.md'));
+    let fl = await fs.readFile(
+        path.join(config.dirs.problems, req.params.id, 'prob.md')
+    );
 
     problem.desc = fl.toString();
+    console.log(problem);
 
     res.send(problem);
 }));

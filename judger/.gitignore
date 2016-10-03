@@ -1,0 +1,4 @@
+*
+!.gitignore
+!zbox.c
+!Makefile

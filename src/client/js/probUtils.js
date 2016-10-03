@@ -32,7 +32,6 @@ export function getResultString(sub, toHuman=true) {
 }
 
 export function getPointsString(sub) {
-    console.log(sub.status);
     if (sub.status !== 'finished') return '?';
     return sub.points.toString();
 }

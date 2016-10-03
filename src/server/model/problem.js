@@ -12,16 +12,20 @@ const schema = Schema({
     name: {
         type: String,
         required: true,
-        default: 'Hao123',
+        default: 'A Brand New Problem',
     },
     visible: {
         type: Boolean,
         required: true,
         default: false,
     },
-    meta: {
-        timeLimit: Number,
-        hasSpecialJudge: Boolean,
+    timeLimit: {
+        type: Number,
+        default: 1,
+    },
+    hasSpecialJudge: {
+        type: Boolean,
+        default: false,
     },
     testdata: {
         count: Number,

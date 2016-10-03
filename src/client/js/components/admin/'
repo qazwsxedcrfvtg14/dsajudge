@@ -1,0 +1,18 @@
+.ui.text.container
+  table.ui.celled.table
+    thead
+      tr
+        th ID
+        th Problem
+        th Result
+        th Points
+    tbody
+      tr( v-for="sub of submissions")
+        td.selectable
+          a( v-link="{name: 'submissions', params: {id: sub._id}}" ).selectable  {{ sub._id }}
+        td.selectable 
+          a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
+        td( :class="{ positive: probUtils.isAC(sub.result), negative: probUtils.isNotAC(sub.result)}")
+          | {{ probUtils.getResultString(sub) }}
+        td {{ probUtils.getPointsString(sub) }}
+

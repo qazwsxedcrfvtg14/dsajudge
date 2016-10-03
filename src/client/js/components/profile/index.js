@@ -55,20 +55,21 @@ export default Vue.extend({
             const $form = $('#profile-form');
             $form.form({
                 fields: formValidateObj,
-                async onSuccess(e, fields) {
-                    console.log(fields);
-                    let res;
-                    try {
-                        res = await me.$http.post('/user/changePassword', fields);
-                    } catch(err) {
-                        if ('body' in err) toastr.error(err.body);
-                        else toastr.error(err);
-                    }
-                    toastr.success(res.body);
-                    ['current', 'new', 'confirm'].forEach(x => {
-                        $form.form('set value', `${x}-password`, '');
-                    });
+                onSuccess(e, fields) {
                     e.preventDefault();
+                    (async () => {
+                        let res;
+                        try {
+                            res = await me.$http.post('/user/changePassword', fields);
+                        } catch(err) {
+                            if ('body' in err) toastr.error(err.body);
+                            else toastr.error(err);
+                        }
+                        toastr.success(res.body);
+                        ['current', 'new', 'confirm'].forEach(x => {
+                            $form.form('set value', `${x}-password`, '');
+                        });
+                    })();
                 }
             });
         },

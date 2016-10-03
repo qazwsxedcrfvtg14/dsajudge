@@ -2,6 +2,15 @@ import Vue from 'vue';
 import template from './problem.pug';
 import {errToast, okToast} from '/utils';
 import toastr from 'toastr';
+import sleep from 'sleep-promise';
+import './problem.css';
+import marked from 'marked';
+
+const renderer = new marked.Renderer();
+renderer.heading = (text, level) => {
+    const escaped = text.toLowerCase().replace(/[^\w]+/g, '-');
+    return `<div></div><h${level} class="ui dividing header">${text}</h${level}>`;
+};
 
 export default Vue.extend({
     template,
@@ -20,7 +29,10 @@ export default Vue.extend({
         getPath(x) {
             if (!x) return 'No file selected.';
             return x.split('\\').pop();
-        }
+        },
+        marked(x) {
+            return marked(x, {renderer});
+        },
     },
     methods: {
         async getProblem() {
@@ -31,6 +43,20 @@ export default Vue.extend({
                 return errToast(e);
             }
             this.problem = result.data;
+            console.log(JSON.stringify(this.problem, null, 4));
+            await sleep(500);
+            window.aa = this.$el;
+            $('.ui.dropdown')
+                .dropdown()
+            ;
+            $('#problem-statement-tab .item')
+                .tab()
+            ;
+            //this.editor = ace.edit('editor');
+            //const session = this.editor.getSession();
+            //session.setMode('ace/mode/markdown');
+            //session.setValue(this.problem.desc);
+            console.log($('#problem-statement .ui.tab'), $(this.$el).find('.ui.dropdown'));
         },
         async updateProblem(ev) {
             const formData = new FormData(ev.target);
@@ -52,6 +78,27 @@ export default Vue.extend({
             }
             okToast(result);
             await this.getProblem();
-        }
-    }
+        },
+        async rejudgeProblem(ev) {
+            let result;
+            try {
+                result = await this.$http.post(`/admin/problem/${this.id}/rejudge`);
+            } catch (e) {
+                console.log(e);
+                return errToast(e);
+            }
+            okToast(result);
+            await this.getProblem();
+        },
+        getTotalTestsCount() {
+            let cnt = 0;
+            for (let grp of this.problem.testdata.groups) cnt += grp.tests.length;
+            return cnt;
+        },
+        getTotalPoints() {
+            let pts = 0;
+            for (let grp of this.problem.testdata.groups) pts += grp.points;
+            return pts;
+        },
+    },
 });

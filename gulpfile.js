@@ -47,8 +47,10 @@ gulp.task('server-js', () =>
     gulp.src(CONFIG.src.server.js)
         .pipe($.eslint())
         .pipe($.eslint.format())
+        .pipe($.sourcemaps.init())
         .pipe($.babel(CONFIG.babel))
         .on('error', logError)
+        .pipe($.sourcemaps.write('.'))
         .pipe(gulp.dest(CONFIG.dist.base))
         .on('end', () => {
             if (nodemon) nodemon.emit('restart', 0.5);

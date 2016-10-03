@@ -26,6 +26,7 @@ const CONFIG = {
         'node_modules/ace-builds/src-min-noconflict/ace.js',
         'node_modules/ace-builds/src-min-noconflict/theme-monokai.js',
         'node_modules/ace-builds/src-min-noconflict/mode-c_cpp.js',
+        'node_modules/ace-builds/src-min-noconflict/mode-markdown.js',
         'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js',
     ],
     linkDirs: [

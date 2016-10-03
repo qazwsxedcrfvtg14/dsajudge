@@ -1,17 +1,59 @@
-.ui.text.container
-  table.ui.celled.table
-    thead
-      tr
-        th ID
-        th Problem
-        th Result
-        th Points
-    tbody
-      tr( v-for="sub of submissions")
-        td.selectable
-          a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
-        td.selectable 
-          a( v-link="{name: 'problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
-        td {{ sub | getResult }}
-        td {{ sub | getPoints }}
+.ui.container
+  .ui.grid
+    .four.wide.column
+      .ui.vertical.fluid.menu
+        .item
+          .ui.header Filters
+        .item
+          h4.ui.header Problem ID
+          .ui.icon.input
+            input(type="number" placeholder="ex: 12...",
+              v-model="filter.probID" @keyup.enter="getSubmissions")
+            i.search.icon
+        .item
+          h4.ui.header User
+          .ui.icon.input
+            input(type="email" placeholder="b12345678@ntu.edu.tw"
+              v-model="filter.user" @keyup.enter="getSubmissions")
+            i.search.icon
+        .item
+          h4.ui.header Status
+          select.ui.search.selection.dropdown#status-select( v-model='filter.result' )
+            option( value="ALL" ) All
+            option( value="AC" ) Accepted (AC)
+            option( value="WA" ) Wrong Answer (WA)
+            option( value="TLE" ) Time Limit Exceed (TLE)
+            option( value="RE" ) Runtime Error (RE)
+            option( value="CE" ) Compile Error (CE)
+            option( value="JE" ) Judge Error (JE)
+      .ui.pagination.menu
+        a.item( v-for="idx of tabRange", :class="{active: idx == curTabId }", @click="changeTab(idx)" ) 
+          | {{ idx }}
+
+    .twelve.wide.column
+      table.ui.very.compact.celled.table
+        thead
+          tr
+            th.center.aligned ID
+            th User
+            th Problem
+            th Result
+            th Points
+            th.collapsing Re
+        tbody
+          tr( v-for="sub of submissions")
+            td.selectable.center.aligned
+              a( v-link="{name: 'submissions', params: {id: sub._id}}" ).selectable  {{ sub._id }}
+            td.selectable 
+              a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) 
+                | {{ sub.submittedBy.email }}
+            td.selectable 
+              a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
+            td( :class="{ positive: probUtils.isAC(sub), negative: probUtils.isNotAC(sub)}")
+              | {{ sub.result }}
+            td {{ probUtils.getPointsString(sub) }}
+            td.collapsing.center.aligned 
+              button.ui.icon.red.button( @click="rejudge(sub._id)" )
+                i.refresh.icon
+
 

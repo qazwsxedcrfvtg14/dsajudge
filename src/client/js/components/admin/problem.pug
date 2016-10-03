@@ -1,30 +1,86 @@
 .ui.text.container( v-if="problem" )
-  h2.ui.dividing.header Problem settings
-  h3.ui.dividing.header Directly upload tar
-  iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
-  form.ui.form( action="/admin/newProblem" method="POST" 
-      enctype="multipart/form-data" target="dummyframe" @submit.prevent="updateProblem" )
-    label.ui.icon.button( for="problem-file" )
-      i.file.icon
-      | Open File
-    input#problem-file(type="file" v-model="filename" name="problem-file" )
-    span.filename-text {{ filename | getPath }}
-    button.primary.right.floated.right.labeled.icon.ui.button(type="submit") 
-      i.right.arrow.icon
-      | Submit
+  .ui.segments
+    .ui.segment
+      h2.ui.header Problem
+      .ui.grid.three.columns
+        .column
+          a.fluid.ui.primary.primary.right.labeled.icon.button( v-link="{ name: 'submit', params: {id: problem._id}}" )
+            i.send.icon
+            | Go to Submit page
+        .column
+          button.fluid.ui.right.labeled.icon.red.button( @click.prevent="rejudgeProblem" )
+            i.refresh.icon
+            | Rejudge All
 
-  h3.ui.dividing.header Settings
-  .ui.form
-    .field
-      label Name
-      input(type="text" v-model="problem.name") 
-    .field
-      label TimeLimit
-      input(type="text" v-model="problem.meta.timeLimit") 
-    .field
-      .ui.toggle.checkbox
-        input(type="checkbox" v-model="problem.visible")
-        label Visible to non-admin
-    .ui.submit.primary.left.labeled.icon.button( @click="updateProblemSettings" )
-      i.right.arrow.icon
-      | Submit
+    .ui.segment
+      h2.ui.header Problem settings
+    .ui.segment
+      h3.ui.dividing.header Directly upload tar
+      iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
+      form.ui.form( action="/admin/newProblem" method="POST" 
+          enctype="multipart/form-data" target="dummyframe" @submit.prevent="updateProblem" )
+        label.ui.icon.button( for="problem-file" )
+          i.file.icon
+          | Open File
+        input#problem-file(type="file" v-model="filename" name="problem-file" )
+        span.filename-text {{ filename | getPath }}
+        button.primary.right.floated.right.labeled.icon.ui.button(type="submit") 
+          i.right.arrow.icon
+          | Submit
+
+    .ui.segment
+      h3.ui.dividing.header Settings
+      form.ui.form
+        .two.fields
+          .twelve.wide.field
+            label Name
+            input(type="text" v-model="problem.name") 
+          .four.wide.field
+            label TimeLimit
+            input(type="text" v-model="problem.timeLimit") 
+        .field
+          .ui.toggle.checkbox
+            input(type="checkbox" v-model="problem.visible")
+            label Visible to non-admin
+
+    .ui.segment.clear-after
+      h3.ui.dividing.header Test Groups
+      h4.ui.dividing.header Total
+      form.ui.form
+        .two.fields
+          .four.wide.field
+            label Count
+            input(type="number" readonly :value="this.getTotalTestsCount()") 
+          .twelve.wide.field
+            label Points
+            input(type="number" readonly :value="this.getTotalPoints()") 
+
+      .ui.segments
+        .ui.segment( v-for="(idx, group) of problem.testdata.groups" )
+          h4.ui.header Group {{ '#'+idx }}
+          form.ui.form
+            .field
+              label Tests
+              select.ui.fluid.dropdown( v-model="group.tests", value="test", multiple )
+                option( v-for="tests of problem.testFiles" ) {{ tests }}
+            .two.fields
+              .four.wide.field
+                label Count
+                input(type="number" readonly :value="group.tests.length") 
+              .twelve.wide.field
+                label Points
+                input(type="number", v-model="group.points" number) 
+    .ui.segment.clear-after
+      h3.ui.dividing.header Problem Statement
+      .ui.top.attached.tabular.menu#problem-statement-tab
+        a.item.active( data-tab="markdown" ) markdown
+        a.item( data-tab="preview" ) preview
+      .ui.bottom.attached.tab.segment.active( data-tab="markdown" )
+        //-#editor
+        form.ui.form
+          textarea( v-model="problem.desc" row="20" style="font-family: monospace;" )
+      .ui.bottom.attached.tab.segment( data-tab="preview" )
+        .mathjax( v-html="problem.desc | marked" )
+      button.ui.primary.right.floated.primary.right.labeled.icon.button( @click.prevent="updateProblemSettings" )
+        i.right.arrow.icon
+        | Submit

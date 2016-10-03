@@ -25,7 +25,7 @@ async function proceedHw(hw, userID) {
 
         let points = 0, AC = 0;
         if (subs) {
-            [points, AC] = [subs.points, (subs.result === 'AC')]
+            [points, AC] = [subs.points, (subs.result === 'AC')];
         }
         _.assignIn(ret.problems[idx], {
             userPoints: points,

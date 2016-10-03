@@ -10,7 +10,7 @@ export default Vue.extend({
     },
     ready() {
         (async () => {
-            this.problems = (await this.$http.get(`/admin/problems`)).data; 
+            this.problems = (await this.$http.get(`/admin/problem/all`)).data; 
         })();
     },
 });

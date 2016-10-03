@@ -51,7 +51,6 @@ export class CppExec {
 
     async init() {
         this.rootDir = await promisify(temp.mkdir)({dir: jail});
-        console.log(this.rootDir);
         this.status = 'initialized';
     }
 

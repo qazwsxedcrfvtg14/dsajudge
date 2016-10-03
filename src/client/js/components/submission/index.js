@@ -72,7 +72,7 @@ export default Vue.extend({
             this.submission = data;
             this.showResult = (this.submission 
                 && this.submission.status !== 'pending' 
-                && this.submission.result !== 'CE')
+                && this.submission.result !== 'CE');
         }
     },
 });

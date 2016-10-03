@@ -41,6 +41,7 @@
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",
     "pug-html-loader": "^1.0.8",
+    "source-map-support": "^0.4.3",
     "style-loader": "^0.13.1",
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^8.5.2",

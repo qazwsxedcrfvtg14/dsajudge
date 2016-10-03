@@ -1,6 +1,6 @@
 .ui.text.container
   .ui.segment
-    form#profile-form.ui.form
+    form#profile-form.ui.form(method="POST")
       .field
         label User Email
         input( readonly="" type="text", :value="user ? user.email : ''" )

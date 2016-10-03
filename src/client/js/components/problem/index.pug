@@ -2,7 +2,7 @@
   component( v-if="problem" )
     .ui.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
       h1.ui.left.floated.header {{ problem.name }}
-        .sub.header Time Limit: {{ this.probUtils.toDisplayTime(problem.meta.timeLimit) }}
+        .sub.header Time Limit: {{ this.probUtils.toDisplayTime(problem.timeLimit) }}
       .ui.right.floated.header(style="padding-top: 20px")
         div
           .hack

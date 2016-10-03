@@ -64,7 +64,7 @@ async function _startJudge(sub) {
     const cppFile = path.join(config.dirs.submissions, `${sub._id}.cpp`);
     const userExec = new CppExec(cppFile);
     let checker;
-    if (sub.problem.meta.hasSpecialJudge) {
+    if (sub.problem.hasSpecialJudge) {
         checker = path.join(config.dirs.problems, `${sub.problem._id}`, 'checker.cpp');
     } else {
         checker = DEFAULT_CHECKER;
@@ -129,10 +129,11 @@ async function _startJudge(sub) {
                 model: groupResult,
             });
         }
+
         await mainResult.save();
 
         const probDir = path.join(config.dirs.problems, `${sub.problem._id}`, 'testdatas');
-        const {timeLimit} = sub.problem.meta;
+        const {timeLimit} = sub.problem;
 
         const promises = testObjs.map((td, idx) => (async () => {
             const testModel = td.model;
@@ -178,6 +179,7 @@ async function _startJudge(sub) {
 
         const finalList = await Promise.all(workers.map(x => x.finish()));
         if (error) {
+            console.log(error);
             throw Error('Judge error when running exec.');
         }
 
@@ -198,6 +200,7 @@ async function _startJudge(sub) {
 
 async function startJudge(sub) {
     sub.status = 'judging';
+    sub.result = null;
     sub.judgeTs = Date.now();
     if (sub.result) {
         const _result = await Result.findById(sub._result);
@@ -223,7 +226,6 @@ async function startJudge(sub) {
     ['result', 'points', 'runtime'].forEach(x => {
         sub[x] = result[x];
     });
-    console.log(sub);
     logger.info(`judge #${sub._id} finished, result = ${result.result}`);
     await sub.save();
 }
