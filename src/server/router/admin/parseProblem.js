@@ -13,7 +13,6 @@ async function updateMeta(id, prob) {
     try {
         stat = await fs.stat(metaFile);
     } catch(e) {
-        console.log(e);
         return;
     }
     if (!stat.isFile()) return;

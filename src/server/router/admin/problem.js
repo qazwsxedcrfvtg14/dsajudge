@@ -13,7 +13,7 @@ import {updateMeta} from './parseProblem';
 import winston from 'winston';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: 'uploads/', limits: { fieldsize: 100*1024*1024 }});
 
 function checkGzip(req, res, next) {
     const file = req.file;
