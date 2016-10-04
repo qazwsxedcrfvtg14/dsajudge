@@ -43,7 +43,7 @@
         tbody
           tr( v-for="sub of submissions")
             td.selectable.center.aligned
-              a( v-link="{name: 'submissions', params: {id: sub._id}}" ).selectable  {{ sub._id }}
+              a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) 
                 | {{ sub.submittedBy.email }}
