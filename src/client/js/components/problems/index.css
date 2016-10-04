@@ -1,0 +1,4 @@
+.force-pointer {
+    pointer-events: all !important;
+    cursor: pointer;
+}

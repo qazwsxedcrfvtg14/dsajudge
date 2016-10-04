@@ -34,19 +34,30 @@ async function proceedHw(hw, userID) {
         totalPoints += points;
         if (AC) totalAC += 1;
     }
+    ret.status = hw.visible ? (hw.due < Date.now() ? 'ended' : 'running') : 'unpublished';
     ret.userPoints = totalPoints;
     ret.AC = totalAC;
+
     return ret;
 }
 
 router.get('/', requireLogin, wrap(async (req, res) => {
-    const _data = await Homework.find()
-        .where('visible').equals(true)
-        .where('due').gt(Date.now())
-        .populate('problems')
-    ;
+    let qry = Homework.find();
+    if (!req.user.isAdmin())
+        qry = qry.where('visible').equals(true);
+    const _data = await qry.populate('problems').exec();
     const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id)));
-    console.log(data);
+    data.sort((h1, h2) => {
+        if (h1.status != h2.status) {
+            const ord = {
+                running: 0,
+                ended: 1,
+                unpublished: 2,
+            };
+            return ord[h1.status] - ord[h2.status];
+        }
+        return h1.due - h2.due;
+    });
     res.send(data);
 }));
 

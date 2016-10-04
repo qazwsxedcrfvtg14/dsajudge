@@ -22,13 +22,16 @@ export function toDisplayTime(result) {
 
 export function getResultString(sub, toHuman=true) {
     if (sub.status !== 'finished') {
-        return {
-            'pending': 'Pending',
-            'judging': 'Judging',
-            'error': 'Judge Error',
-        }[sub.status];
+        if (toHuman)
+            return {
+                'pending': 'Pending',
+                'judging': 'Judging',
+                'error': 'Judge Error',
+            }[sub.status];
+        else return sub.status;
     }
-    return toHumanString(sub.result);
+    if (toHuman) return toHumanString(sub.result);
+    else return sub.result;
 }
 
 export function getPointsString(sub) {

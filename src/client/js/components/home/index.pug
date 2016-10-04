@@ -1,7 +1,11 @@
 .ui.text.container( v-if="user" )
   .ui.segments( v-for="hw of homeworks" )
     .ui.segment
-      h2.ui.heading {{ hw.name }}
+      h2.ui.heading 
+        .ui.ribbon.label( :class="[ {running: 'blue', ended: 'red', unpublished: 'black'}[hw.status] ]",
+          style="top: -2px;" )
+          | {{ hw.status | capitalize }}
+        | {{ hw.name }}
 
     .ui.segment
       h3.ui.header Your statistic

@@ -5,16 +5,20 @@
   table.ui.attached.celled.table
     thead
       tr
-        th ID
+        th.center.aligned.collapsing ID
         th Problem
         th Result
         th Points
     tbody
-      tr( v-for="sub of submissions")
-        td.selectable
-          a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
+      tr.force-pointer( v-for="sub of submissions" v-link="{name: 'submission', params: {id: sub._id}}" )
+        td.selectable.center.aligned.collapsing
+          a(style="color: #4183C4; text-decoration: underline;")
+            | {{ sub._id }}
         td.selectable 
           a( v-link="{name: 'problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
-        td {{ this.probUtils.getResultString(sub) }}
-        td {{ this.probUtils.getPointsString(sub) }}
+        td.selectable 
+          a
+            result-string( :status="sub.status", :result="sub.result" )
+        td.selectable 
+          a {{ this.probUtils.getPointsString(sub) }}
 

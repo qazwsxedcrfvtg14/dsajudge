@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import probMixin from '/mixins/probUtils';
+import {ResultString} from '/block/result';
 
 export default Vue.extend({
     mixins: [probMixin],
@@ -34,5 +35,8 @@ export default Vue.extend({
             await this.getSubmissions();
         },
     },
+    components: {
+        'result-string': ResultString,
+    }
 });
 

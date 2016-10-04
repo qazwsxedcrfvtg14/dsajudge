@@ -5,7 +5,8 @@
         th ID
         th Problem Name
     tbody
-      tr( v-for="x of problems" v-link="{ name: 'problem', params: { id: x._id }}")
-        td {{ x._id }}
-        td {{ x.name }}
+      tr( v-for="prob of problems" v-link="{ name: 'problem', params: { id: prob._id }}",
+        :class="{ disabled: !prob.visible }" )
+        td.force-pointer {{ prob._id }}
+        td.force-pointer {{ prob.name }}
 

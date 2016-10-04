@@ -1,0 +1,11 @@
+
+$GREEN: #21BA45;
+$RED: #DB2828;
+$GREY: #767676;
+
+.AC { color: $GREEN !important; }
+.CE { color: $GREY !important; }
+.WA { color: $RED !important; }
+.TLE { color: $RED !important; }
+.RE { color: $RED !important; }
+.JE { color: $RED !important; font-weight: blod !important; }
