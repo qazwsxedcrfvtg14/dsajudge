@@ -93,27 +93,37 @@ gulp.task('links', () =>
 );
 
 const zboxMake = new $.run.Command('make', {cwd: './judger'});
-gulp.task('zbox:cp', () => {
+gulp.task('zbox:make', (next) => {
+    zboxMake.exec();
+    next();
+});
+
+gulp.task('zbox:cp', (next) => {
     gulp.src('./judger/zbox')
-        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')))
-    return;
+        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
+    next();
 });
 
 const mkJail = new $.run.Command('mkdir jail', {cwd: path.join(CONFIG.dist.base, 'judger')});
-gulp.task('zbox:mkjail', () => {
-    mkJail.exec()
-    return;
+gulp.task('zbox:mkjail', (next) => {
+    mkJail.exec();
+    next();
 });
 
-gulp.task('zbox', $.sequence(['cp', 'mkjail'].map(x => `zbox:${x}`)));
+gulp.task('zbox', $.sequence(['make', 'cp', 'mkjail'].map(x => `zbox:${x}`)));
 
+gulp.task('cfiles', () => {
+    gulp.src(path.join(CONFIG.cfiles, '**', '*'))
+        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'cfiles')));
+});
 
 gulp.task('clean', () => {
     del([CONFIG.dist.base])
 });
 
 gulp.task('semantic', semantic);
-gulp.task('init', ['semantic', 'libs', 'links']);
+
+gulp.task('init', ['semantic', 'libs', 'links', 'zbox']);
 
 gulp.task('build', ['webpack', 'pug', 'server-js']);
 

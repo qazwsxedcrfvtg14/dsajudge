@@ -32,7 +32,8 @@ const CONFIG = {
     linkDirs: [
         'problems',
         'submissions',
-    ]
+    ],
+    cfiles: 'src/server/cfiles',
 };
 
 CONFIG.babel = {
