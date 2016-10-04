@@ -71,9 +71,12 @@
                 label Points
                 input(type="number", v-model="group.points" number) 
         .ui.attached.bottom.segment
-          .ui.right.labeled.icon.green.button( @click="addNewGroup" )
+          button.ui.right.labeled.icon.green.button( @click="addNewGroup" )
             i.plus.icon
             | Add new groups
+          button.primary.right.floated.right.labeled.icon.ui.button( @click.prevent="updateOnly" type="button" ) 
+            i.refresh.icon
+            | Update Only
 
     .ui.segment.clear-after
       h3.ui.dividing.header Problem Statement

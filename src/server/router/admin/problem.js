@@ -104,6 +104,25 @@ router.put('/:id',
     }
 ));
 
+router.post('/:id/updateTests',
+    wrap(async (req, res) => {
+        const problem = await Problem.findById(req.params.id);
+        if (!problem) res.status(404).send(`Problem #${req.params.id} not found`);
+
+        const id = problem._id;
+        const file = req.file;
+
+        try {
+            await updateMeta(problem._id, problem);
+        } catch(e) {
+            return res.status(500).send(e.toString());
+        }
+        await problem.save();
+
+        return res.send(`Successfully update problem #${id}`);
+    }
+));
+
 router.put('/:id/settings', wrap(async (req, res) => {
     const upd = req.body;
     if ('_id' in upd) _.remove(upd, '_id');

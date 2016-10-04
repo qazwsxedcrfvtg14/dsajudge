@@ -68,6 +68,15 @@ export default Vue.extend({
             }
             okToast(result);
         },
+        async updateOnly() {
+            let result;
+            try {
+                result = await this.$http.post(`/admin/problem/${this.id}/updateTests`);
+            } catch (e) {
+                return errToast(e);
+            }
+            okToast(result);
+        },
         async updateProblemSettings(ev) {
             let result;
             try {
