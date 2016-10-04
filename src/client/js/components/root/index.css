@@ -4,8 +4,8 @@
     margin-top: 80px;
 }
 
-#top-menu {
-    background-color: white;
+.top-menu {
+    background-color: white !important;
 }
 
 #main-header {
