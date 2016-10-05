@@ -12,8 +12,8 @@ import {requireLogin} from '/utils';
 
 const router = express.Router();
 
-async function proceedHw(hw, userID) {
-    await hw.populate('problems.problem', 'name visible', {visible: true}).execPopulate();
+async function proceedHw(hw, userID, isAdmin) {
+    await hw.populate('problems.problem', 'name visible', isAdmin ? {} : {visible: true}).execPopulate();
     const ret = hw.toObject();
     let totalPoints = 0, totalAC = 0;
     for (let [idx, prob] of hw.problems.entries()) {
@@ -46,7 +46,7 @@ router.get('/', requireLogin, wrap(async (req, res) => {
     if (!req.user.isAdmin())
         qry = qry.where('visible').equals(true);
     const _data = await qry;
-    const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id)));
+    const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id, req.user.isAdmin())));
     data.sort((h1, h2) => {
         if (h1.status != h2.status) {
             const ord = {
