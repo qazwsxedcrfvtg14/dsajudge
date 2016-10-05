@@ -20,6 +20,10 @@ const schema = Schema({
         type: Number,
         default: 0,
     },
+    AC: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const ProblemResult = mongoose.model('ProblemResult', schema);

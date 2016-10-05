@@ -20,6 +20,16 @@ const schema = Schema({
         type: Number,
         default: 0,
     },
+    AC: {
+        type: Number,
+        default: 0,
+    },
+    subresults: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'ProblemResult',
+        }
+    ],
 });
 
 const HomeworkResult = mongoose.model('HomeworkResult', schema);

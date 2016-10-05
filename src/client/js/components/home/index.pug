@@ -50,7 +50,7 @@
             th Your points
         tbody
           tr( v-for="problem of hw.problems" v-link="{name: 'problem', params: {id: problem.problem._id}}",
-          :class="{ positive: 'problem.AC' }")
+          :class="{ positive: problem.AC }")
             td {{ problem.problem._id }}
             td {{ problem.problem.name }}
             td {{ problem.weight }}
@@ -63,7 +63,7 @@
         | Go Admin Page
         i.doctor.icon
 
-  .ui.fluid.right.labeled.icon.green.button( @click="newHomework" )
+  .ui.fluid.right.labeled.icon.green.button( v-if="user && user.isAdmin" @click="newHomework" )
     | Add New Homework
     i.add.icon
 

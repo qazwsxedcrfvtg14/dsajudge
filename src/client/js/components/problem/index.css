@@ -1,0 +1,12 @@
+.markdown :not(pre) code {
+    background-color: #E3E3E3;
+    margin: 0 2px;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.markdown pre {
+    background-color: #EEEEEE;
+    padding: 4px 4px;
+    border-radius: 4px;
+}

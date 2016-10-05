@@ -6,11 +6,31 @@ import fs from 'fs-promise';
 import config from '/config';
 import path from 'path';
 import marked from 'marked';
+import ProblemResult from '/model/problemResult';
 
 const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
-    const data = await Problem.find(req.user && req.user.isAdmin() ? {} : {visible: true});
+    let data = await Problem.find(req.user && req.user.isAdmin() ? {} : {visible: true});
+    data = await Promise.all(data.map( _prob => (async () => {
+        let prob = _prob.toObject();
+        const pr = await ProblemResult.findOne({
+            user: req.user,
+            problem: prob._id,
+        });
+        if (pr) {
+            prob.userRes = {
+                AC: pr.AC,
+                points: pr.points,
+            };
+        } else {
+            prob.userRes = {
+                AC: false,
+                points: 0,
+            };
+        }
+        return prob;
+    })() ));
     res.send(data);
 }));
 
@@ -34,7 +54,6 @@ router.get('/:id', wrap(async (req, res) => {
     );
 
     problem.desc = fl.toString();
-    console.log(problem);
 
     res.send(problem);
 }));

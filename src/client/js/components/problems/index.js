@@ -12,7 +12,7 @@ export default Vue.extend({
     ready() {
         (async () => {
             this.problems = (await this.$http.get('/problem/')).data; 
-            //console.log(this.problems.body);
+            console.log(this.problems);
         })();
     },
 });

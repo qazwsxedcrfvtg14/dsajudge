@@ -3,6 +3,7 @@ import html from './index.pug';
 import marked from 'marked';
 import sleep from 'sleep-promise';
 import probUtils from '/mixins/probUtils';
+import './index.css';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
