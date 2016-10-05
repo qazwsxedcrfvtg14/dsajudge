@@ -49,7 +49,7 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
     const submission = await Submission.findById(id);
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!submission.submittedBy.equals(req.user._id)) 
+    if (!(req.user && req.user.isAdmin()) && !submission.submittedBy.equals(req.user._id)) 
         return res.status(403).send(`Permission denided.`);
     const src = await loadSourceCode(id);
     res.send(src);
@@ -74,7 +74,8 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     ;
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!submission.submittedBy.equals(req.user._id)) return res.status(403).send(`Permission denided.`);
+    if (!(req.user && req.user.isAdmin()) && 
+        !submission.submittedBy.equals(req.user._id)) return res.status(403).send(`Permission denided.`);
 
     submission = submission.toObject();
     if (submission.result === 'CE') {
