@@ -1,12 +1,18 @@
 import mongoose from 'mongoose';
+import autoIncrement from './autoIncrement';
 
 const Schema = mongoose.Schema;
 
 const schema = Schema({
+    _id: {
+        type: Number,
+        index: true,
+        unique: true,
+    },
     name: {
         type: String,
         required: true,
-        default: 'Hao123',
+        default: 'A Brand New Homework.',
     },
     due: Date,
     visible: {
@@ -14,55 +20,32 @@ const schema = Schema({
         default: false,
     },
     problems: [{
-        type: Number,
-        ref: 'Problem',
+        problem: {
+            type: Number,
+            ref: 'Problem',
+        },
+        weight: {
+            type: Number,
+            default: 1,
+        }
     }],
     problemNum: {
         type: Number,
         default: 0,
     },
-    maxPoints: {
+    totalPoints: {
         type: Number,
         default: 0,
+    },
+    desc: {
+        type: String,
+        default: "",
     },
     meta: {
         pdfLink: String,
     },
 });
 
+schema.plugin(autoIncrement.plugin, 'Homework');
 const Homework = mongoose.model('Homework', schema);
 export default Homework;
-
-//import 'babel-polyfill';
-//import moment from 'moment-timezone';
-//import config from '/config';
-//if (require.main === module) {
-    //mongoose.connect(config.mongo.url);
-    //(async () => {
-    //let h = new Homework({
-        //name: 'Homework Hao123',
-        //due: moment().add('5', 'hours'),
-        //problems: [6],
-        //visible: true,
-        //meta: {
-            //pdfLink: 'hao123.com',
-        //}
-    //});
-    //console.log(h);
-    //await h.save();
-    //console.log(h);
-    //let zz = await Homework.findOne({});
-        //console.log(zz, 123);
-    //})();
-//}
-
-//import Problem from './user';
-//let test = new Problem ({
-    ////name: 'Homework Hao123',
-    ////due: moment().add('5', 'hours'),
-    ////problems: [6],
-    ////meta: {
-        ////pdfLink: 'hao123.com',
-    ////}
-//});
-//test.save((err, x) => console.log(err, x));

@@ -13,14 +13,14 @@ import {requireLogin} from '/utils';
 const router = express.Router();
 
 async function proceedHw(hw, userID) {
-    await hw.populate('problems', 'name visible', {visible: true}).execPopulate();
+    await hw.populate('problems.problem', 'name visible', {visible: true}).execPopulate();
     const ret = hw.toObject();
     let totalPoints = 0, totalAC = 0;
     for (let [idx, prob] of hw.problems.entries()) {
         const subs = (await Submission.find().limit(1)
             .where('submittedBy').equals(userID)
             .where('ts').lt(hw.due)
-            .where('problem').equals(prob)
+            .where('problem').equals(prob.problem)
             .sort('-points'))[0];
 
         let points = 0, AC = 0;
@@ -31,7 +31,7 @@ async function proceedHw(hw, userID) {
             userPoints: points,
             AC,
         });
-        totalPoints += points;
+        totalPoints += prob.weight * points;
         if (AC) totalAC += 1;
     }
     ret.status = hw.visible ? (hw.due < Date.now() ? 'ended' : 'running') : 'unpublished';
@@ -45,7 +45,7 @@ router.get('/', requireLogin, wrap(async (req, res) => {
     let qry = Homework.find();
     if (!req.user.isAdmin())
         qry = qry.where('visible').equals(true);
-    const _data = await qry.populate('problems').exec();
+    const _data = await qry;
     const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id)));
     data.sort((h1, h2) => {
         if (h1.status != h2.status) {

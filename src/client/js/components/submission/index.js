@@ -28,7 +28,6 @@ export default Vue.extend({
             while (this.submission.status === 'pending' || this.submission.status === 'judging') {
                 await sleep(3000);
                 await this.getSubmission();
-                console.log('tick');
             }
             
         },
@@ -53,7 +52,6 @@ export default Vue.extend({
                 console.log(e);
             }
             const data = _result.data; 
-            console.log(this.showResult);
             if (data._result) {
                 const transform = x => {
                     if (!x.result) {

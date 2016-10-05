@@ -45,14 +45,14 @@ router.map({
             '/problems': {
                 component: Admin.problems,
             },
-            'submissions': {
+            '/submissions': {
                 name: 'admin.submissions',
                 component: Admin.submissions,
             },
-            //'submissions': {
-                //name: 'admin.submission',
-                //component: Admin.submission,
-            //},
+            '/homework/:id': {
+                name: 'admin.homework',
+                component: Admin.homework,
+            },
             '/problem/:id': {
                 name: 'admin.problem',
                 component: Admin.problem,

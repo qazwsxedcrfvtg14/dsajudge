@@ -30,8 +30,6 @@ const formValidateObj = {
 export default Vue.extend({
     data() {
         return {
-            //user: null,
-            isAdmin: false,
         };
     },
     template: html,
@@ -83,7 +81,6 @@ export default Vue.extend({
             const result = (await this.$http.get('/user/me')).data;
             if (result.login) {
                 this.userLogin(result.user);
-                this.isAdmin = _.includes(this.user.roles, 'admin');
             }
         }
     },

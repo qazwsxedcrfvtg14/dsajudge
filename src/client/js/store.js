@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 Vue.use(Vuex);
 
 const state = {
@@ -9,6 +10,7 @@ const state = {
 const mutations = {
     UserChanged(state, user) {
         state.user = user;
+        state.user.isAdmin = _.includes(user.roles, 'admin');
     },
 };
 

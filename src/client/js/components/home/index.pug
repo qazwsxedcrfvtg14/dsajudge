@@ -13,7 +13,7 @@
         .column.center.aligned
           .ui.statistic
             .value {{ hw.userPoints }}
-              small(style='font-size: 40%; margin-left: 4px;') / {{ hw.maxPoints }}
+              small(style='font-size: 40%; margin-left: 4px;') / {{ hw.totalPoints }}
             .label Points
         .column.center.aligned
           .ui.statistic
@@ -32,10 +32,13 @@
           tr
             td.collapsing Due Date
             td {{ hw.due | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
-          tr( v-if="hw.meta.pdfLink" )
+          tr( v-if="_.has(hw, 'meta.pdfLink')" )
             td.collapsing PDF link
             td 
               a(href="{{hw.meta.pdfLink}}") {{ hw.meta.pdfLink }}
+    .ui.segment
+      h3.ui.header Description
+      div( v-html="hw.desc | marked" )
     .ui.segment
       h3.ui.header Problems
       table.ui.celled.table.selectable.pointer
@@ -43,12 +46,26 @@
           tr
             th ID
             th Problem Name
+            th.collapsing Weight
             th Your points
         tbody
-          tr( v-for="problem of hw.problems" v-link="{name: 'problem', params: {id: problem._id}}" )
-            td {{ problem._id }}
-            td {{ problem.name }}
+          tr( v-for="problem of hw.problems" v-link="{name: 'problem', params: {id: problem.problem._id}}",
+          :class="{ positive: 'problem.AC' }")
+            td {{ problem.problem._id }}
+            td {{ problem.problem.name }}
+            td {{ problem.weight }}
             td {{ problem.userPoints }}
+              small {{ ' ×' + problem.weight }} = {{ problem.weight * problem.userPoints }}
+
+    .ui.segment( v-if="user && user.isAdmin" )
+      a.ui.button.right.labeled.icon.orange.button(
+        v-link="{name: 'admin.homework', params: {id: hw._id}}" )
+        | Go Admin Page
+        i.doctor.icon
+
+  .ui.fluid.right.labeled.icon.green.button( @click="newHomework" )
+    | Add New Homework
+    i.add.icon
 
 component( v-else )
   .ui.vertical.masthead.center.aligned.segment

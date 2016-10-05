@@ -3,8 +3,15 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
+Vue.use({
+    install(Vue, option) {
+        Vue.prototype._ = _;
+    }
+});
+
 Vue.use(VueResource);
 Vue.use(VueRouter);
+
 
 import filters from './filters';
 import router from './router';

@@ -1,0 +1,52 @@
+.ui.text.container( v-if="hw" )
+  .ui.segments
+    .ui.segment
+      h2.ui.header Homework settings
+    .ui.segment
+      form.ui.form
+        .field
+          label Name
+          input(type="text" v-model="hw.name") 
+        .field
+          .ui.toggle.checkbox
+            input(type="checkbox" v-model="hw.visible")
+            label Visible to non-admin
+        .field
+          label Due Time
+          input(type="text" v-model="hw.due")
+        .field
+          label Description
+          textarea(rows="10" v-model="hw.desc")
+    .ui.segment
+      h3.ui.header Problems
+      table.ui.celled.table.selectable.pointer
+        thead
+          tr
+            th ID
+            th Problem Name
+            th Weight
+            th.collapsing
+        tbody
+          tr( v-for="(idx, prob) of hw.problems")
+            td {{ prob.problem }}
+            td {{ probMap[prob.problem] }}
+            td 
+              .ui.input
+                input(v-model="prob.weight")
+            td
+              button.ui.icon.red.button( @click="removeProblem(idx)" )
+                i.remove.icon
+          tr
+            td.center.aligned( colspan="3" ) 
+              select.ui.search.dropdown#prob-select( v-model="choosedID" )
+                option( v-for="prob of probs", :value="prob._id" ) {{ prob._id + ': ' + prob.name }}
+              button.ui.button.right.labeled.icon.green.button( @click="addProblem" )#new-prob-btn
+                i.plus.icon
+                | Add new problem
+    .ui.segment
+      h3.ui.header Action
+    .ui.segment
+      button.ui.button.right.labeled.icon.primary.button( @click="sendUpdate" )
+        | Submit
+        i.right.arrow.icon
+

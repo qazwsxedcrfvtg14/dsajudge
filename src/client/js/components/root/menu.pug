@@ -9,7 +9,7 @@ component
         a.item( v-link="'/problems'" ) Problems
         a.item( v-link="'/submissions'" ) Submissions
         a.item Resource
-        a.item( v-if="isAdmin" v-link="{name: 'admin'}" ) Admin
+        a.item( v-if="user && user.isAdmin" v-link="{name: 'admin'}" ) Admin
         .right.menu( v-if="user" )
           a.item( v-link="{ name: 'profile' }" ) Profile
           .item {{user.email}}

@@ -9,14 +9,16 @@
                 small(style='font-size: 40%; margin-left: 4px;') / {{submission.problem.testdata.points}}
               .label Points
           .column.center.aligned
-            .ui.statistic( :class="[ \
-                  probUtils.isAC(submission) ? 'green' : '', \
-                  probUtils.isNotAC(submission) ? 'red' : '' \
-                ]")
+            .ui.statistic( :class="{ \
+                  green: probUtils.isAC(submission), \
+                  red: probUtils.isNotAC(submission) \
+                }")
               .value.text
-                //-( :data-tooltip="probUtils.getTips(probUtils.getResultString(submission, false))"
-                //-data-position="right center" )
                 | {{ this.probUtils.getResultString(submission) }}
+                br
+                i.hourglass.empty.icon( v-show="!probUtils.isAC(submission) && !probUtils.isNotAC(submission)" )
+                i.checkmark.icon( v-show="probUtils.isAC(submission)" )
+                i.remove.icon( v-show="probUtils.isNotAC(submission)" )
               .label Result
 
       table.ui.definition.table
@@ -54,22 +56,24 @@
                 tbody
                   tr.title-row
                     td Overall
-                    td( :class="[ \
-                        this.probUtils.isAC(group) ? 'positive' : '', \
-                        this.probUtils.isNotAC(group) ? 'negative' : '' \
-                      ]" )  
-                      i.checkmark.icon( v-show="this.probUtils.isAC(group)" )
-                      i.remove.icon( v-show="this.probUtils.isNotAC(group)" )
+                    td( :class="{ \
+                        positive: probUtils.isAC(group), \
+                        negative: probUtils.isNotAC(group) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="group.result === 'Judging'" )
+                      i.checkmark.icon( v-show="probUtils.isAC(group)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(group)" )
                       | {{ group.result }}
                     td.collapsing {{ group.runtime }}
                     td.collapsing.center.aligned {{ group.points }}
 
                   tr( v-for="(tid, test) of group.subresults")
                     td {{ test.name }}
-                    td( :class="[ \
-                      probUtils.isAC(test) ? 'positive' : '', \
-                      probUtils.isNotAC(test) ? 'negative' : '' \
-                    ]" )  
+                    td( :class="{ \
+                        positive: probUtils.isAC(test), \
+                        negative: probUtils.isNotAC(test) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="test.result === 'Judging'" )
                       i.checkmark.icon( v-show="probUtils.isAC(test)" )
                       i.remove.icon( v-show="probUtils.isNotAC(test)" )
                       | {{ test.result }}

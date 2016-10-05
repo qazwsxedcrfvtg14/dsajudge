@@ -39,12 +39,16 @@ export function getPointsString(sub) {
     return sub.points.toString();
 }
 
-export function isAC(res) {
-    return res.result === 'AC' || res.result === RESULT_MAP['AC'];
+
+export function isAC(sub) {
+    return sub.result === 'AC' || sub.result === RESULT_MAP['AC'];
 }
 
-export function isNotAC(res) {
-    return res.result && (res.result !== 'AC' && res.result !== RESULT_MAP['AC']);
+// TODO: refactor
+export function isNotAC(sub) {
+    return sub.result !== 'AC' && 
+        sub.result !== RESULT_MAP['AC'] &&
+        (_.has(RESULT_MAP, sub.result) || _.includes(RESULT_MAP, sub.result));
 }
 
 export function getTips(res) {
