@@ -12,6 +12,10 @@ const userSchema = Schema({
         type: String,
         required: true,
     },
+    meta: {
+        name: String,
+        id: String,
+    },
     roles: [String],
 });
 
