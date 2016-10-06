@@ -74,8 +74,7 @@ export default Vue.extend({
         async clickLogout() {
             this.userLogout();
             this.$route.router.go('/');
-            this.$http.post('/logout');
-            location.reload();
+            await this.$http.post('/logout');
         },
         async getUser() {
             const result = (await this.$http.get('/user/me')).data;

@@ -10,7 +10,8 @@ const state = {
 const mutations = {
     UserChanged(state, user) {
         state.user = user;
-        state.user.isAdmin = _.includes(user.roles, 'admin');
+        if (user) 
+            state.user.isAdmin = _.includes(user.roles, 'admin');
     },
 };
 
