@@ -136,6 +136,8 @@ export default class Judger {
                 const userRes = await run(userTDir, 'user', 
                     'prob.in', 'prob.out', 'prob.err', 
                     this.problem.timeLimit);
+
+                testResult.runtime = userRes.cpu_time_usage;
                 if (userRes.RE) {
                     await saveResult(testResult, 'RE');
                     return;
@@ -145,7 +147,6 @@ export default class Judger {
                     await saveResult(testResult, 'TLE');
                     return;
                 }
-                testResult.runtime = userRes.cpu_time_usage;
                 const files = [
                     path.join('user', ...gidtid, 'prob.in'),
                     path.join('user', ...gidtid, 'prob.out'),
