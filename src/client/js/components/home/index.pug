@@ -12,7 +12,7 @@
       .ui.grid.three.column.row
         .column.center.aligned
           .ui.statistic
-            .value {{ hw.userPoints }}
+            .value {{ hw.userPoints | toFixed 0 }}
               small(style='font-size: 40%; margin-left: 4px;') / {{ hw.totalPoints }}
             .label Points
         .column.center.aligned

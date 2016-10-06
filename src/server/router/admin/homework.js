@@ -38,7 +38,7 @@ router.put('/:id', wrap(async (req, res) => {
     _.assignIn(hw, homework);
     await hw.populate('problems.problem', 'testdata.points').execPopulate();
     hw.problemNum = hw.problems.length;
-    hw.totalPoints = _.reduce(hw.problems, (v, x) => v + x.problem.testdata.points, 0);
+    hw.totalPoints = _.reduce(hw.problems, (v, x) => v + x.weight * x.problem.testdata.points, 0);
     await hw.save();
     res.send(`Homework #${req.params.id} update successfully`);
 }));
