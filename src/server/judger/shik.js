@@ -72,7 +72,7 @@ export async function run(rootDir, exec, inFile, outFile, errFile, timeLimit, me
 
     result = await zBoxWrap(_opt);
     if (!result.RE && !result.TLE && result.cpu_time_usage >= timeLimit + 0.001) {
-        this.TLE = true;
+        result.TLE = true;
     }
 
     return _.assignIn(result);
