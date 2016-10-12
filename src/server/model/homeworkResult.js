@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Submission from './submission';
 
 const Schema = mongoose.Schema;
 
@@ -26,11 +27,19 @@ const schema = Schema({
     },
     subresults: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'ProblemResult',
+            type: Number,
+            ref: 'Submission',
         }
     ],
 });
+
+schema.methods.getSubresults = async function() {
+    const _subs = await Promise.all(this.subresults.map(x => (async () => {
+        if (!x) return;
+        return await Submission.findById(x);
+    })() ));
+    return _subs;
+};
 
 const HomeworkResult = mongoose.model('HomeworkResult', schema);
 export default HomeworkResult;

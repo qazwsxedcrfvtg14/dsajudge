@@ -11,13 +11,16 @@ import ProblemResult from '/model/problemResult';
 const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
-    let data = await Problem.find(req.user && req.user.isAdmin() ? {} : {visible: true});
+    const isAdmin = req.user && req.user.isAdmin();
+    let data = await Problem.find(isAdmin ? {} : {visible: true});
     data = await Promise.all(data.map( _prob => (async () => {
         let prob = _prob.toObject();
-        const pr = await ProblemResult.findOne({
-            user: req.user,
-            problem: prob._id,
-        });
+        const pr = req.user ? 
+            await ProblemResult.findOne({
+                user: req.user,
+                problem: prob._id,
+            }) : 
+            null ;
         if (pr) {
             prob.userRes = {
                 AC: pr.AC,

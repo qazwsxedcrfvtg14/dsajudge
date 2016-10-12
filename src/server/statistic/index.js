@@ -1,6 +1,9 @@
+import _ from 'lodash';
+import HomeworkResult from '/model/homeworkResult';
+import ProblemResult from '/model/problemResult';
 import Submission from '/model/submission';
 
-async function updateUserProblemResult(submission) {
+export async function updateProblemResult(submission) {
     const user = submission.submittedBy;
     const {problem} = submission;
     const sub = (await Submission.find().limit(1)
@@ -21,28 +24,7 @@ async function updateUserProblemResult(submission) {
     return false;
 }
 
-async function updateUserHomeworkProblem(user, hw, prob, res) {
-    let obj = await HomeworkResult.findOne()
-        .where('user').equals(user)
-        .where('homework').equals(hw);
-
-    if (!obj) {
-        obj = new HomeworkResult({
-            user: user,
-            homework: hw._id,
-            subresults: [],
-        });
-        obj.subresults.length = hw.problems.length;
-    }
-
-    for (let [idx, _prob] of hw.problems.entries()) {
-        if (_prob.problem === prob._id) {
-            obj.subresults[idx] = res._id;
-        }
-    }
-
-    await obj.populate('subresults').execPopulate();
-
+function reduceHomeworkSubresults(subresults, weights) {
     const reducer = (v, x) => {
         if (!x) return v;
         const {points, AC, ts} = x;
@@ -55,11 +37,11 @@ async function updateUserHomeworkProblem(user, hw, prob, res) {
         return res;
     };
 
-    const _subresults = obj.subresults.map( (x, i) => {
+    const _subresults = subresults.map( (x, i) => {
         if (!x) return x;
         return {
-            AC: x.AC,
-            points: x.points * hw.problems[i].weight,
+            AC: (x.result === 'AC'),
+            points: x.points * weights[i],
             ts: x.ts,
         };
     } );
@@ -67,8 +49,82 @@ async function updateUserHomeworkProblem(user, hw, prob, res) {
         AC: 0,
         points: 0,
     });
+    return reduced;
+}
 
-    _.assignIn(obj, reduced);
-    await obj.save();
+export async function lazyUpdateHomeworkResult(hw, submission) {
+    const user = submission.submittedBy;
+    const {problem} = submission;
+    let resObj = await HomeworkResult.findOne()
+        .where('user').equals(user)
+        .where('homework').equals(hw);
+
+    if (!resObj) {
+        resObj = new HomeworkResult({
+            user: user,
+            homework: hw._id,
+            subresults: [],
+        });
+        resObj.subresults.length = hw.problems.length;
+        resObj.subresults.fill(null);
+    }
+    await resObj.save();
+
+    const {due} = hw;
+    const subObj = (await Submission.find().limit(1)
+        .where('submittedBy').equals(user)
+        .where('problem').equals(problem)
+        .where('ts').lte(due)
+        .sort('-points ts'))[0];
+
+    
+    for (let [idx, _prob] of hw.problems.entries()) {
+        if (_prob.problem === problem._id) {
+            if (_.isNil(subObj)) resObj.subresults[idx] = null;
+            else resObj.subresults[idx] = subObj._id;
+            resObj.markModified(`subresults.${idx}`);
+        }
+    }
+
+    const _subs = await Promise.all(resObj.subresults.map(x => (async () => {
+        if (!x) return;
+        return await Submission.findById(x);
+    })() ));
+
+    const weights = hw.problems.map(x => x.weight);
+    const reduced = reduceHomeworkSubresults(_subs, weights);
+    _.assignIn(resObj, reduced);
+    await resObj.save();
+}
+
+export async function updateHomeworkResult(resObj) {
+    await resObj.populate('homework').execPopulate();
+    const {user, problem} = resObj;
+    const hw = resObj.homework;
+    const {due} = hw;
+
+    for (let [idx, _prob] of hw.problems.entries()) {
+        const subObj = (await Submission.find().limit(1)
+            .where('submittedBy').equals(user)
+            .where('problem').equals(_prob.problem)
+            .where('ts').lte(due)
+            .sort('-points ts'))[0];
+
+        if (_.isNil(subObj)) resObj.subresults[idx] = null;
+        else resObj.subresults[idx] = subObj._id;
+        resObj.markModified(`subresults.${idx}`);
+    }
+
+    const _subs = await Promise.all(resObj.subresults.map(x => (async () => {
+        if (!x) return;
+        const res = await Submission.findById(x);
+        return res;
+    })() ));
+
+    const weights = hw.problems.map(x => x.weight);
+    const reduced = reduceHomeworkSubresults(_subs, weights);
+    _.assignIn(resObj, reduced);
+
+    await resObj.save();
 }
 

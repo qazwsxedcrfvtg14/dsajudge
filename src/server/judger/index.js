@@ -8,18 +8,18 @@ import sleep from 'sleep-promise';
 import _ from 'lodash';
 import logger from '/logger';
 import Judge from './judge';
+import {lazyUpdateHomeworkResult, updateProblemResult} from '/statistic';
 
 async function updateStatistic(sub) {
-    const user = sub.submittedBy;
     const problem = sub.problem;
-    const res = await updateUserProblemResult(user, problem, sub);
-    if (!res) return;
-    const hws = await Homework.find({
-        'problems.problem': problem,
-    });
+    const res = await updateProblemResult(sub);
+
+    const hws = await Homework.find()
+        .where('problems.problem').equals(problem)
+        .where('due').gte(sub.ts);
 
     for (let hw of hws) {
-        await updateUserHomeworkProblem(user, hw, problem, res);
+        await lazyUpdateHomeworkResult(hw, sub);
     }
 }
 

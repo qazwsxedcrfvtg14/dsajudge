@@ -9,6 +9,7 @@ import bluebird from 'bluebird';
 import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
+import HomeworkResult from '/model/homeworkResult';
 
 const router = express.Router();
 
@@ -16,27 +17,46 @@ async function proceedHw(hw, userID, isAdmin) {
     await hw.populate('problems.problem', 'name visible', isAdmin ? {} : {visible: true}).execPopulate();
     const ret = hw.toObject();
     let totalPoints = 0, totalAC = 0;
-    for (let [idx, prob] of hw.problems.entries()) {
-        const subs = (await Submission.find().limit(1)
-            .where('submittedBy').equals(userID)
-            .where('ts').lt(hw.due)
-            .where('problem').equals(prob.problem)
-            .sort('-points'))[0];
+    const hwRes = await HomeworkResult.findOne()
+        .where('homework').equals(hw)
+        .where('user').equals(userID);
 
-        let points = 0, AC = 0;
-        if (subs) {
-            [points, AC] = [subs.points, (subs.result === 'AC')];
+    const _subs = _.isNil(hwRes) ? null : (await hwRes.getSubresults());
+
+    for (let i = 0; i < hw.problems.length; i++) {
+        const subRes = hwRes ? _subs[i] : null;
+        let obj = {};
+        if (_.isNil(subRes)) {
+            obj.userPoints = 0;
+            obj.AC = 0;
+        } else {
+            obj.userPoints = subRes.points;
+            obj.AC = (subRes.result === 'AC');
         }
-        _.assignIn(ret.problems[idx], {
-            userPoints: points,
-            AC,
-        });
-        totalPoints += prob.weight * points;
-        if (AC) totalAC += 1;
+        _.assignIn(ret.problems[i], obj);
     }
+
+    //for (let [idx, prob] of hw.problems.entries()) {
+        //const subs = (await Submission.find().limit(1)
+            //.where('submittedBy').equals(userID)
+            //.where('ts').lt(hw.due)
+            //.where('problem').equals(prob.problem)
+            //.sort('-points'))[0];
+
+        //let points = 0, AC = 0;
+        //if (subs) {
+            //[points, AC] = [subs.points, (subs.result === 'AC')];
+        //}
+        //_.assignIn(ret.problems[idx], {
+            //userPoints: points,
+            //AC,
+        //});
+        //totalPoints += prob.weight * points;
+        //if (AC) totalAC += 1;
+    //}
     ret.status = hw.visible ? (hw.due < Date.now() ? 'ended' : 'running') : 'unpublished';
-    ret.userPoints = totalPoints;
-    ret.AC = totalAC;
+    ret.userPoints = hwRes ? hwRes.points : 0;
+    ret.AC = hwRes ? hwRes.AC : 0;
 
     return ret;
 }
