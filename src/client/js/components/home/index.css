@@ -1,0 +1,16 @@
+.rank-under-50 {
+    font-size: 70%;
+    color: #555555;
+}
+
+.rank-gold {
+    color: #CC9900;
+}
+
+.rank-silver {
+    color: #C0C0C0;
+}
+
+.rank-bronze {
+    color: #CD7F32;
+}

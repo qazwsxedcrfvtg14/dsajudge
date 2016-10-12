@@ -22,7 +22,11 @@
             .label Problems fully Accepted
         .column.center.aligned
           .ui.statistic
-            .value -
+            .value 
+              img.ui.inline.image( v-if="getRankImage(hw)", :src="getRankImage(hw)" )
+              i.angle.double.down.icon( v-if="!hw.rank" style="font-size: 70%; color: #555555;" )
+              b( :class="[ getRankClass(hw) ]") {{ getRankStr(hw) }}
+              small(style='font-size: 30%; margin-left: 4px;') / {{ hw.totUsers }}
             .label Rank
 
     .ui.segment

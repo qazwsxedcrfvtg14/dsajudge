@@ -10,10 +10,12 @@ const CONFIG = {
             base: 'src/server/',
             js: '**/*.js',
         },
+        images: 'src/images/*',
     },
     dist: {
         base: 'dist/',
         client: 'dist/static/',
+        images: 'dist/static/images/',
     },
     entry: {
         pug: 'src/client/pug/index.pug',

@@ -3,6 +3,7 @@ import html from './index.pug';
 import store, {getUser} from '/store';
 import toastr from 'toastr';
 import marked from 'marked';
+import './index.css';
 
 export default Vue.extend({
     data() {
@@ -47,6 +48,29 @@ export default Vue.extend({
                     id,
                 }
             });
+        },
+        getRankStr(hw) {
+            const {rank} = hw;
+            if (!rank) return '50%';
+            return `${rank}`;
+        },
+        getRankClass(hw) {
+            const {rank, totUsers} = hw;
+            if (!rank) return 'rank-under-50';
+            const pr = (rank-1) / totUsers;
+            if (pr < 1.0 / 24) return 'rank-gold';
+            if (pr < 1.0 / 8) return 'rank-silver';
+            if (pr < 1.0 / 4) return 'rank-bronze';
+        },
+        getRankImage(hw) {
+            const {rank, totUsers} = hw;
+            if (!rank) return '';
+            const pr = (rank-1) / totUsers;
+            let s;
+            if (pr < 1.0 / 24) s = 'gold';
+            else if (pr < 1.0 / 8) s = 'silver';
+            else if (pr < 1.0 / 4) s = 'bronze';
+            return s ? `images/medal_${s}.jpg` : null; 
         },
     },
     watch: {

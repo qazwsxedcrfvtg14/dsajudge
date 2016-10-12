@@ -10,6 +10,7 @@ import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
 import HomeworkResult from '/model/homeworkResult';
+import {getRank} from '/statistic/rank';
 
 const router = express.Router();
 
@@ -36,27 +37,14 @@ async function proceedHw(hw, userID, isAdmin) {
         _.assignIn(ret.problems[i], obj);
     }
 
-    //for (let [idx, prob] of hw.problems.entries()) {
-        //const subs = (await Submission.find().limit(1)
-            //.where('submittedBy').equals(userID)
-            //.where('ts').lt(hw.due)
-            //.where('problem').equals(prob.problem)
-            //.sort('-points'))[0];
+    const [rank, totUsers] = await getRank(hw._id, userID);
 
-        //let points = 0, AC = 0;
-        //if (subs) {
-            //[points, AC] = [subs.points, (subs.result === 'AC')];
-        //}
-        //_.assignIn(ret.problems[idx], {
-            //userPoints: points,
-            //AC,
-        //});
-        //totalPoints += prob.weight * points;
-        //if (AC) totalAC += 1;
-    //}
     ret.status = hw.visible ? (hw.due < Date.now() ? 'ended' : 'running') : 'unpublished';
     ret.userPoints = hwRes ? hwRes.points : 0;
     ret.AC = hwRes ? hwRes.AC : 0;
+    if ((rank-1) > totUsers / 2) ret.rank = 0;
+    else ret.rank = rank;
+    ret.totUsers = totUsers;
 
     return ret;
 }

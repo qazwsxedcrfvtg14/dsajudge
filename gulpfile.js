@@ -63,6 +63,7 @@ gulp.task('watch', () => {
         CONFIG.src.client.js,
     ], ['webpack']);
     gulp.watch([CONFIG.src.server.js], ['server-js']);
+    gulp.watch([CONFIG.src.images], ['images']);
 });
 
 
@@ -81,6 +82,13 @@ gulp.task('nodemon', ['build'], () => {
 //gulp.task('node-inspector', () => {
     //gulp.src([]).pipe(inspector(CONFIG.nodeInspector));
 //});
+
+gulp.task('images', () =>
+    gulp.src(CONFIG.src.images)
+        .pipe($.imagemin())
+        .pipe(gulp.dest(CONFIG.dist.images))
+);
+
 
 gulp.task('libs', () => {
     return gulp.src(CONFIG.libs)
@@ -125,6 +133,6 @@ gulp.task('semantic', semantic);
 
 gulp.task('init', ['semantic', 'libs', 'links', 'zbox']);
 
-gulp.task('build', ['webpack', 'pug', 'server-js']);
+gulp.task('build', ['webpack', 'pug', 'server-js', 'images']);
 
 gulp.task('default', ['build', 'nodemon', 'browser-sync', 'watch']);
