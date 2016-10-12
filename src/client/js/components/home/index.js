@@ -12,10 +12,7 @@ export default Vue.extend({
     },
     template: html,
     ready() {
-        (async () => {
-            this.homeworks = (await this.$http.get('/homework/')).data; 
-            //console.log(JSON.stringify(this.homeworks, null, 4));
-        })();
+        this.fetchHomeworks();
     },
     store,
     vuex: {
@@ -29,6 +26,13 @@ export default Vue.extend({
         },
     },
     methods: {
+        async fetchHomeworks() {
+            if (!this.user) {
+                this.homeworks = [];
+                return;
+            }
+            this.homeworks = (await this.$http.get('/homework/')).data; 
+        },
         async newHomework() {
             let id;
             try {
@@ -44,5 +48,10 @@ export default Vue.extend({
                 }
             });
         },
+    },
+    watch: {
+        user() {
+            this.fetchHomeworks();
+        }
     },
 });

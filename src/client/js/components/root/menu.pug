@@ -7,8 +7,8 @@ component
           | ADA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
         a.item( v-link="'/problems'" ) Problems
-        a.item( v-link="'/submissions'" ) Submissions
-        a.item Resource
+        a.item( v-if="user" v-link="'/submissions'" ) Submissions
+        //-a.item Resource
         a.item( v-if="user && user.isAdmin" v-link="{name: 'admin'}" ) Admin
         .right.menu( v-if="user" )
           a.item( v-link="{ name: 'profile' }" ) Profile
