@@ -54,7 +54,8 @@ function reduceHomeworkSubresults(subresults, weights) {
 
 export async function lazyUpdateHomeworkResult(hw, submission) {
     const user = submission.submittedBy;
-    const {problem} = submission;
+    let {problem} = submission;
+    problem = _.isNil(problem._id) ? problem : problem._id;
     let resObj = await HomeworkResult.findOne()
         .where('user').equals(user)
         .where('homework').equals(hw);
@@ -79,7 +80,7 @@ export async function lazyUpdateHomeworkResult(hw, submission) {
 
     
     for (let [idx, _prob] of hw.problems.entries()) {
-        if (_prob.problem === problem._id) {
+        if (_prob.problem === problem) {
             if (_.isNil(subObj)) resObj.subresults[idx] = null;
             else resObj.subresults[idx] = subObj._id;
             resObj.markModified(`subresults.${idx}`);
