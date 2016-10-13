@@ -30,6 +30,7 @@ const CONFIG = {
         'node_modules/ace-builds/src-min-noconflict/mode-c_cpp.js',
         'node_modules/ace-builds/src-min-noconflict/mode-markdown.js',
         'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js',
+        'node_modules/chart.js/dist/Chart.bundle.min.js',
     ],
     linkDirs: [
         'problems',

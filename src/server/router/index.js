@@ -5,6 +5,7 @@ const routes = [
     'submit',
     'admin',
     'homework',
+    'statistic',
 ];
 
 export default function(app) {

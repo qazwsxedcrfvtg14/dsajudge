@@ -9,6 +9,7 @@ import Submissions from './components/submissions';
 import Submission from './components/submission';
 import Home from './components/home';
 import Profile from './components/profile';
+import ProblemStatistic from './components/statistic/problem';
 
 const router = new VueRouter({
     linkActiveClass: 'active',
@@ -25,6 +26,10 @@ router.map({
     '/problem/:id': {
         name: 'problem',
         component: Problem,
+    },
+    '/problem/:id/statistic': {
+        name: 'problem.statistic',
+        component: ProblemStatistic,
     },
     '/submissions': {
         name: 'submissions',

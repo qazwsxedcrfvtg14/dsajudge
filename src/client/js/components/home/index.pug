@@ -64,7 +64,7 @@
     .ui.segment( v-if="user && user.isAdmin" )
       a.ui.button.right.labeled.icon.orange.button(
         v-link="{name: 'admin.homework', params: {id: hw._id}}" )
-        | Go Admin Page
+        | Admin Page
         i.doctor.icon
 
   .ui.fluid.right.labeled.icon.green.button( v-if="user && user.isAdmin" @click="newHomework" )

@@ -21,5 +21,6 @@ module.exports = {
     globals: {
         MathJax: true,
         ace: true,
+        Chart: true,
     },
 }

@@ -6,6 +6,10 @@
       .ui.right.floated.header(style="padding-top: 20px")
         div
           .hack
+          a( v-link="{name: 'problem.statistic', params: {id: problem._id}}"
+            style="margin-right: 10px" ).ui.right.labeled.icon.green.button 
+            | Statistic
+            i.area.chart.icon
           a( v-link="{name: 'submit', params: {id: problem._id}}" ).ui.right.labeled.icon.primary.button 
             i.send.icon
             | Submit

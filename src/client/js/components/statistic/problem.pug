@@ -1,0 +1,26 @@
+.ui.text.container
+  .ui.segments
+    .ui.segment
+      h2.ui.heading 
+        | # {{ problem._id }}: {{ problem.name }}
+
+    .ui.segment
+      h3.ui.header Statistic
+      .ui.grid.three.column.row
+        .column.center.aligned
+          .ui.statistic
+            .value {{ stats.probStats.count }}
+            .label Number of users tried
+        .column.center.aligned
+          .ui.statistic
+            .value {{ stats.probStats.AC }}
+            .label Number of users ACed
+        .column.center.aligned
+          .ui.statistic
+            .value {{ stats.probStats.average | toFixed 1 }}
+            .label Average points
+
+    .ui.segment
+      h3.ui.header Results
+      canvas#result-chart
+
