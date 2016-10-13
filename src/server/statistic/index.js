@@ -13,7 +13,7 @@ export async function updateProblemResult(submission) {
     if (sub) {
         const res = await ProblemResult.findOneAndUpdate({
             user: user,
-            problem: problem._id,
+            problem: problem,
         }, {
             ts: sub.ts,
             points: sub.points,

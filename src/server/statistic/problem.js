@@ -34,7 +34,7 @@ export async function getProblemResultStats(problemID) {
     return res[0];
 }
 
-export async function getProblemSubmissionsResult(problemID) {
+export async function getProblemResultBucket(problemID) {
     const res = await Submission.aggregate([
         {
             $match: {
@@ -45,6 +45,32 @@ export async function getProblemSubmissionsResult(problemID) {
         {
             $group: {
                 _id: '$result',
+                count: { $sum: 1 },
+            },
+        },
+    ]);
+    return res;
+}
+
+export async function getProblemPointsDistribution(problemID) {
+    const res = await ProblemResult.aggregate([
+        { 
+            $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: '_user',
+            },
+        },
+        {
+            $match: {
+                'problem': problemID,
+                '_user.roles': 'student',
+            },
+        },
+        {
+            $group: {
+                _id: '$points',
                 count: { $sum: 1 },
             },
         },

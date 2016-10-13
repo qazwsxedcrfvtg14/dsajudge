@@ -14,7 +14,7 @@
         .column.center.aligned
           .ui.statistic
             .value {{ stats.probStats.AC }}
-            .label Number of users ACed
+            .label Number of AC users
         .column.center.aligned
           .ui.statistic
             .value {{ stats.probStats.average | toFixed 1 }}
@@ -22,5 +22,11 @@
 
     .ui.segment
       h3.ui.header Results
-      canvas#result-chart
+      div
+        canvas#result-chart
+
+    .ui.segment
+      h3.ui.header Points distribution
+      div
+        canvas#points-chart
 

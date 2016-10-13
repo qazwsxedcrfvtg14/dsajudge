@@ -3,6 +3,32 @@ import html from './problem.pug';
 import toastr from 'toastr';
 import _ from 'lodash';
 
+const SIGMA = 3;
+const WEIGHT = [];
+for (let x = -SIGMA*4; x <= SIGMA*4; x++) {
+    WEIGHT[x+SIGMA*4] = Math.exp(-((x/SIGMA)**2)/2);
+}
+console.log(WEIGHT);
+function getFuzzed(dt) {
+    console.log(JSON.stringify(dt));
+    const pdf = [], cdf = [];
+    for (let i = 0; i<=100; i++) pdf.push(0);
+    for (let {_id, count} of dt) {
+        for (let _x = -SIGMA*4; _x <= SIGMA*4; _x++) {
+            const x = _x + _id;
+            if (x < 0 || x > 100) continue;
+            pdf[x] += count * WEIGHT[_x + SIGMA*4];
+        }
+    }
+    const sum = _.sum(pdf);
+    console.log(pdf);
+    for (let x of pdf) {
+        if (!cdf.length) cdf.push(x/sum);
+        else cdf.push(cdf[cdf.length-1] + x/sum);
+    }
+    return [pdf, cdf];
+}
+
 export default Vue.extend({
     data() {
         return { 
@@ -16,9 +42,10 @@ export default Vue.extend({
     ready() {
         this.id = this.$route.params.id;
         this.fetchStatistic();
-        this.canvas = document.getElementById('result-chart');
-
-
+        this.canvas = {
+            result: document.getElementById('result-chart'),
+            points: document.getElementById('points-chart'),
+        }
     },
     methods: {
         async fetchStatistic() {
@@ -30,11 +57,11 @@ export default Vue.extend({
             }
             _.assignIn(this, result);
             this.drawResultPieChart();
-            console.log(this);
+            this.drawPointsDistribution();
         },
         drawResultPieChart() {
             const labels = {
-                AC: [0, 255, 0],
+                AC: [0, 150, 0],
                 WA: [255, 0, 0],
                 TLE: [200, 0, 150],
                 CE: [0, 0, 255],
@@ -42,12 +69,12 @@ export default Vue.extend({
                 JE: [0, 0, 0],
             };
             const [labelNames, color] = _.zip(..._.toPairs(labels));
-            const backgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.5)`);
+            const backgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.6)`);
             const hoverBackgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.7)`);
             const buckets = _.fromPairs(_.map(this.stats.resultBuckets, x => [x._id, x.count]));
             const data = _.map(labelNames, _.partial(_.get, buckets));
             console.log(data, labelNames, this.stats.resultBuckets);
-            const myChart = new Chart(this.canvas, {
+            const myChart = new Chart(this.canvas.result, {
                 type: 'pie',
                 data: {
                     labels: labelNames,
@@ -57,6 +84,66 @@ export default Vue.extend({
                         hoverBackgroundColor,
                     }]
                 },
+            });
+        },
+        drawPointsDistribution() {
+            const [pdf, cdf] = getFuzzed(this.stats.pointsDistribution);
+            const labels = _.range(0, 101);
+            console.log(labels);
+            const myChart = new Chart(this.canvas.points, {
+                type: 'line',
+                data: {
+                    labels, 
+                    datasets: [
+                        {
+                            label: 'Density',
+                            data: pdf,
+                            pointRadius: 0,
+                            borderColor: 'rgba(0, 40, 200, 0.6)',
+                            backgroundColor: 'rgba(0, 40, 200, 0.4)',
+                            borderJoinStyle: 'round',
+                        },
+                        {
+                            label: 'Cummulative',
+                            data: cdf,
+                            yAxisID: 'cdfY',
+                            pointRadius: 0,
+                            borderColor: 'rgba(200, 0, 0, 0.6)',
+                            backgroundColor: 'rgba(0, 0, 0, 0)',
+                            borderJoinStyle: 'round',
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        xAxes: [
+                            {
+                                ticks: {
+                                    min: 0,
+                                    max: 100,
+                                    maxTicksLimit: 11,
+                                    //stepSize: 10,
+                                }
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    min: 0,
+                                    suggestedMax: 5,
+                                }
+                            },
+                            {
+                                id: 'cdfY',
+                                position: 'right',
+                                ticks: {
+                                    min: 0,
+                                    max: 1,
+                                }
+                            },
+                        ]
+                    }
+                }
             });
         }
     },
