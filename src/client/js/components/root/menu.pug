@@ -27,7 +27,7 @@ component
             a.item( v-link="'/problems'" ) Problems
             a.item( v-link="'/submissions'" ) Submissions
             a.item Resource
-            a.item( v-if="isAdmin" v-link="{name: 'admin'}" ) Admin
+            a.item( v-if="user.isAdmin" v-link="{name: 'admin'}" ) Admin
             a.item( v-link="{ name: 'profile' }" ) Profile
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
