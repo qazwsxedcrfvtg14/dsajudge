@@ -3,3 +3,4 @@ node_modules/
 /semantic/
 /submissions
 .DS_store
+/src/server/config.js
