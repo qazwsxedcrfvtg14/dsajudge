@@ -4,18 +4,14 @@ import toastr from 'toastr';
 import _ from 'lodash';
 
 const SIGMA = 3;
-const WEIGHT = [];
-for (let x = -SIGMA*4; x <= SIGMA*4; x++) {
-    WEIGHT[x+SIGMA*4] = Math.exp(-((x/SIGMA)**2)/2);
-}
 function getFuzzed(dt) {
     const pdf = [], cdf = [];
     for (let i = 0; i<=100; i++) pdf.push(0);
     for (let {_id, count} of dt) {
         for (let _x = -SIGMA*4; _x <= SIGMA*4; _x++) {
-            const x = _x + _id;
+            const x = Math.round(_x + _id);
             if (x < 0 || x > 100) continue;
-            pdf[x] += count * WEIGHT[_x + SIGMA*4];
+            pdf[x] += count * Math.exp(-(((x - _id)/SIGMA) ** 2) / 2);
         }
     }
     const sum = _.sum(pdf);
@@ -60,7 +56,7 @@ export default Vue.extend({
             const normalize = (x) => x * 100.0 / totalPoints;
             const [pdf, cdf] = getFuzzed(this.stats.pointsDistribution.map(
                 x => _.set(x, '_id', normalize(x._id))));
-            const labels = _.map(_.range(0, 101), x => x * totalPoints / 100);
+            const labels = _.map(_.range(0, 101), x => (x * totalPoints / 100).toFixed(0));
             const myChart = new Chart(this.canvas.points, {
                 type: 'line',
                 data: {
