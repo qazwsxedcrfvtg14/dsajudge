@@ -10,6 +10,7 @@ import Submission from './components/submission';
 import Home from './components/home';
 import Profile from './components/profile';
 import ProblemStatistic from './components/statistic/problem';
+import HomeworkStatistic from './components/statistic/homework';
 
 const router = new VueRouter({
     linkActiveClass: 'active',
@@ -30,6 +31,10 @@ router.map({
     '/problem/:id/statistic': {
         name: 'problem.statistic',
         component: ProblemStatistic,
+    },
+    '/homework/:id/statistic': {
+        name: 'homework.statistic',
+        component: HomeworkStatistic,
     },
     '/submissions': {
         name: 'submissions',

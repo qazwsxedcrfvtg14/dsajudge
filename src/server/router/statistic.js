@@ -1,8 +1,9 @@
 import express from 'express';
 import HomeworkResult from '/model/homeworkResult';
 import wrap from 'express-async-wrap';
-import {requireLogin, checkProblem} from '/utils';
+import {requireLogin, checkProblem, checkHomework} from '/utils';
 import * as probStat from '/statistic/problem';
+import * as hwStat from '/statistic/homework';
 import _ from 'lodash';
 
 const router = express.Router();
@@ -21,6 +22,19 @@ router.get('/problem/:id', requireLogin, checkProblem(), wrap(async (req, res) =
     res.send({
         stats,
         problem,
+    });
+}));
+
+router.get('/homework/:id', requireLogin, checkHomework(), wrap(async (req, res) => {
+    const result = await Promise.all([
+        hwStat.getHomeworkResultStats(req.homework._id),
+        hwStat.getHomeworkPointsDistribution(req.homework._id),
+    ]);
+    const stats = _.zipObject(['hwStats', 'pointsDistribution'], result);
+    const hw = req.homework;
+    res.send({
+        stats,
+        hw,
     });
 }));
 

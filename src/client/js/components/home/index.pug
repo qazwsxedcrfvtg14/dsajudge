@@ -9,7 +9,7 @@
 
     .ui.segment
       h3.ui.header Your statistic
-      .ui.grid.three.column.row
+      .ui.stackable.three.column.grid
         .column.center.aligned
           .ui.statistic
             .value {{ hw.userPoints | toFixed 0 }}
@@ -61,8 +61,12 @@
             td {{ problem.userPoints }}
               small {{ ' ×' + problem.weight }} = {{ problem.weight * problem.userPoints }}
 
-    .ui.segment( v-if="user && user.isAdmin" )
-      a.ui.button.right.labeled.icon.orange.button(
+    .ui.segment( v-if="user" )
+      a.ui.button.right.labeled.icon.green.button(
+        v-link="{name: 'homework.statistic', params: {id: hw._id}}" )
+        | Statistic
+        i.area.chart.icon
+      a.ui.button.right.labeled.icon.orange.button( v-if="user.isAdmin"
         v-link="{name: 'admin.homework', params: {id: hw._id}}" )
         | Admin Page
         i.doctor.icon

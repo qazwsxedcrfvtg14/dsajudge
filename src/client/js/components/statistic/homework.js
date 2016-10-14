@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import html from './problem.pug';
+import html from './homework.pug';
 import toastr from 'toastr';
 import _ from 'lodash';
 
@@ -40,7 +40,6 @@ export default Vue.extend({
         this.id = this.$route.params.id;
         this.fetchStatistic();
         this.canvas = {
-            result: document.getElementById('result-chart'),
             points: document.getElementById('points-chart'),
         };
     },
@@ -48,45 +47,20 @@ export default Vue.extend({
         async fetchStatistic() {
             let result;
             try {
-                result = (await this.$http.get(`/statistic/problem/${this.id}`)).data;
+                result = (await this.$http.get(`/statistic/homework/${this.id}`)).data;
             } catch(e) {
                 console.log(e);
             }
-            console.log(result);
             _.assignIn(this, result);
-            this.drawResultPieChart();
             this.drawPointsDistribution();
         },
-        drawResultPieChart() {
-            const labels = {
-                AC: [0, 150, 0],
-                WA: [255, 0, 0],
-                TLE: [200, 0, 150],
-                CE: [0, 0, 255],
-                RE: [220, 100, 0],
-                JE: [0, 0, 0],
-            };
-            const [labelNames, color] = _.zip(..._.toPairs(labels));
-            const backgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.6)`);
-            const hoverBackgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.7)`);
-            const buckets = _.fromPairs(_.map(this.stats.resultBuckets, x => [x._id, x.count]));
-            const data = _.map(labelNames, _.partial(_.get, buckets));
-            const myChart = new Chart(this.canvas.result, {
-                type: 'pie',
-                data: {
-                    labels: labelNames,
-                    datasets: [{
-                        data,
-                        backgroundColor,
-                        hoverBackgroundColor,
-                    }]
-                },
-            });
-        },
         drawPointsDistribution() {
-            const [pdf, cdf] = getFuzzed(this.stats.pointsDistribution);
-            const labels = _.range(0, 101);
-            console.log(labels);
+            let {totalPoints} = this.hw;
+            totalPoints += 1e-10;
+            const normalize = (x) => x * 100.0 / totalPoints;
+            const [pdf, cdf] = getFuzzed(this.stats.pointsDistribution.map(
+                x => _.set(x, '_id', normalize(x._id))));
+            const labels = _.map(_.range(0, 101), x => x * totalPoints / 100);
             const myChart = new Chart(this.canvas.points, {
                 type: 'line',
                 data: {
@@ -117,7 +91,7 @@ export default Vue.extend({
                             {
                                 ticks: {
                                     min: 0,
-                                    max: 100,
+                                    //max: 100,
                                     maxTicksLimit: 11,
                                     //stepSize: 10,
                                 }

@@ -9,21 +9,16 @@
       .ui.grid.three.column.row
         .column.center.aligned
           .ui.statistic
-            .value {{ stats.probStats.count }}
+            .value {{ stats.hwStats.count }}
             .label Number of users tried
         .column.center.aligned
           .ui.statistic
-            .value {{ stats.probStats.AC }}
-            .label Number of AC users
+            .value {{ stats.hwStats.AC }}
+            .label #users with full grade
         .column.center.aligned
           .ui.statistic
-            .value {{ stats.probStats.average | toFixed 1 }}
+            .value {{ stats.hwStats.average | toFixed 1 }}
             .label Average points
-
-    .ui.segment
-      h3.ui.header Results
-      div
-        canvas#result-chart
 
     .ui.segment
       h3.ui.header Points distribution
