@@ -65,7 +65,7 @@ const addUser = async (args, transporter) => {
     const roles = args.roles ? args.roles : [];
     let meta = {};
     if (args.metas) {
-        meta = _.fromPairs(_.map(args.metas, x => x.split('=')))
+        meta = _.fromPairs(_.map(args.metas, x => x.split('=')));
     }
 
     const user = new User({
@@ -100,7 +100,7 @@ Head on to https://ada01-judge.csie.org to try it !
             resolve(result);
         });
     } );
-}
+};
 
 const resetUser = async (args, transporter) => {
     if (!args.user || !args.user.match(/\w+@\w+/)) {
@@ -143,7 +143,7 @@ Head on to https://ada01-judge.csie.org and change it.
             resolve(result);
         });
     } );
-}
+};
 
 const main = async () => {
     const args = parser.parseArgs();
