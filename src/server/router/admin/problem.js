@@ -10,7 +10,7 @@ import path from 'path';
 import config from '/config';
 import fs from 'fs-promise';
 import {updateMeta} from './parseProblem';
-import winston from 'winston';
+import logger from '/logger';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fieldsize: 100*1024*1024 }});
@@ -24,8 +24,10 @@ function checkGzip(req, res, next) {
 }
 
 async function updateProblemByGzip(id, file) {
+    const destDir = path.join(config.dirs.problems, `${id}`);
     try {
-        await targz({}, {strip: 1}).extract(file.path, path.join(config.dirs.problems, id.toString()));
+        await fs.remove(destDir);
+        await targz({}, {strip: 1}).extract(file.path, destDir);
     } catch (e) {
         throw e;
     } finally {
@@ -71,7 +73,7 @@ router.put('/',
             await updateMeta(problem._id, problem);
             await problem.save();
         } catch(e) {
-            console.log(e);
+            logger.error(e);
             return res.status(500).send(e.toString());
         }
         await problem.save();
@@ -95,6 +97,7 @@ router.put('/:id',
             await updateMeta(problem._id, problem);
             await problem.save();
         } catch(e) {
+            logger.error(e);
             return res.status(500).send(e.toString());
         }
         await problem.save();
@@ -165,7 +168,7 @@ router.post('/:id/rejudge', wrap(async (req, res) => {
             {multi: true},
         );
     } catch (e) {
-        winston.error(e);
+        logger.error(e);
     }
 
     res.send(`Successfully rejudge problem #${req.params.id}!`);
