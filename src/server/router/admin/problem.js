@@ -20,9 +20,6 @@ function checkGzip(req, res, next) {
     if (!file) {
         return res.status(404).send(`Please upload a file`);
     }
-    if (!file.mimetype.match(/application\/(x-)?gzip/)) {
-        return res.status(404).send(`Please upload a gzip file, you uploaded ${file.mimetype}`);
-    }
     next();
 }
 
