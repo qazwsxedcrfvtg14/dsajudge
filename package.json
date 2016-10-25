@@ -84,6 +84,7 @@
     "passport-local": "^1.0.0",
     "prompt": "^1.0.0",
     "query-string": "^4.2.3",
+    "randomcolor": "^0.4.4",
     "randomstring": "^1.1.5",
     "semantic-ui": "^2.2.4",
     "sleep-promise": "^2.0.0",
