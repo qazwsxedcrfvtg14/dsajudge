@@ -1,6 +1,7 @@
 import express from 'express';
 import Submission from '/model/submission';
 import User from '/model/user';
+import Problem from '/model/problem';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
 import config from '/config';
@@ -21,14 +22,26 @@ router.get('/', wrap(async (req, res) => {
         query = query.where('result').equals(req.query.result);
 
     if (req.query.user) {
-        const user = await User.findOne({email: req.query.user});
-        if (user)
-            query = query.where('submittedBy').equals(user._id);
+        const user = await User.find({'$or': [
+            { 'meta.name': {$regex: req.query.user} },
+            { 'meta.id': req.query.user },
+            { 'email': req.query.user },
+        ]});
+        if (user.length)
+            query = query.where('submittedBy').in(user);
         else return res.send([]);
     }
 
     if (req.query.probID) {
-        query = query.where('problem').equals(req.query.probID);
+        let pid = parseInt(req.query.probID);
+        if (_.isNaN(pid)) pid = -1;
+        const problem = await Problem.find({'$or': [
+            { 'name': {$regex: req.query.probID} },
+            { '_id': pid },
+        ]});
+        if (problem.length)
+            query = query.where('problem').in(problem);
+        else return res.send([]);
     }
     const data = await query.populate('submittedBy', 'email meta').populate('problem', 'name').exec();
     res.send(data || []);
