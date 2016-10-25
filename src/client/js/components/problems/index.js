@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
+import store, {getUser} from '/store';
 
 export default Vue.extend({
     data() {
@@ -8,11 +9,14 @@ export default Vue.extend({
             problems: [ ],
         };
     },
+    store,
+    vuex: {
+        getters: {
+            user: getUser,
+        }
+    },
     template: html,
-    ready() {
-        (async () => {
-            this.problems = (await this.$http.get('/problem/')).data; 
-            console.log(this.problems);
-        })();
+    async ready() {
+        this.problems = (await this.$http.get('/problem/')).data; 
     },
 });
