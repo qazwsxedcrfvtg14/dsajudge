@@ -46,7 +46,7 @@
               a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) 
-                | {{ sub.submittedBy.email }}
+                | {{ displayName(sub.submittedBy) }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
             td( :class="{ positive: probUtils.isAC(sub), negative: probUtils.isNotAC(sub)}")

@@ -30,7 +30,7 @@ router.get('/', wrap(async (req, res) => {
     if (req.query.probID) {
         query = query.where('problem').equals(req.query.probID);
     }
-    const data = await query.populate('submittedBy', 'email').populate('problem', 'name').exec();
+    const data = await query.populate('submittedBy', 'email meta').populate('problem', 'name').exec();
     res.send(data || []);
 }));
 

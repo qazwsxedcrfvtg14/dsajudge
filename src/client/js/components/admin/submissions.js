@@ -70,7 +70,17 @@ export default Vue.extend({
                 name: 'admin.submissions',
                 query,
             });
-        }
+        },
+        displayName(user) {
+            if (_.isNil(user)) return 'null';
+            const name = _.get(user, 'meta.name'), id = _.get(user, 'meta.id');
+            if (!_.isNil(name)) {
+                if (!_.isNil(id)) return `${name} (${id})`;
+                return `${name}`;
+            }
+            if (!_.isNil(id)) return `(${id})`;
+            return `[${user.email}]`;
+        },
     },
     watch: {
         'filter.result': function() {
