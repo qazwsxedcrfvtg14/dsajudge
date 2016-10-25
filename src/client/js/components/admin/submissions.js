@@ -3,6 +3,8 @@ import html from './submissions.pug';
 import probUtils from '/mixins/probUtils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
+import _ from 'lodash';
+import queryString from 'query-string';
 
 export default Vue.extend({
     mixins: [probUtils],
@@ -13,7 +15,7 @@ export default Vue.extend({
             tabRange: [0, 1, 2, 3, 4],
             filter: {
                 result: 'ALL',
-                probID: null,
+                probID: '',
                 user: '',
             },
         };
@@ -46,10 +48,7 @@ export default Vue.extend({
         },
         async changeTab(idx) {
             this.curTabId = idx;
-            const tabStart = Math.max(0, idx - 2);
-            this.tabRange = [];
-            for (let i = 0; i < 5; i++) this.tabRange.push(tabStart + i);
-            await this.getSubmissions();
+            await this.queryChanged();
         },
         async rejudge(id) {
             let result;
@@ -63,11 +62,31 @@ export default Vue.extend({
             toastr.success(result.body);
             this.getSubmissions();
         },
+        async queryChanged() {
+            const query = {};
+            _.assignIn(query, this.filter);
+            query.s = this.curTabId;
+            this.$route.router.go({
+                name: 'admin.submissions',
+                query,
+            });
+        }
     },
     watch: {
         'filter.result': function() {
+            this.queryChanged();
+        }
+    },
+    route: {
+        data() {
+            const {query} = this.$route;
+            _.assignIn(this.filter, query);
+            this.changeTab(query.s || 0);
+            const tabStart = Math.max(0, this.curTabId - 2);
+            this.tabRange = [];
+            for (let i = 0; i < 5; i++) this.tabRange.push(tabStart + i);
             this.getSubmissions();
         }
-    }
+    },
 });
 

@@ -5,17 +5,17 @@
         .item
           .ui.header Filters
         .item
-          h4.ui.header Problem ID
+          h4.ui.header Problem ID or Name
           .ui.icon.input
-            input(type="number" placeholder="ex: 12...",
-              v-model="filter.probID" @keyup.enter="getSubmissions")
-            i.search.icon
+            input(type="text" placeholder="ex: 12, hao123...",
+              v-model="filter.probID" @keyup.enter="queryChanged" style="height: 38px;")
+            i.inverted.circular.search.link.icon( @click="queryChanged" )
         .item
-          h4.ui.header User
+          h4.ui.header User ID or Name
           .ui.icon.input
-            input(type="email" placeholder="b12345678@ntu.edu.tw"
-              v-model="filter.user" @keyup.enter="getSubmissions")
-            i.search.icon
+            input(type="text" placeholder="b12345678, 洪好號"
+              v-model="filter.user" @keyup.enter="queryChanged" style="height: 38px;")
+            i.inverted.circular.search.link.icon( @click="queryChanged" )
         .item
           h4.ui.header Status
           select.ui.search.selection.dropdown#status-select( v-model='filter.result' )
@@ -27,7 +27,7 @@
             option( value="CE" ) Compile Error (CE)
             option( value="JE" ) Judge Error (JE)
       .ui.pagination.menu
-        a.item( v-for="idx of tabRange", :class="{active: idx == curTabId }", @click="changeTab(idx)" ) 
+        a.item( v-for="idx of tabRange", :class="{active: idx == curTabId}", @click="changeTab(idx)" ) 
           | {{ idx }}
 
     .twelve.wide.column
