@@ -1,4 +1,14 @@
 .spaced {
     margin-right: 0.75em !important;
-    margin-bottom: 0.75em !important;
+    margin-top: 0.3em !important;
+    margin-bottom: 0.3em !important;
 }
+
+.clear-after:after {
+    content: '';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+

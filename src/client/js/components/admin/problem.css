@@ -1,7 +1,6 @@
-.clear-after:after {
-    content: '';
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
+.stick-left-bottom {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: -3px !important;
 }
+

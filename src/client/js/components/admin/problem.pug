@@ -1,21 +1,21 @@
 .ui.text.container( v-if="problem" )
   .ui.segments
     .ui.segment
-      h2.ui.header Problem
-      .ui.grid.three.columns
-        .column
-          a.fluid.ui.primary.primary.right.labeled.icon.button( v-link="{ name: 'submit', params: {id: problem._id}}" )
-            i.send.icon
-            | Go to Submit page
-        .column
-          button.fluid.ui.right.labeled.icon.red.button( @click.prevent="rejudgeProblem" )
-            i.refresh.icon
-            | Rejudge All
+      h2.ui.header Problem \#{{problem._id}} : {{problem.name}}
+    .ui.segment
+      a.ui.right.labeled.icon.button.spaced( 
+          v-link="{ name: 'problem', params: {id: problem._id}}" )
+        i.send.icon
+        | Go to Problem Page
+      button.ui.right.labeled.icon.red.button.spaced( 
+        @click.prevent="rejudgeProblem" )
+        i.refresh.icon
+        | Rejudge All
 
     .ui.segment
       h2.ui.header Problem settings
-    .ui.segment
-      h3.ui.dividing.header Directly upload tar
+    .ui.segment.clear-after
+      h3.ui.dividing.header Directly upload tar.gz
       iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
       form.ui.form( action="/admin/newProblem" method="POST" 
           enctype="multipart/form-data" target="dummyframe" @submit.prevent="updateProblem" )
@@ -50,10 +50,10 @@
         .two.fields
           .four.wide.field
             label Count
-            input(type="number" readonly :value="this.getTotalTestsCount()") 
+            input(type="number" readonly :value="totalTestsCount") 
           .twelve.wide.field
             label Points
-            input(type="number" readonly :value="this.getTotalPoints()") 
+            input(type="number" readonly :value="totalPoints") 
 
       .ui.segments
         .ui.segment( v-for="(idx, group) of problem.testdata.groups" )
@@ -67,14 +67,20 @@
               .four.wide.field
                 label Count
                 input(type="number" readonly :value="group.tests.length") 
-              .twelve.wide.field
+              .eight.wide.field
                 label Points
                 input(type="number", v-model="group.points" number) 
+              .four.wide.field(style="position: relative; height: 60px;")
+                | &nbsp;
+                button.ui.right.labeled.icon.red.button.spaced.stick-left-bottom( 
+                  @click.prevent="deleteGroup(idx)")
+                  i.remove.icon
+                  | Delete
         .ui.attached.bottom.segment
-          button.ui.right.labeled.icon.green.button( @click="addNewGroup" )
+          button.ui.right.labeled.icon.green.button.spaced( @click="addNewGroup" )
             i.plus.icon
             | Add new groups
-          button.primary.right.floated.right.labeled.icon.ui.button( @click.prevent="updateOnly" type="button" ) 
+          button.primary.right.labeled.icon.ui.button.spaced( @click.prevent="updateOnly" type="button" ) 
             i.refresh.icon
             | Update Only
 

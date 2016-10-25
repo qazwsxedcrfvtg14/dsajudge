@@ -43,20 +43,18 @@ export default Vue.extend({
                 return errToast(e);
             }
             this.problem = result.data;
-            console.log(JSON.stringify(this.problem, null, 4));
-            await sleep(500);
-            window.aa = this.$el;
-            $('.ui.dropdown')
-                .dropdown()
-            ;
-            $('#problem-statement-tab .item')
-                .tab()
-            ;
+            Vue.nextTick( () => {
+                $('.ui.dropdown')
+                    .dropdown()
+                ;
+                $('#problem-statement-tab .item')
+                    .tab()
+                ;
+            } );
             //this.editor = ace.edit('editor');
             //const session = this.editor.getSession();
             //session.setMode('ace/mode/markdown');
             //session.setValue(this.problem.desc);
-            console.log($('#problem-statement .ui.tab'), $(this.$el).find('.ui.dropdown'));
         },
         async updateProblem(ev) {
             const formData = new FormData(ev.target);
@@ -99,26 +97,39 @@ export default Vue.extend({
             okToast(result);
             await this.getProblem();
         },
-        getTotalTestsCount() {
-            let cnt = 0;
-            for (let grp of this.problem.testdata.groups) cnt += grp.tests.length;
-            return cnt;
-        },
-        getTotalPoints() {
-            let pts = 0;
-            for (let grp of this.problem.testdata.groups) pts += grp.points;
-            return pts;
-        },
         async addNewGroup() {
             this.problem.testdata.groups.push({
                 count: 0,
                 points: 0,
                 tests: [],
             });
-            await sleep(500);
-            $('.ui.dropdown')
-                .dropdown()
-            ;
+            Vue.nextTick(() => {
+                $('.ui.dropdown')
+                    .dropdown()
+                ;
+            });
+        },
+        deleteGroup(idx) {
+            this.problem.testdata.groups.splice(idx, 1);
+        }
+    },
+    watch: {
+        'problem.desc': function() {
+            Vue.nextTick(() => {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            });
         },
     },
+    computed: {
+        totalTestsCount() {
+            let cnt = 0;
+            for (let grp of this.problem.testdata.groups) cnt += grp.tests.length;
+            return cnt;
+        },
+        totalPoints() {
+            let pts = 0;
+            for (let grp of this.problem.testdata.groups) pts += grp.points;
+            return pts;
+        },
+    }
 });
