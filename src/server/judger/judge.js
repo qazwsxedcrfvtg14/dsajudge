@@ -49,6 +49,11 @@ async function copyToDir(file, dir, newName) {
     return newDir;
 }
 
+async function mkdir777(dir) {
+    await fs.mkdir(dir);
+    await fs.chmod(dir, 0o777);
+}
+
 const GPP = [
     'g++',
     '-std=c++14',
@@ -78,8 +83,9 @@ export default class Judger {
     }
     async prepareCpp() {
         this.rootDir = await promisify(temp.mkdir)({dir: JAIL});
+        await fs.chmod(this.rootDir, 0o777);
         this.userDir = path.join(this.rootDir, 'user');
-        await fs.mkdir(this.userDir);
+        await mkdir777(this.userDir);
         this.userCpp = await copyToDir(this.userCpp, this.userDir, 'user.cpp');
         this.checkerCpp = await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
         await copyToDir(TESTLIB, this.rootDir);
@@ -109,18 +115,18 @@ export default class Judger {
         for (let [gid, group] of this.groups.entries()) {
             const userGDir = path.join(this.userDir, `${gid}`);
             const checkerGDir = path.join(this.rootDir, `${gid}`);
-            await fs.mkdir(userGDir);
-            await fs.mkdir(checkerGDir);
+            await mkdir777(userGDir);
+            await mkdir777(checkerGDir);
             for (let [tid, test] of group.tests.entries()) {
                 const userTDir = path.join(userGDir, `${tid}`);
                 const checkerTDir = path.join(checkerGDir, `${tid}`);
                 const tdBase = path.join(this.problemDir, 'testdata', test);
                 const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`); 
                 // Copy input file
-                await fs.mkdir(userTDir);
+                await mkdir777(userTDir, 0o777);
                 await copyToDir(inp, userTDir, 'prob.in');
                 // Copy ans file
-                await fs.mkdir(checkerTDir);
+                await mkdir777(checkerTDir, 0o777);
                 await copyToDir(outp, checkerTDir, 'prob.ans');
                 // Copy user exec
                 await copyToDir(this.userExec, userTDir);

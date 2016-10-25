@@ -36,7 +36,7 @@ export async function compile(chdir, cppFile, execName, GPP) {
         chdir,
         stdout: 'compile.out',
         stderr: 'compile.err',
-        gid: '9876',
+        uid: 9876,
     };
 
     const _opt = [
@@ -60,7 +60,7 @@ export async function run(rootDir, exec, inFile, outFile, errFile, timeLimit, me
         chroot: rootDir, 
         stdout: 'run.out',
         stderr: 'run.err',
-        gid: '9876',
+        uid: 9876,
     };
     if (inFile) opt.stdin = inFile;
     if (outFile) opt.stdout = outFile;
