@@ -14,8 +14,6 @@ export default Vue.extend({
     },
     template: html,
     ready() {
-        console.log(this);
-        this.getSubmissions();
     },
     methods: {
         async getSubmissions() {
@@ -37,6 +35,12 @@ export default Vue.extend({
     },
     components: {
         'result-string': ResultString,
+    },
+    route: {
+        data() {
+            this.curTabId = parseInt(this.$route.query.s || '0');
+            this.getSubmissions();
+        }
     }
 });
 

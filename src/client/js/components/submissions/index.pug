@@ -1,6 +1,8 @@
 .ui.text.container
   .ui.top.attached.pagination.menu
-    a.item( v-for="idx of tabRange", :class="[idx == curTabId ? 'active' : '']", @click="changeTab(idx)" ) {{ idx }}
+    a.item( v-for="idx of tabRange", 
+      :class="[idx == curTabId ? 'active' : '']",
+      v-link="{name: 'submissions', query: {s: idx}, activeClass: 'zzz'}" ) {{ idx }}
     a.item ...
   table.ui.attached.celled.table
     thead
