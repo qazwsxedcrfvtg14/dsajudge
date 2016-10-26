@@ -67,7 +67,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     let submission;
     submission = await Submission.findById(id)
         .populate('problem', 'name testdata.points resource')
-        .populate('submittedBy', 'email')
+        .populate('submittedBy', (req.user.isAdmin() ? 'email meta' : 'meta'))
         .populate({
             path: '_result',
             populate: {
@@ -80,7 +80,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     ;
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!(req.user && req.user.isAdmin()) && 
+    if (!req.user.isAdmin() && 
         !(submission.submittedBy.equals(req.user._id) || submission.problem.resource.includes('solution'))) {
         return res.status(403).send(`Permission denided.`);
     }

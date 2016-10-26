@@ -28,7 +28,8 @@
             td {{ submission.problem.name }}
           tr
             td.collapsing Submitted by
-            td {{ submission.submittedBy.email }}
+            td {{ submission.submittedBy.meta.name }} ({{ submission.submittedBy.meta.id }})
+              | {{ submission.submittedBy.email ? ' - ' + submission.submittedBy.email : '' }}
           tr
             td.collapsing Submission time
             td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
