@@ -102,10 +102,7 @@ export async function getProblemFastest(problemID) {
         {
             $group: {
                 _id: '$submittedBy',
-                runtime: { $first: '$runtime' },
-                origin: {
-                    $first: '$$ROOT',
-                },
+                runtime: { $min: '$runtime' },
             },
         },
         {
@@ -119,10 +116,11 @@ export async function getProblemFastest(problemID) {
     ]);
 
     const res = await Promise.all(_.map(_res, obj => (async () => {
-        const r = obj.origin;
-        _.unset(r, '_user');
-        r.submittedBy = await User.findById(r.submittedBy).select('email meta');
-        return r;
+        return Submission.findOne()
+            .where('problem').equals(problemID)
+            .where('submittedBy').equals(obj._id)
+            .where('result').equals('AC')
+            .sort('runtime').populate('submittedBy', 'email meta');
     })() ));
     return res;
 }
@@ -151,9 +149,9 @@ export async function getProblemAdminFastest(problemID) {
         {
             $group: {
                 _id: '$submittedBy',
-                runtime: { $first: '$runtime' },
+                runtime: { $min: '$runtime' },
                 origin: {
-                    $first: '$$ROOT',
+                    $min: '$$ROOT',
                 },
             },
         },
