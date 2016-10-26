@@ -14,10 +14,10 @@ router.get('/problem/:id', requireLogin, checkProblem(), wrap(async (req, res) =
         probStat.getProblemResultBucket(req.problem._id),
         probStat.getProblemPointsDistribution(req.problem._id),
         probStat.getProblemFastest(req.problem._id),
-        probStat.getProblemEarliest(req.problem._id),
+        probStat.getProblemAdminFastest(req.problem._id),
     ]);
     const stats = _.zipObject(['probStats', 'resultBuckets', 
-        'pointsDistribution', 'fastest', 'earliest'], result);
+        'pointsDistribution', 'fastest', 'adminFastest'], result);
     const problem = req.problem;
     res.send({
         stats,

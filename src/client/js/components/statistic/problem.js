@@ -2,6 +2,7 @@ import Vue from 'vue';
 import html from './problem.pug';
 import toastr from 'toastr';
 import _ from 'lodash';
+import probUtils from '/mixins/probUtils';
 
 const SIGMA = 3;
 const WEIGHT = [];
@@ -27,6 +28,7 @@ function getFuzzed(dt) {
 }
 
 export default Vue.extend({
+    mixins: [probUtils],
     data() {
         return { 
             id: null,
@@ -52,8 +54,11 @@ export default Vue.extend({
             } catch(e) {
                 console.log(e);
             }
-            console.log(result);
             _.assignIn(this, result);
+            if (this.problem) {
+                this.problem.solutionVisible = this.problem.resource 
+                    && this.problem.resource.includes('solution');
+            }
             this.drawResultPieChart();
             this.drawPointsDistribution();
         },
@@ -70,7 +75,7 @@ export default Vue.extend({
             const backgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.6)`);
             const hoverBackgroundColor = _.map(color, x => `rgba(${x[0]}, ${x[1]}, ${x[2]}, 0.7)`);
             const buckets = _.fromPairs(_.map(this.stats.resultBuckets, x => [x._id, x.count]));
-            const data = _.map(labelNames, _.partial(_.get, buckets));
+            const data = _.map(labelNames, x => _.get(buckets, x, 0));
             const myChart = new Chart(this.canvas.result, {
                 type: 'pie',
                 data: {
@@ -86,7 +91,6 @@ export default Vue.extend({
         drawPointsDistribution() {
             const [pdf, cdf] = getFuzzed(this.stats.pointsDistribution);
             const labels = _.range(0, 101);
-            console.log(labels);
             const myChart = new Chart(this.canvas.points, {
                 type: 'line',
                 data: {

@@ -1,7 +1,7 @@
 import ProblemResult from '/model/problemResult';
 import Submission from '/model/submission';
 import User from '/model/user';
-
+import _ from 'lodash';
 
 export async function getProblemResultStats(problemID) {
     const res = await ProblemResult.aggregate([
@@ -79,11 +79,100 @@ export async function getProblemPointsDistribution(problemID) {
 }
 
 export async function getProblemFastest(problemID) {
-    const res = await Submission.find().limit(3)
-        .where('result').equals('AC')
-        .where('problem').equals(problemID)
-        .sort('runtime')
-        .populate('submittedBy', 'email');
+    const _res = await Submission.aggregate([
+        {
+            $match: {
+                'problem': problemID,
+                'result': 'AC',
+            },
+        },
+        { 
+            $lookup: {
+                from: 'users',
+                localField: 'submittedBy',
+                foreignField: '_id',
+                as: '_user',
+            },
+        },
+        {
+            $match: {
+                '_user.roles': 'student',
+            },
+        },
+        {
+            $group: {
+                _id: '$submittedBy',
+                runtime: { $first: '$runtime' },
+                origin: {
+                    $first: '$$ROOT',
+                },
+            },
+        },
+        {
+            $sort: {
+                'runtime': 1,
+            },
+        },
+        {
+            $limit: 10,
+        },
+    ]);
+
+    const res = await Promise.all(_.map(_res, obj => (async () => {
+        const r = obj.origin;
+        _.unset(r, '_user');
+        r.submittedBy = await User.findById(r.submittedBy).select('email meta');
+        return r;
+    })() ));
+    return res;
+}
+
+export async function getProblemAdminFastest(problemID) {
+    const _res = await Submission.aggregate([
+        {
+            $match: {
+                'problem': problemID,
+                'result': 'AC',
+            },
+        },
+        { 
+            $lookup: {
+                from: 'users',
+                localField: 'submittedBy',
+                foreignField: '_id',
+                as: '_user',
+            },
+        },
+        {
+            $match: {
+                '_user.roles': { $ne: 'student' },
+            },
+        },
+        {
+            $group: {
+                _id: '$submittedBy',
+                runtime: { $first: '$runtime' },
+                origin: {
+                    $first: '$$ROOT',
+                },
+            },
+        },
+        {
+            $sort: {
+                'runtime': 1,
+            },
+        },
+        {
+            $limit: 10,
+        },
+    ]);
+
+    const res = await Promise.all(_.map(_res, obj => (async () => {
+        const r = obj.origin;
+        _.unset(r, '_user');
+        _.unset(r, 'submittedBy');
+        return r;
+    })() ));
     return res;
 }
 
@@ -93,5 +182,31 @@ export async function getProblemEarliest(problemID) {
         .where('problem').equals(problemID)
         .sort('ts')
         .populate('submittedBy', 'email');
+    return res;
+}
+
+export async function getProblemSolutions(problemID) {
+    const res = await ProblemResult.aggregate([
+        { 
+            $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: '_user',
+            },
+        },
+        {
+            $match: {
+                'problem': problemID,
+                '_user.roles': 'student',
+            },
+        },
+        {
+            $group: {
+                _id: '$points',
+                count: { $sum: 1 },
+            },
+        },
+    ]);
     return res;
 }

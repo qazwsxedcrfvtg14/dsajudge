@@ -71,7 +71,6 @@ router.put('/',
         try {
             await updateProblemByGzip(id, file);
             await updateMeta(problem._id, problem);
-            await problem.save();
         } catch(e) {
             logger.error(e);
             return res.status(500).send(e.toString());

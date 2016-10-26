@@ -37,6 +37,7 @@ const schema = Schema({
         }]
     },
     testFiles: [String],
+    resource: [String],
 });
 
 schema.plugin(autoIncrement.plugin, 'Problem');

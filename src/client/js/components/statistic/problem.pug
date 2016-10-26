@@ -30,10 +30,19 @@
       div
         canvas#points-chart
 
-    //-.ui.segment
-      h3.ui.header First to AC
-      table.ui.table
-        tr( v-for="sub of stats.earliest" )
-          td {{ sub.submittedBy.email }}
+    .ui.segment
+      h3.ui.header Fastest among AC
+      table.ui.celled.table.selectable( :class="{pointer: problem && problem.solutionVisible}" )
+        thead
+          tr
+            th.collapsing.center.aligned ID
+            th By
+            th Runtime
+        tbody
+          tr( v-for="sub of stats.fastest",
+            v-link="problem.solutionVisible ? {name: 'submission', params: {id: sub._id}} : null" )
+            td.collapsing.center.aligned( :class="{ 'blue-link': problem.solutionVisible }" ) {{ sub._id }}
+            td {{ _.get(sub, 'submittedBy.meta.name', '') }} ({{ _.get(sub, 'submittedBy.meta.id') }})
+            td {{ probUtils.toDisplayTime(sub.runtime) }}
           
 

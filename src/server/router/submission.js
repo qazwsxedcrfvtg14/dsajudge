@@ -47,10 +47,16 @@ async function loadSourceCode(id) {
 
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
-    const submission = await Submission.findById(id);
+    const submission = await Submission.findById(id)
+        .populate('problem', 'resource')
+    ;
+
+
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!(req.user && req.user.isAdmin()) && !submission.submittedBy.equals(req.user._id)) 
+    if (!(req.user && req.user.isAdmin()) && 
+        !(submission.submittedBy.equals(req.user._id) || submission.problem.resource.includes('solution'))) { 
         return res.status(403).send(`Permission denided.`);
+    }
     const src = await loadSourceCode(id);
     res.send(src);
 }));
@@ -60,7 +66,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
     let submission;
     submission = await Submission.findById(id)
-        .populate('problem', 'name testdata.points')
+        .populate('problem', 'name testdata.points resource')
         .populate('submittedBy', 'email')
         .populate({
             path: '_result',
@@ -75,7 +81,9 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
     if (!(req.user && req.user.isAdmin()) && 
-        !submission.submittedBy.equals(req.user._id)) return res.status(403).send(`Permission denided.`);
+        !(submission.submittedBy.equals(req.user._id) || submission.problem.resource.includes('solution'))) {
+        return res.status(403).send(`Permission denided.`);
+    }
 
     submission = submission.toObject();
     if (submission.result === 'CE') {

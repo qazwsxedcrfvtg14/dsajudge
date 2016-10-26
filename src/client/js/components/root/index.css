@@ -29,3 +29,8 @@ table.ui.table.selectable.pointer td {
     font-size: 2.2rem !important;
     padding: 0.4rem 1rem !important;
 }
+
+.blue-link {
+    text-decoration: underline;
+    color: #4183C4;
+}
