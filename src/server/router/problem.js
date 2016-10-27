@@ -7,6 +7,7 @@ import config from '/config';
 import path from 'path';
 import marked from 'marked';
 import ProblemResult from '/model/problemResult';
+import {checkProblem} from '/utils';
 
 const router = express.Router();
 
@@ -59,6 +60,24 @@ router.get('/:id', wrap(async (req, res) => {
     problem.desc = fl.toString();
 
     res.send(problem);
+}));
+
+router.get('/:id/assets/:path', 
+    checkProblem(),
+    wrap(async (req, res) => {
+
+    const pathname = req.params.path;
+    if (!pathname || !pathname.match(/^[A-Za-z.0-9]+$/))
+        return res.sendStatus(404);
+
+    const filepath = path.join(config.dirs.problems, `${req.params.id}`, 'assets', pathname);
+    try {
+        await fs.access(filepath, fs.constants.R_OK);
+    } catch (e) {
+        return res.sendStatus(404);
+    }
+
+    res.sendFile(filepath);
 }));
 
 export default router;
