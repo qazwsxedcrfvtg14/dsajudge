@@ -3,10 +3,12 @@
     .ui.segment
       h2.ui.header Problem \#{{problem._id}} : {{problem.name}}
     .ui.segment
-      a.ui.right.labeled.icon.button.spaced( 
+      a.ui.button.spaced( 
           v-link="{ name: 'problem', params: {id: problem._id}}" )
-        i.send.icon
         | Go to Problem Page
+      a.ui.button.spaced( 
+          v-link="{ name: 'admin.submissions', query: {probID: problem._id}}" )
+        | Go to Submissions
       button.ui.right.labeled.icon.red.button.spaced( 
         @click.prevent="rejudgeProblem" )
         i.refresh.icon
