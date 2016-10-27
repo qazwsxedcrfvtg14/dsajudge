@@ -10,7 +10,8 @@
         th.center.aligned.collapsing ID
         th Problem
         th Result
-        th Points
+        th.center.aligned.collapsing Runtime
+        th.center.aligned.collapsing Points
     tbody
       tr.force-pointer( v-for="sub of submissions" v-link="{name: 'submission', params: {id: sub._id}}" )
         td.selectable.center.aligned.collapsing
@@ -21,6 +22,8 @@
         td.selectable 
           a
             result-string( :status="sub.status", :result="sub.result" )
-        td.selectable 
-          a {{ this.probUtils.getPointsString(sub) }}
+        td.selectable.center.aligned.collapsing
+          a {{ probUtils.toDisplayTime(sub.runtime) }}
+        td.selectable.center.aligned.collapsing
+          a {{ probUtils.getPointsString(sub) }}
 
