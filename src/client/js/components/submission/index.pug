@@ -33,6 +33,9 @@
           tr
             td.collapsing Submission time
             td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
+          tr( v-if="!_.isNil(submission.runtime)" )
+            td.collapsing Runtime
+            td {{ probUtils.toDisplayTime(submission.runtime) }}
 
     .ui.divider
     component( v-if="submission.compilationLog" )
@@ -43,6 +46,7 @@
             
     component( v-if="showResult" )
       h2.ui.dividing.header Results
+
       .ui.divided.items
         .item( v-for="(gid, group) in submission._result.subresults" )
           .content
