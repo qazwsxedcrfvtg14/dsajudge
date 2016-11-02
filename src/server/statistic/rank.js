@@ -10,28 +10,7 @@ export async function getRank(hwID, userID) {
     const tot = await User.find().where('roles').equals('student').count();
 
     if (!hwRes) {
-        const cnt = await HomeworkResult.aggregate([
-            { 
-                $lookup: {
-                    from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
-                    as: '_user',
-                },
-            },
-            {
-                $match: {
-                    '_user.roles': 'student',
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    count: { $sum: 1 },
-                },
-            },
-        ]);
-        return [cnt[0].count + 1, tot];
+        return [tot, tot];
     }
 
     const {points, ts} = hwRes;
@@ -47,6 +26,7 @@ export async function getRank(hwID, userID) {
         {
             $match: {
                 '_user.roles': 'student',
+                'homework': hwID,
                 'points': {
                     $gt: points,
                 },
@@ -72,6 +52,7 @@ export async function getRank(hwID, userID) {
         {
             $match: {
                 '_user.roles': 'student',
+                'homework': hwID,
                 'points': points,
                 'ts': {
                     $lt: ts,
