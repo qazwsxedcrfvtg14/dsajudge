@@ -90,7 +90,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
         submission.compilationLog = await loadCompileErr(submission._id);
     }
 
-    if (!req.user.isAdmin()) {
+    if (submission._result && !req.user.isAdmin()) {
         for (let [gid, group] of submission._result.subresults.entries()) {
             for (let [tid, test] of group.subresults.entries()) {
                 test.name = `${gid}-${tid}`;
