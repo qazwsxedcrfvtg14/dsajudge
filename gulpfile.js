@@ -6,7 +6,6 @@ const $ = require('gulp-load-plugins')();
 const webpack = require('webpack-stream');
 const del = require('del');
 const browserSync = require('browser-sync');
-const inspector = require('gulp-node-inspector');
 const semantic = require('./semantic/tasks/build');
 const path = require('path');
 
@@ -77,11 +76,6 @@ gulp.task('nodemon', ['build'], () => {
     });
     return nodemon;
 });
-
-// Not compatible with Node 6 QQ
-//gulp.task('node-inspector', () => {
-    //gulp.src([]).pipe(inspector(CONFIG.nodeInspector));
-//});
 
 gulp.task('images', () =>
     gulp.src(CONFIG.src.images)
