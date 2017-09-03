@@ -26,7 +26,6 @@ const formValidateObj = {
     },
 };
 
-
 export default Vue.extend({
     data() {
         return {

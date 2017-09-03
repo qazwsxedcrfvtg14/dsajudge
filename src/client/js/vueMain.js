@@ -10,8 +10,6 @@ Vue.use({
 });
 
 Vue.use(VueResource);
-Vue.use(VueRouter);
-
 
 import filters from './filters';
 import router from './router';

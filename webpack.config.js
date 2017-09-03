@@ -39,7 +39,7 @@ module.exports = {
             },
             {
                 test: /\.pug$/, 
-                loaders: ['pug-html-loader'],
+                loaders: ['html', 'pug-html'],
             },
             {
                 test: /\.json$/, 

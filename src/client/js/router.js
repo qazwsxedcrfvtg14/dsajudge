@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-Vue.use(VueRouter);
 import Problems from './components/problems';
 import Problem from './components/problem';
 import Submit from './components/submit';
@@ -11,6 +10,8 @@ import Home from './components/home';
 import Profile from './components/profile';
 import ProblemStatistic from './components/statistic/problem';
 import HomeworkStatistic from './components/statistic/homework';
+
+Vue.use(VueRouter);
 
 const router = new VueRouter({
     linkActiveClass: 'active',
