@@ -100,9 +100,10 @@ gulp.task('zbox:make', (next) => {
     next();
 });
 
+const zboxCp = new $.run.Command(`sudo cp -p ./judger/zbox ${path.join(CONFIG.dist.base, 'judger')}`);
 gulp.task('zbox:cp', (next) => {
-    gulp.src('./judger/zbox')
-        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
+    // `sudo cp -p` is used to preserve the ownership and file mode
+    zboxCp.exec();
     next();
 });
 
