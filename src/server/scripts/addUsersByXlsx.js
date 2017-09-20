@@ -79,20 +79,19 @@ const newUser = async (email, id, name, transporter) => {
     });
 
     const text = (
-`Welcome to ADA2016, This email is just to inform you that your ADA Judge account is created.
-Here are your account and password.
+`Welcome to ADA2017, this email is to inform you that your ADA Judge account has been created.
+Here is your account and temporary password. (You can change your password after logging in.)
 
 - Account: ${email}
 - Password: ${randPass}
 
-HW#0 and HW#1 would be announced soon.
-Head on to https://ada01-judge.csie.org and try it !
+Head on to https://ada-judge.csie.org and try it!
 ` );
 
     const mailOptions = {
-        from: '"ADA2016" <ada01@csie.ntu.edu.tw>',
+        from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
         to: email,
-        subject: 'Your ADA Judge Account',
+        subject: '[ADA2017]Your ADA Judge Account',
         text,
     };
 

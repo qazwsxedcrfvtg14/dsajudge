@@ -5,7 +5,7 @@ import _ from 'lodash';
 import wrap from 'express-async-wrap';
 
 export const requireLogin = (req, res, next) => {
-    if (!req.user) return res.sendStatus(401);
+    if (!req.user) return res.status(401).send(`You are not logged in`);
     next();
 };
 
