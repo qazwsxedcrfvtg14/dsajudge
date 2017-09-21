@@ -6,7 +6,7 @@ import wrap from 'express-async-wrap';
 import Problem from '/model/problem';
 import Submission from '/model/submission';
 import {requireLogin} from '/utils';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 
 const router = express.Router();
 

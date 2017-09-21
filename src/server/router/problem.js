@@ -2,7 +2,7 @@ import express from 'express';
 import Problem from '/model/problem';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import config from '/config';
 import path from 'path';
 import marked from 'marked';

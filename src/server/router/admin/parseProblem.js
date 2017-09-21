@@ -1,5 +1,5 @@
 import config from '/config';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import path from 'path';
 import {promisify} from 'bluebird';
 import jsonfile from 'jsonfile';
@@ -53,7 +53,6 @@ async function updateTestdata(id, prob) {
     const _in = [], _out = new Set();
     for (let f of files) {
         const [name, ext] = f.split('.');
-        console.log(name, ext);
         if (ext == 'in') _in.push(name);
         else if (ext == 'out') _out.add(name);
     }

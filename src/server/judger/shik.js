@@ -2,7 +2,7 @@ import config from '/config';
 import {execFile} from 'child_process';
 import path from 'path';
 import _ from 'lodash';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import YAML from 'yamljs';
 import {diffWords} from 'diff';
 import temp from 'temp';

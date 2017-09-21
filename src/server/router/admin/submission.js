@@ -7,7 +7,7 @@ import _ from 'lodash';
 import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 
 const router = express.Router();
 
