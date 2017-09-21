@@ -4,7 +4,6 @@ import {errToast, okToast} from '/utils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import './homework.css';
-import marked from 'marked';
 import moment from 'moment';
 import _ from 'lodash';
 

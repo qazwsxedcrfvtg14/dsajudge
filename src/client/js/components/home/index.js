@@ -2,7 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import store, {getUser} from '/store';
 import toastr from 'toastr';
-import marked from 'marked';
+import marked from '/marked_mutated';
 import './index.css';
 
 export default Vue.extend({

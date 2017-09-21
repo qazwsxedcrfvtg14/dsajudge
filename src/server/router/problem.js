@@ -5,7 +5,6 @@ import _ from 'lodash';
 import fs from 'fs-extra';
 import config from '/config';
 import path from 'path';
-import marked from 'marked';
 import ProblemResult from '/model/problemResult';
 import {checkProblem} from '/utils';
 
