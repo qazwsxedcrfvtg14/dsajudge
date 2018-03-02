@@ -1,7 +1,7 @@
 import fs from 'fs-promise';
 import config from '/config';
 import errors from 'common-errors';
-import {compile, run, reset} from './isolate';
+import {compile, run, reset} from './joe';
 import Result from '/model/result';
 import logger from '/logger';
 import path from 'path';
