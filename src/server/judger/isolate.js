@@ -93,7 +93,7 @@ export async function compile(worker_id, cppFile, execName, GPP) {
         ...[...GPP, '-o', execName, cppFile]
     ];
 
-    let result = await zBoxWrap(_opt);
+    let result = await isolateWrap(_opt);
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
@@ -135,7 +135,7 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
         ...args,
     ];
 
-    result = await zBoxWrap(_opt);
+    result = await isolateWrap(_opt);
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
