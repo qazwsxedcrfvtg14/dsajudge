@@ -18,7 +18,7 @@ function isolateWrap(opt) {
             opt,
             {},
             (err, stdout, stderr) => {
-                if (err) return reject(err);
+                //if (err) return reject(err);
                 resolve(
                     _.assignIn({
                         stdout,
