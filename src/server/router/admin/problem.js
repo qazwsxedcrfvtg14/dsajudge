@@ -35,7 +35,7 @@ async function updateProblemByGzip(id, file) {
         await fs.remove(destDir);
         await mkdir777(destDir);
         //await targz({}, {strip: 1}).extract(file.path, destDir);
-        tar.x({
+        await tar.x({
             strip: 1,
             gzip: true,
             file: file.path,
