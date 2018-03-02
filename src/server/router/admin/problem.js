@@ -4,11 +4,12 @@ import wrap from 'express-async-wrap';
 import Problem from '/model/problem';
 import Submission from '/model/submission';
 import {requireAdmin} from '/utils';
-import targz from 'tar.gz';
+//import targz from 'tar.gz';
 import multer from 'multer';
 import path from 'path';
 import config from '/config';
 import fs from 'fs-promise';
+import tar from 'tar';
 import {updateMeta} from './parseProblem';
 import logger from '/logger';
 
@@ -23,11 +24,24 @@ function checkGzip(req, res, next) {
     next();
 }
 
+async function mkdir777(dir) {
+    await fs.mkdir(dir);
+    await fs.chmod(dir, 0o777);
+}
+
 async function updateProblemByGzip(id, file) {
     const destDir = path.join(config.dirs.problems, `${id}`);
     try {
         await fs.remove(destDir);
-        await targz({}, {strip: 1}).extract(file.path, destDir);
+        await mkdir777(destDir);
+        //await targz({}, {strip: 1}).extract(file.path, destDir);
+        tar.x({
+            strip: 1,
+            gzip: true,
+            file: file.path,
+            cwd: destDir
+          });
+
     } catch (e) {
         throw e;
     } finally {
