@@ -130,7 +130,7 @@ export default class Judger {
         return async (worker_id) => {
             await (async () => {
 
-                reset(worker_id);
+                await reset(worker_id);
                 const test = this.groups[gid].tests[tid];
                 const tdBase = path.join(this.problemDir, 'testdata', test);
                 const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
