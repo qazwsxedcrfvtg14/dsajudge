@@ -1,11 +1,9 @@
-'use strict';
-
 import './common';
 import User from '/model/user';
 import bcrypt from 'bcrypt';
+import {promisify} from 'bluebird';
 
-
-const hashed = await promisify(bcrypt.hash)('this is password', 10);
+const hashed = bcrypt.hash('this is password', 10);
 const roles = ['admin','student'];
 const user = new User({
     email: "admin@abc.com",
@@ -16,4 +14,4 @@ const user = new User({
         name: "Admin"
     },
 });
-await user.save();
+user.save();
