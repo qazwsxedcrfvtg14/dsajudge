@@ -54,9 +54,16 @@ async function mkdir777(dir) {
     await fs.chmod(dir, 0o777);
 }
 
-const GPP = [
+const GCC = [
     '/usr/bin/env',
     'gcc',
+    '-static',
+    '-O2',
+];
+const GPP = [
+    '/usr/bin/env',
+    'g++',
+    '-std=c++14',
     '-static',
     '-O2',
 ];
@@ -95,7 +102,7 @@ export default class Judger {
         await copyToDir(TESTLIB, this.rootDir);
     }
     async compileUser() {
-        const result = await compile(compileBoxId, 'user.cpp', 'user', GPP);
+        const result = await compile(compileBoxId, 'user.cpp', 'user', GCC);
         if (result.RE) {
             saveResult(this.result, 'CE');
             await copyToDir(
