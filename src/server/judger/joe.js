@@ -16,13 +16,14 @@ function isolateWrap(opt) {
         execFile(
             ISOLATE,
             opt,
+            {},
             (err, stdout, stderr) => {
                 if (err) return reject(err);
                 resolve(
                     _.assignIn({
                         stdout,
                         stderr,
-                    }, YAML.parse("---\n"+stdout.replace(":",": ")+"---\n"))
+                    })
                 );
             }
         );
@@ -34,6 +35,7 @@ function isolateWrapNoReturn(opt) {
         execFile(
             ISOLATE,
             opt,
+            {},
             (err, stdout, stderr) => {
                 if (err) return reject(err);
                 resolve();
@@ -69,11 +71,13 @@ export async function reset(id) {
     await init(id);
 }
 
+const metaDir = '/tmp/isolate/META';
+
 export async function compile(worker_id, cppFile, execName, GPP) {
     const opt = {
         cg:true,
         "box-id": worker_id,
-        meta: '/dev/stdout',
+        meta: path.join(metaDir,worker_id),
         mem: 1<<20,
         "cg-mem": 1<<20,
         time: 20,
@@ -94,6 +98,8 @@ export async function compile(worker_id, cppFile, execName, GPP) {
     ];
 
     let result = await isolateWrap(_opt);
+    let fl=await fs.readFile(path.join(metaDir,worker_id));
+    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(":",": ")+"---\n"));
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
@@ -109,12 +115,10 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
     //const timeLimitCeil = Math.ceil(timeLimit);
     const timeLimitCeil = timeLimit;
 
-    let result;
-
     const opt = {
         cg:true,
         "box-id": worker_id,
-        meta: '/dev/stdout',
+        meta: path.join(metaDir,worker_id),
         mem: 1<<20,
         time: timeLimitCeil,
         "wall-time": timeLimitCeil*2,
@@ -135,7 +139,9 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
         ...args,
     ];
 
-    result = await isolateWrap(_opt);
+    let result = await isolateWrap(_opt);
+    let fl=await fs.readFile(path.join(metaDir,worker_id));
+    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(":",": ")+"---\n"));
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
