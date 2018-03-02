@@ -2,7 +2,8 @@ import sleep from 'sleep-promise';
 import {TimeoutError, InvalidOperationError} from 'common-errors';
 
 export default class Worker {
-    constructor(timeout=30) {
+    constructor(_id,timeout=30) {
+        this.id=_id;
         this.isIdle = true;
         this.timeoutMs = timeout * 1000;
         this.ret = null;
@@ -25,7 +26,7 @@ export default class Worker {
         if (!this.isIdle) throw InvalidOperationError('Runner not finished.');
         this.isIdle = false;
         this.ret = null;
-        return taskFactory().then((ret) => {
+        return taskFactory(this.id).then((ret) => {
             this.ret = ret;
             this.isIdle = true;
         }).catch(e => {

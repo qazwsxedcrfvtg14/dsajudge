@@ -1,13 +1,13 @@
 import fs from 'fs-promise';
 import config from '/config';
 import errors from 'common-errors';
-import {compile, run} from './shik';
+import {compile, run, reset} from './isolate';
 import Result from '/model/result';
 import logger from '/logger';
 import path from 'path';
 import _ from 'lodash';
-import {promisify} from 'bluebird';
-import temp from 'temp';
+//import {promisify} from 'bluebird';
+//import temp from 'temp';
 import Worker from './pool';
 
 const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
@@ -55,13 +55,14 @@ async function mkdir777(dir) {
 }
 
 const GPP = [
-    'g++',
-    '-std=c++14',
+    '/usr/bin/env',
+    'gcc',
     '-static',
     '-O2',
 ];
 
-
+const isolateDir = "/tmp/isolate/";
+const compileBoxId = 999;
 export default class Judger {
     constructor(sub) {
         this.sub = sub;
@@ -81,17 +82,20 @@ export default class Judger {
         this.sub._result = this.result._id;
         this.sub.save();
     }
-    async prepareCpp() {
-        this.rootDir = await promisify(temp.mkdir)({dir: JAIL});
-        await fs.chmod(this.rootDir, 0o777);
-        this.userDir = path.join(this.rootDir, 'user');
-        await mkdir777(this.userDir);
+    async prepareUserCpp() {
+        await reset(compileBoxId);
+        this.rootDir=path.join(isolateDir,compileBoxId.toString(),'box');
+        //this.userDir = path.join(this.rootDir, 'user');
+        this.userDir = this.rootDir;
+        //await mkdir777(this.userDir);
         this.userCpp = await copyToDir(this.userCpp, this.userDir, 'user.cpp');
+    }
+    async prepareCheckerCpp() {
         this.checkerCpp = await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
         await copyToDir(TESTLIB, this.rootDir);
     }
     async compileUser() {
-        const result = await compile(this.userDir, 'user.cpp', 'user', GPP);
+        const result = await compile(compileBoxId, 'user.cpp', 'user', GPP);
         if (result.RE) {
             saveResult(this.result, 'CE');
             await copyToDir(
@@ -105,7 +109,7 @@ export default class Judger {
         return true;
     }
     async compileChecker() {
-        const result = await compile(this.rootDir, 'checker.cpp', 'checker', GPP);
+        const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP);
         if (result.RE) {
             throw Error('Judge Error: Checker Compiled Error.');
         }
@@ -135,15 +139,22 @@ export default class Judger {
     }
 
     generateTask(gid, groupResult, tid, testResult) {
-        return async () => {
+        return async (worker_id) => {
             await (async () => {
-                const gidtid = [gid.toString(), tid.toString()];
-                const userTDir = path.join(this.userDir, ...gidtid); 
-                const userRes = await run(userTDir, 'user', 
+
+                reset(worker_id);
+                const test = this.groups[gid].tests[tid];
+                const tdBase = path.join(this.problemDir, 'testdata', test);
+                const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
+                const userTDir = path.join(isolateDir,worker_id.toString(),'box');
+                await copyToDir(inp, userTDir, 'prob.in');
+                await copyToDir(this.userExec, userTDir);
+
+                const userRes = await run(worker_id, 'user', 
                     'prob.in', 'prob.out', 'prob.err', 
                     this.problem.timeLimit);
 
-                testResult.runtime = userRes.cpu_time_usage;
+                testResult.runtime = userRes.time;
                 if (userRes.RE) {
                     await saveResult(testResult, 'RE');
                     return;
@@ -153,14 +164,20 @@ export default class Judger {
                     await saveResult(testResult, 'TLE');
                     return;
                 }
+
+                
+                await copyToDir(outp, userTDir, 'prob.ans');
+                await copyToDir(this.checkerExec, userTDir);
+                
+
                 const files = [
-                    path.join('user', ...gidtid, 'prob.in'),
-                    path.join('user', ...gidtid, 'prob.out'),
-                    path.join(...gidtid, 'prob.ans'),
+                    'prob.in',
+                    'prob.out',
+                    'prob.ans',
                 ];
-                const checkerRes = await run(this.rootDir, 'checker', 
-                    null, path.join(...gidtid, 'checker.out'), path.join(...gidtid, 'checker.err'),
-                    30, 1<<30, files);
+                const checkerRes = await run(worker_id, 'checker', 
+                    null, 'checker.out', 'checker.err',
+                    20, 1<<23, files);
 
                 if (checkerRes.TLE) {
                     throw new Error('Judge Error: Checker TLE.');
@@ -221,7 +238,7 @@ export default class Judger {
     async runAndCheck() {
         const workers = [];
         for (let i=0; i<config.maxWorkers; i++) {
-            workers.push(new Worker());
+            workers.push(new Worker(i));
         }
 
         let error = null;
@@ -256,14 +273,17 @@ export default class Judger {
             logger.info('Preparing...');
             await this.prepare();
 
-            logger.info('Preparing Cpp...');
-            await this.prepareCpp();
+            logger.info('Preparing User Cpp...');
+            await this.prepareUserCpp();
 
             logger.info('Compiling User Cpp...');
             const compileFlag = await this.compileUser();
             if (!compileFlag) {
                 return this.result;
             }
+
+            logger.info('Preparing Checker Cpp...');
+            await this.prepareCheckerCpp();
 
             logger.info('Compiling Checker Cpp...');
             await this.compileChecker();
