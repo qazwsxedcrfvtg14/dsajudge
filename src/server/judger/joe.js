@@ -99,7 +99,7 @@ export async function compile(worker_id, cppFile, execName, GPP) {
 
     let result = await isolateWrap(_opt);
     let fl=await fs.readFile(path.join(metaDir,worker_id.toString()));
-    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"---\n"));
+    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"...\n"));
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
@@ -141,7 +141,7 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
 
     let result = await isolateWrap(_opt);
     let fl=await fs.readFile(path.join(metaDir,worker_id.toString()));
-    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"---\n"));
+    result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"...\n"));
     if(result.status=="RE")
         result.RE=true;
     if(result.status=="SG")
