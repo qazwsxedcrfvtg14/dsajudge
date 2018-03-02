@@ -77,7 +77,7 @@ export async function compile(worker_id, cppFile, execName, GPP) {
     const opt = {
         cg:true,
         "box-id": worker_id,
-        meta: path.join(metaDir,worker_id),
+        meta: path.join(metaDir,worker_id.toString()),
         mem: 1<<20,
         "cg-mem": 1<<20,
         time: 20,
@@ -118,7 +118,7 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
     const opt = {
         cg:true,
         "box-id": worker_id,
-        meta: path.join(metaDir,worker_id),
+        meta: path.join(metaDir,worker_id.toString()),
         mem: 1<<20,
         time: timeLimitCeil,
         "wall-time": timeLimitCeil*2,
