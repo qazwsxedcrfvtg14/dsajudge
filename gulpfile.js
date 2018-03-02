@@ -106,6 +106,19 @@ gulp.task('zbox:cp', (next) => {
     next();
 });
 
+
+const isolateMake = new $.run.Command('make', {cwd: './isolate'});
+gulp.task('isolate:make', (next) => {
+    isolateMake.exec();
+    next();
+});
+
+gulp.task('isolate:cp', (next) => {
+    gulp.src('./isolate/isolate')
+        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
+    next();
+});
+
 const mkJail = new $.run.Command('mkdir jail', {cwd: path.join(CONFIG.dist.base, 'judger')});
 gulp.task('zbox:mkjail', (next) => {
     mkJail.exec();
@@ -113,6 +126,7 @@ gulp.task('zbox:mkjail', (next) => {
 });
 
 gulp.task('zbox', $.sequence(['make', 'cp', 'mkjail'].map(x => `zbox:${x}`)));
+gulp.task('isolate', $.sequence(['make', 'cp'].map(x => `isolate:${x}`)));
 
 gulp.task('cfiles', () => {
     gulp.src(path.join(CONFIG.cfiles, '**', '*'))
@@ -125,7 +139,7 @@ gulp.task('clean', () => {
 
 gulp.task('semantic', semantic);
 
-gulp.task('init', ['semantic', 'libs', 'links', 'zbox']);
+gulp.task('init', ['semantic', 'libs', 'links', 'zbox', 'isolate']);
 
 gulp.task('build', ['webpack', 'pug', 'server-js', 'images']);
 
