@@ -123,26 +123,7 @@ export default class Judger {
         this.checkerExec = path.join(this.rootDir, 'checker');
     }
     async prepareFiles() {
-        for (let [gid, group] of this.groups.entries()) {
-            const userGDir = path.join(this.userDir, `${gid}`);
-            const checkerGDir = path.join(this.rootDir, `${gid}`);
-            await mkdir777(userGDir);
-            await mkdir777(checkerGDir);
-            for (let [tid, test] of group.tests.entries()) {
-                const userTDir = path.join(userGDir, `${tid}`);
-                const checkerTDir = path.join(checkerGDir, `${tid}`);
-                const tdBase = path.join(this.problemDir, 'testdata', test);
-                const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`); 
-                // Copy input file
-                await mkdir777(userTDir, 0o777);
-                await copyToDir(inp, userTDir, 'prob.in');
-                // Copy ans file
-                await mkdir777(checkerTDir, 0o777);
-                await copyToDir(outp, checkerTDir, 'prob.ans');
-                // Copy user exec
-                await copyToDir(this.userExec, userTDir);
-            }
-        }
+        return ;
     }
 
     generateTask(gid, groupResult, tid, testResult) {
