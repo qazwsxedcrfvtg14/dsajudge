@@ -266,7 +266,7 @@ export default class Judger {
         await this.result.save();
     }
     async cleanUp() {
-        if (this.rootDir) await fs.remove(this.rootDir);
+        //if (this.rootDir) await fs.remove(this.rootDir);
     }
     async go() {
         try {
