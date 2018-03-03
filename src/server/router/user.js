@@ -44,7 +44,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
     if(req.user.ssh_key!=newSshKey){
         req.user.ssh_key=newSshKey;
         await req.user.save();
-        res.send(`Password changed successfully.`);
+        res.send(`SSH Key changed successfully.`);
     }
 }));
 
