@@ -33,21 +33,43 @@ userSchema.methods.hasRole = function(role) {
 userSchema.methods.isAdmin = function() {
     return this.hasRole('admin');
 };
-userSchema.methods.checkQuota = function(problem_id){
+
+const default_quota = 5;
+
+userSchema.methods.checkQuota = function(pid){
+//	console.log(this);
 	const limit=this.submission_limit;
-	let filter_res = _.filter(limit,_.conforms({problem_id : id => id==problem_id }));
-    if (filter_res == undefined || filter_res.length == 0){
-		return false;
+	let filter_res = _.filter(limit,_.conforms({ problem_id : id => id==pid }));
+    let res ;
+	let today = new Date(Date.now());
+//	console.log("today" , today);
+
+	if (filter_res == undefined || filter_res.length == 0){
+//		console.log("add new problem record.");		
+		res={
+			problem_id: pid,
+			last_submission: today,
+			quota : default_quota-1 ,
+		};
+		this.submission_limit.push(res);
+	}else{
+		res = filter_res[0];
 	}
-	let res = filter_res[0];
-	if (Date.now().toDateString() != res.last_submission.toDateString()){
-		res.quota = 5;
-		res.last_submission = Date.now();
+//	console.log(String(today));
+//	console.log("compare ", String(today).substr(0,15), String(res.last_submission).substr(0,15));
+	if ( 	String(today).substr(0,15) != String(res.last_submission).substr(0,15)){
+
+//		console.log("charge the quota.");
+		res.quota = default_quota;
+		res.last_submission = today;
 	}
-	if (res.quota == 0){
+
+	if (res.quota < 1){
 		return false;
 	}else{
 		res.quota -= 1;
+		this.save();
+//		console.log("success");
 		return true;
 	}
 };
