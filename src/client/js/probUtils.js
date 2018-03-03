@@ -15,7 +15,7 @@ export function toHumanString(result) {
 
 export function toDisplayTime(result) {
     if (_.isUndefined(result) || _.isNull(result)) return '-';
-    if (result < 0.01) return '< 10 ms';
+    //if (result < 0.01) return '< 10 ms';
     if (result < 1) return `${result * 1000} ms`;
     return `${result} s`;
 }
