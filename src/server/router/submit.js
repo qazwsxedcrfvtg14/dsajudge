@@ -21,10 +21,11 @@ router.post('/:id', requireLogin, wrap(async (req, res) => {
 	if (!problem){
         return res.status(500).send(`Problem #${req.params.id} not found.`);
     }
-
-
-
-
+	if (req.user.isAdmin() || req.user.checkQuota(probId)){
+	//	console.log("admin or quota sufficient.");
+	}else{
+        return res.status(500).send(`Problem #${req.params.id} quota used up.`);
+	}
 
     const submission = new Submission({
         problem: problem._id,
