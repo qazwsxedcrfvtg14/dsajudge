@@ -4,8 +4,12 @@ import Homework from '/model/homework';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
 
+export const requireKey = (req, res, next) => {
+    if ( ( !req.user || !req.user.isAdmin() ) && !req.body.key) return res.status(401).send('Please use "git" to submit!');
+    next();
+};
 export const requireLogin = (req, res, next) => {
-    if (!req.user) return res.sendStatus(401);
+    if (!req.user && !req.body.key) return res.sendStatus(401);
     next();
 };
 

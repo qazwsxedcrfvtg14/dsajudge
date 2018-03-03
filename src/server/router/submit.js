@@ -5,15 +5,22 @@ import _ from 'lodash';
 import wrap from 'express-async-wrap';
 import Problem from '/model/problem';
 import Submission from '/model/submission';
-import {requireLogin} from '/utils';
+import User from '/model/user';
+import {requireLogin,requireKey} from '/utils';
 import fs from 'fs-promise';
 
 const router = express.Router();
 
-router.post('/:id', requireLogin, wrap(async (req, res) => {
+router.post('/:id', requireKey, wrap(async (req, res) => {
+    let user;
+    if(req.user)user=req.user;
+    else await User.findOne({git_upload_key: req.body.key});
+    if (!user) {
+        return res.status(403).send("User not found!");
+    }
     const probId = parseInt(req.params.id);
     let problem;
-    if (req.user && req.user.isAdmin())
+    if (user && user.isAdmin())
         problem = await Problem.findOne({_id: probId});
     else
         problem = await Problem.findOne({_id: probId, visible: true});
@@ -21,7 +28,7 @@ router.post('/:id', requireLogin, wrap(async (req, res) => {
 	if (!problem){
         return res.status(500).send(`Problem #${req.params.id} not found.`);
     }
-	if (req.user.isAdmin() || req.user.checkQuota(probId)){
+	if (user.isAdmin() || user.checkQuota(probId)){
 	//	console.log("admin or quota sufficient.");
 	}else{
         return res.status(500).send(`Problem #${req.params.id} quota used up.`);
@@ -29,7 +36,7 @@ router.post('/:id', requireLogin, wrap(async (req, res) => {
 
     const submission = new Submission({
         problem: problem._id,
-        submittedBy: req.user._id,
+        submittedBy: user._id,
         status: 'pending',
         points: 0,
     });

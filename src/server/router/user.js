@@ -3,7 +3,25 @@ import {requireLogin} from '/utils';
 import bcrypt from 'bcrypt';
 import wrap from 'express-async-wrap';
 import {promisify} from 'bluebird';
+import {execFile} from 'child_process';
 const router = express.Router();
+import randomString from 'randomstring';
+
+const GIT_CP="/home/git/cp";
+const tmpDir="/tmp/judge_git";
+const gitRepoDir="/home/git/repositories"
+const gitAdminDir="/home/git/gitosis-admin"
+
+function gitCpWrap(opt) {
+    return new Promise((resolve, reject) => {
+        execFile(GIT_CP,opt,{},
+            (err, stdout, stderr) => {
+                if (err) return reject(err);
+                resolve(_.assignIn({stdout,stderr}));
+            }
+        );
+    });
+}
 
 router.get('/me', (req, res) => {
     if (req.user) {
@@ -46,7 +64,28 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
     let changeSshKey=false;
     if(req.user.ssh_key!=newSshKey){
         try{
+            const userId=req.user.meta.id;
+            const tmpPath=path.join(tmpDir,userId);
+            await fs.writeFile(
+                tmpPath+".pub",
+                newSshKey,
+            );
+            await fs.copy(tmpPath+".pub",path.join(gitAdminDir,keydir,userId+".pub"));
+            try {
+                await fs.stat(path.join(gitRepoDir,userId+".git"));
+            } catch(e) {
+                //throw new errors.io.FileNotFoundError(file);
+                await gitCpWrap(["-r",path.join(gitRepoDir,"init.git"),path.join(gitRepoDir,userId+".git")]);
+            }
+            const magic_str=randomString.generate(20)+userId;
+            await fs.writeFile(
+                tmpPath+".key",
+                magic_str,
+            );
+            await gitCpWrap([tmpPath+".key",path.join(gitRepoDir,userId+".git","hooks","key")]);
+
             req.user.ssh_key=newSshKey;
+            req.user.git_upload_key=magic;
             await req.user.save();
             changeSshKey=true;
         } catch(e) {
