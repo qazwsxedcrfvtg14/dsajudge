@@ -15,6 +15,7 @@ const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
 const JAIL = path.join(__dirname, 'jail');
 
 const resultMap = {
+	'UQE': 8888,
     'CE': 100000,
     'RE': 10000,
     'WA': 1000,

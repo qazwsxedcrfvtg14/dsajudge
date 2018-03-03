@@ -16,6 +16,10 @@ const userSchema = Schema({
         name: String,
         id: String,
     },
+	submission_limit:{
+		last_submit: String,
+		left: Number,
+	},
     roles: [String],
 });
 
