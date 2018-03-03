@@ -24,6 +24,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
     if (!comp)
         return res.status(403).send(`Old password is not correct`);
     const newPassword = req.body['new-password'];
+    let changePassword=false;
     if(newPassword.length > 0){
         if (newPassword !== req.body['confirm-password']) 
             return res.status(400).send(`Two password are not equal.`);
@@ -35,16 +36,32 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
             const hash = await promisify(bcrypt.hash)(newPassword, 10);
             req.user.password = hash;
             await req.user.save();
+            changePassword=true;
         } catch(e) {
             return res.status(500).send(`Something bad happened... New password may not be saved.`);
         }
-        res.send(`Password changed successfully.`);
+        //res.send(`Password changed successfully.`);
     }
     const newSshKey = req.body['new-sshkey'];
+    let changeSshKey=false;
     if(req.user.ssh_key!=newSshKey){
-        req.user.ssh_key=newSshKey;
-        await req.user.save();
+        try{
+            req.user.ssh_key=newSshKey;
+            await req.user.save();
+            changeSshKey=true;
+        } catch(e) {
+            return res.status(500).send(`Something bad happened... New SSH Key may not be saved.`);
+        }
+        //res.send(`SSH Key changed successfully.`);
+    }
+    if(changePassword&&changeSshKey){
+        res.send(`Password & SSH Key changed successfully.`);
+    }else if(changePassword){
+        res.send(`Password changed successfully.`);
+    }else if(changeSshKey){
         res.send(`SSH Key changed successfully.`);
+    }else{
+        res.send(`Nothing changed.`);
     }
 }));
 
