@@ -23,7 +23,7 @@ const app = express();
 app.use(express.static('static'));
 app.use(cookieParser());
 app.use(expressSession({
-    secret: 'aabbccaabbddaaeeff',
+    secret: config.secret,
     maxAge: 1000 * 3600 * 1000,
     secure: false,
     resave: false,
@@ -40,7 +40,7 @@ auth(app);
 import setRouter from './router';
 setRouter(app);
 
-app.listen(config.port, () => logger.info(`Server start @ ${config.port}`));
+app.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
 
 import judger from '/judger';
 judger();

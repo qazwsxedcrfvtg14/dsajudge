@@ -1,5 +1,6 @@
 import path from 'path';
 export default {
+    secret: 'aabbccaabbddaaeeff',
     port: 3333,
     dirs: {
         problems: path.join(__dirname, './problems'),
