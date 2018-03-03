@@ -7,6 +7,7 @@ const RESULT_MAP = {
     'AC': 'Accepted',
     'CE': 'Compile Error',
     'RE': 'Runtime Error',
+    'GE': 'Git Error',
 };
 
 export function toHumanString(result) {

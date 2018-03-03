@@ -5,10 +5,19 @@ import {getUser} from '/store';
 import toastr from 'toastr';
 
 $.fn.form.settings.rules.emptyOrMinLength = function(value, length) {
-  return value === "" || value.length >= 8;
+  return value === "" || value.length >= length;
 };
 
 const formValidateObj = {
+    'new-sshkey': {
+        identifier: 'new-sshkey',
+        rules: [
+            {
+                type: 'emptyOrMinLength[100]',
+                prompt: `SSH key too short`,
+            },
+        ],
+    },
     'new-password': {
         identifier: 'new-password',
         rules: [
@@ -36,6 +45,9 @@ const formValidateObj = {
             },
         ],
     },
+};
+
+const formGitValidateObj = {
 };
 
 

@@ -11,7 +11,8 @@ const userSchema = Schema({
     password: {
         type: String,
         required: true,
-    },
+	},
+	ssh_key: String,
     meta: {
         name: String,
         id: String,

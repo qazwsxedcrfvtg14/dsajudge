@@ -19,22 +19,33 @@ router.get('/me', (req, res) => {
 });
 
 router.post('/changePassword', requireLogin, wrap(async (req, res) => {
-    const newPassword = req.body['new-password'];
-    if (newPassword !== req.body['confirm-password']) 
-        return res.status(400).send(`Two password are not equal.`);
-    if (newPassword.length <= 8) return res.status(400).send(`New password too short`);
-    if (newPassword.length > 30) return res.status(400).send(`New password too long`);
+
     const comp = await promisify(bcrypt.compareAsync)(req.body['current-password'], req.user.password);
-    if (!comp) return res.status(403).send(`Old password is not correct`);
-    
-    try {
-        const hash = await promisify(bcrypt.hash)(newPassword, 10);
-        req.user.password = hash;
-        await req.user.save();
-    } catch(e) {
-        return res.status(500).send(`Something bad happened... New password may not be saved.`);
+    if (!comp)
+        return res.status(403).send(`Old password is not correct`);
+    const newPassword = req.body['new-password'];
+    if(newPassword.length > 0){
+        if (newPassword !== req.body['confirm-password']) 
+            return res.status(400).send(`Two password are not equal.`);
+        if (newPassword.length <= 8)
+            return res.status(400).send(`New password too short`);
+        if (newPassword.length > 30)
+            return res.status(400).send(`New password too long`);
+        try {
+            const hash = await promisify(bcrypt.hash)(newPassword, 10);
+            req.user.password = hash;
+            await req.user.save();
+        } catch(e) {
+            return res.status(500).send(`Something bad happened... New password may not be saved.`);
+        }
+        res.send(`Password changed successfully.`);
     }
-    res.send(`Password changed successfully.`);
+    const newSshKey = req.body['new-sshkey'];
+    if(req.user.ssh_key!=newSshKey){
+        req.user.ssh_key=newSshKey;
+        await req.user.save();
+        res.send(`Password changed successfully.`);
+    }
 }));
 
 export default router;
