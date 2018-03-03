@@ -49,7 +49,7 @@ userSchema.methods.checkQuota = function(pid){
 		res={
 			problem_id: pid,
 			last_submission: today,
-			quota : default_quota,
+			quota : default_quota-1 ,
 		};
 		this.submission_limit.push(res);
 	}else{
