@@ -7,6 +7,8 @@
 
       h4.ui.dividing.header Git information 
       .field
+        label Git Repository
+        input( readonly="" type="text", :value="user ? 'git@dsa.csie.org:'+user.meta.id+'.git' : ''" )
         label SSH Public Key
         input( name="new-sshkey" placeholder="Input your SSH Key" type="text", :value="user ? user.ssh_key : ''" )
 
