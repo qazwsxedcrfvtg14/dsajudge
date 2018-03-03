@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
-
+import toastr from 'toastr';
 export default Vue.extend({
     data() {
         return { 
@@ -52,9 +52,17 @@ export default Vue.extend({
             }
 
             const uid = this.$root.user._id;
-            const result = await this.$http.post(`/submit/${this.$route.params.id}`, {
-                file: str,
-            });
+            let result;
+            try{
+                result = await this.$http.post(`/submit/${this.$route.params.id}`, {
+                    file: str,
+                });
+            } catch (e){
+                if ('body' in e)
+                    toastr.error(e.body);
+                else console.log(e);
+                return;
+            }
             this.$route.router.go({
                 name: 'submission',
                 params: {

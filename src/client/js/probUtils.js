@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 const RESULT_MAP = {
-	'UQE':'Upload Quota Exceeded',
     'JE': 'Judge Error',
     'TLE': 'Time Limit Exceeded',
     'WA': 'Wrong Answer',
