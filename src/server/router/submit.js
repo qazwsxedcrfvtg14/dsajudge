@@ -18,11 +18,11 @@ router.post('/:id', requireLogin, wrap(async (req, res) => {
     else
         problem = await Problem.findOne({_id: probId, visible: true});
     
-    console.log("Hell world");
 	if (!problem){
-        console.log("Hell worldww");
         return res.status(500).send(`Problem #${req.params.id} not found.`);
     }
+
+
 
 
 

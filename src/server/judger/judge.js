@@ -95,14 +95,14 @@ export default class Judger {
         //this.userDir = path.join(this.rootDir, 'user');
         this.userDir = this.rootDir;
         //await mkdir777(this.userDir);
-        this.userCpp = await copyToDir(this.userCpp, this.userDir, 'user.cpp');
+        this.userCpp = await copyToDir(this.userCpp, this.userDir, 'user.c');
     }
     async prepareCheckerCpp() {
         this.checkerCpp = await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
         await copyToDir(TESTLIB, this.rootDir);
     }
     async compileUser() {
-        const result = await compile(compileBoxId, 'user.cpp', 'user', GCC);
+        const result = await compile(compileBoxId, 'user.c', 'user', GCC);
         if (result.RE) {
             saveResult(this.result, 'CE');
             await copyToDir(
