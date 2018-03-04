@@ -17,7 +17,7 @@ const router = new VueRouter({
     linkActiveClass: 'active',
 });
 
-router.map({
+router.routes({
     '/': {
         component: Home,
     },
