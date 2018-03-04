@@ -115,8 +115,8 @@ gulp.task('isolate:make', (next) => {
 });
 
 gulp.task('isolate:cp', (next) => {
-    gulp.src('./isolate/isolate')
-        .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
+    //gulp.src('./isolate/isolate')
+    //    .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
     next();
 });
 
