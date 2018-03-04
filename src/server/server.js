@@ -29,7 +29,7 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
-        url: 'mongodb://localhost/adajudge',
+        url: config.mongo.url,
         touchAfter: 3600,
     }),
 }));

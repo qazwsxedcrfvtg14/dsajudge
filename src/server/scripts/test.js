@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-//mongoose.connect('mongodb://localhost/adajudge');
+import config from '/config';
+//mongoose.connect(config.mongo.url);
 import User from './user';
 import Problem from './problem';
 import bcrypt from 'bcrypt';
