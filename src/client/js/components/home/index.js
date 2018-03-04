@@ -37,7 +37,7 @@ export default Vue.extend({
         async newHomework() {
             let id;
             try {
-                id = (await this.$http.put('/admin/homework/')).data;
+                id = (await this.$http.put('/admin/homework/')).data.id;
             } catch(e) {
                 if (e.body) toastr.error(e.body);
                 else toastr.error(e);
