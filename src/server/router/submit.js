@@ -14,7 +14,7 @@ const router = express.Router();
 router.post('/:id', requireKey, wrap(async (req, res) => {
     let user;
     if(req.user)user=req.user;
-    else await User.findOne({git_upload_key: req.body.key});
+    else user=await User.findOne({git_upload_key: req.body.key});
     if (!user) {
         return res.status(403).send("User not found!");
     }
