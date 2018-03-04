@@ -15,4 +15,8 @@ import filters from './filters';
 import router from './router';
 
 import App from './components/root';
-router.start(App, '#App');
+
+const app = new Vue({
+    router,
+    render: h => h(App)
+}).$mount('#app');
