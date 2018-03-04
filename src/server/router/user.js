@@ -10,6 +10,7 @@ import {execFile} from 'child_process';
 const router = express.Router();
 import _ from 'lodash';
 import randomString from 'randomstring';
+import User from '/model/user';
 
 const GIT_CP="/home/git/cp";
 const tmpDir="/tmp/judge_git";
@@ -76,6 +77,9 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
         }
         newSshKey=newSshKeys[0]+" "+newSshKeys[1];
         if(req.user.ssh_key!=newSshKey){
+            if( (await User.find({ssh_key: newSshKey})).length != 0 ){
+                return res.status(403).send(`Please don't use the same SSH Key with others!`);
+            }
             try{
                 const userId=req.user.meta.id;
                 const tmpPath=path.join(tmpDir,userId);
