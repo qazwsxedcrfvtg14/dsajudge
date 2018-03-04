@@ -16,9 +16,9 @@ while True:
         f.write("members = "+name+"\n")
         f.write("writable = "+name+"\n\n")
     f.close()
-    os.system("git -C gitosis-admin add .")
-    os.system("git -C gitosis-admin commit -m update")
-    os.system("git -C gitosis-admin push")
+    os.system("git -C gitosis-admin add . >/dev/null")
+    os.system("git -C gitosis-admin commit -m update >/dev/null")
+    os.system("git -C gitosis-admin push >/dev/null >/dev/null")
     time.sleep(15)
 
 """
