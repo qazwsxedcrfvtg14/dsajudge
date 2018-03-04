@@ -4,11 +4,6 @@ import autoIncrement from './autoIncrement';
 const Schema = mongoose.Schema;
 
 const schema = Schema({
-    _id: {
-        type: Number,
-        index: true,
-        unique: true,
-    },
     name: {
         type: String,
         required: true,

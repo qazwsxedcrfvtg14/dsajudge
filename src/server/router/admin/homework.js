@@ -11,8 +11,8 @@ import winston from 'winston';
 const router = express.Router();
 
 router.put('/', wrap(async (req, res) => {
-    const homework = new Homework();
-    homework.save();
+    const homework = new Homework({});
+    await homework.save();
     res.send({
         id: homework._id,
     });

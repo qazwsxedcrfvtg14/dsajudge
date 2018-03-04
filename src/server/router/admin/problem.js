@@ -153,7 +153,7 @@ router.put('/:id/settings', wrap(async (req, res) => {
         problem.testdata.points += grp.points;
     }
 
-    problem.save();
+    await problem.save();
 
     if (desc) {
         await fs.writeFile(
