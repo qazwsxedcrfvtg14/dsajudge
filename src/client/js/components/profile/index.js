@@ -97,6 +97,9 @@ export default Vue.extend({
         this.init();
     },
     vuex: {
+        actions: {
+            userLogin,
+        },
         getters: {
             user: getUser,
         },
