@@ -61,6 +61,7 @@ router.routes = [
         path: '/admin',
         name: 'admin',
         component: Admin.index,
+        redirect: '/admin/problems',
         children: [
             {
                 path: '/problems',
@@ -93,9 +94,5 @@ router.routes = [
         component: Profile,
     }
 ];
-
-router.redirect({
-    '/admin': '/admin/problems',
-});
 
 export default router;
