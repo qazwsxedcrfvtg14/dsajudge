@@ -2,7 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import _ from 'lodash';
 import './index.css';
-import store, {userLogin, userLogout, getUser} from '/store';
+import store, {userLogin, userLogout, getUser} from 'src/js/store';
 
 const formValidateObj = {
     email: {

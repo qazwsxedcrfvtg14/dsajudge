@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import html from './index.pug';
-import marked from '/marked_mutated';
+import marked from 'src/js/marked_mutated';
 import sleep from 'sleep-promise';
-import probUtils from '/mixins/probUtils';
+import probUtils from 'src/js/mixins/probUtils';
 import './index.css';
 import randomColor from 'randomcolor';
-import store, {getUser} from '/store';
+import store, {getUser} from 'src/js/store';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {

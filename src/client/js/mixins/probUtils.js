@@ -1,4 +1,4 @@
-import * as probUtils from '/probUtils';
+import * as probUtils from 'src/js/probUtils';
 
 export default {
     data() {

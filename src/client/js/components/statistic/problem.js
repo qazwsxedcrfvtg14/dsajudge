@@ -2,7 +2,7 @@ import Vue from 'vue';
 import html from './problem.pug';
 import toastr from 'toastr';
 import _ from 'lodash';
-import probUtils from '/mixins/probUtils';
+import probUtils from 'src/js/mixins/probUtils';
 
 const SIGMA = 3;
 const WEIGHT = [];

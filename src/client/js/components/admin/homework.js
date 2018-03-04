@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import template from './homework.pug';
-import {errToast, okToast} from '/utils';
+import {errToast, okToast} from 'src/js/utils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import './homework.css';

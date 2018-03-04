@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import _ from 'lodash';
-import {getUser} from '/store';
+import {getUser} from 'src/js/store';
 import toastr from 'toastr';
 
 $.fn.form.settings.rules.emptyOrMinLength = function(value, length) {

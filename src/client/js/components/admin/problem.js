@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import template from './problem.pug';
-import {errToast, okToast} from '/utils';
+import {errToast, okToast} from 'src/js/utils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import './problem.css';
-import marked from '/marked_mutated';
+import marked from 'src/js/marked_mutated';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
