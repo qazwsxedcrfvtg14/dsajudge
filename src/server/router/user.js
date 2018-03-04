@@ -64,7 +64,8 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
         }
         //res.send(`Password changed successfully.`);
     }
-    const newSshKey = req.body['new-sshkey'];
+    let newSshKey = req.body['new-sshkey'];
+    newSshKey=newSshKey.trim().replace(/\n/g,"");
     let changeSshKey=false;
     if(req.user.ssh_key!=newSshKey){
         try{
@@ -72,7 +73,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
             const tmpPath=path.join(tmpDir,userId);
             await fs.writeFile(
                 tmpPath+".pub",
-                newSshKey+"\n\n",
+                newSshKey+"\n",
             );
             await fs.copy(tmpPath+".pub",path.join(gitAdminDir,"keydir",userId+".pub"));
             try {
