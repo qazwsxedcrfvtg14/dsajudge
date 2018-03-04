@@ -30,6 +30,9 @@ function gitCpWrap(opt) {
 
 router.get('/me', (req, res) => {
     if (req.user) {
+        let user=req.user;
+        delete user.git_upload_key;
+        delete user.password;
         res.send({
             login: true,
             user: req.user,
