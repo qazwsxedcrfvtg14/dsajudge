@@ -77,19 +77,19 @@ System.register(['./common', '/model/user', 'nodemailer', 'bcrypt', 'prompt', 'r
                     meta
                 });
 
-                const text = `Welcome to ADA2017, This email is just to inform you that your ADA Judge account is created.
+                const text = `Welcome to DSA2018, This email is just to inform you that your DSA Judge account is created.
 Here are your account and password.
 
 - Account: ${args.user}
 - Password: ${randPass}
 
-Head on to https://ada-judge.csie.org to try it !
+Head on to https://dsa.csie.org to try it !
 `;
 
                 const mailOptions = {
-                    from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
+                    from: '"DSA2018" <dsa@csie.ntu.edu.tw>',
                     to: args.user,
-                    subject: 'Your ADA Judge Account',
+                    subject: 'Your DSA Judge Account',
                     text
                 };
 
@@ -125,13 +125,13 @@ Head on to https://ada-judge.csie.org to try it !
 
 - Password: ${randPass}
 
-Head on to https://ada-judge.csie.org and change it.
+Head on to https://dsa.csie.org and change it.
 `;
 
                 const mailOptions = {
-                    from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
+                    from: '"DSA2018" <dsa@csie.ntu.edu.tw>',
                     to: args.user,
-                    subject: `Your ADA Judge Account's password has been reset`,
+                    subject: `Your DSA Judge Account's password has been reset`,
                     text
                 };
 
