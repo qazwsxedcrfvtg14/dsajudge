@@ -9,7 +9,6 @@ let password = bcrypt.hashSync('123123', 10);
 
 import 'babel-polyfill';
 import moment from 'moment-timezone';
-import config from '/config';
 import Homework from './homework';
 
 if (require.main === module) {
