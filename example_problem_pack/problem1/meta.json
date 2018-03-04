@@ -1,11 +1,11 @@
 {
+    "name": "A + B Problem (with git)",
     "timeLimit": 1,
     "hasSpecialJudge": false,
     "testdata":[
         {
-            "count":1,
-            "point":100,
-            "tests":["0"]
+            "points":0,
+            "tests":["0","1","2"]
         }
     ]
 }
