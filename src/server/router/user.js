@@ -72,7 +72,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
         if(newSshKeys[0]!="ssh-rsa"){
             return res.status(400).send(`Your SSH Key is not start with "ssh-rsa"`);
         }
-        if(/^[A-za-z0-9/+]+$/i.test(newSshKeys[1])){
+        if(!(/^[A-za-z0-9/+]+$/i.test(newSshKeys[1]))){
             return res.status(400).send(`Your SSH Key is not valid.`);
         }
         newSshKey=newSshKeys[0]+" "+newSshKeys[1];
