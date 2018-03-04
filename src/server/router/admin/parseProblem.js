@@ -1,5 +1,5 @@
 import config from '/config';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import path from 'path';
 import {promisify} from 'bluebird';
 import jsonfile from 'jsonfile';
@@ -17,9 +17,11 @@ async function updateMeta(id, prob) {
     }
     if (!stat.isFile()) return;
     const json = await promisify(jsonfile.readFile)(metaFile);
+    console.log('Meta file:');
     console.log(json);
 
 
+    if (_.has(json, 'name')) prob.name = _.get(json, 'name');
     if (_.has(json, 'timeLimit')) prob.timeLimit = _.get(json, 'timeLimit');
     if (_.has(json, 'hasSpecialJudge')) prob.hasSpecialJudge = _.get(json, 'hasSpecialJudge');
     if (_.has(json, 'testdata')) {

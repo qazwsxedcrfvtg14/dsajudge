@@ -7,7 +7,7 @@ import _ from 'lodash';
 import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 
 const router = express.Router();
 
@@ -74,8 +74,7 @@ async function loadCompileErr(id) {
     try {
         const buf = await fs.readFile(path.join(config.dirs.submissions, `${id}.compile.err`));
         const str = buf.toString();
-        console.log(str.length);
-        if (str.length > MAX_COMPILE_LOG_LEN) return str.slice(0, MAX_COMPILE_LOG_LEN) + '\n... [The remained was omitted]\n';
+        if (str.length > MAX_COMPILE_LOG_LEN) return str.slice(0, MAX_COMPILE_LOG_LEN) + '\n... [The remaining part is omitted]\n';
         return str;
     } catch(e) {
         return 'Compiler log unavailable.';

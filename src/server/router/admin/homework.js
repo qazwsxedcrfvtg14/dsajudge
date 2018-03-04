@@ -5,7 +5,7 @@ import Problem from '/model/problem';
 import Homework from '/model/homework';
 import {requireAdmin} from '/utils';
 import path from 'path';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import winston from 'winston';
 
 const router = express.Router();

@@ -77,17 +77,17 @@ const addUser = async (args, transporter) => {
 
 
     const text = (
-`Welcome to ADA2016, This email is just to inform you that your ADA Judge account is created.
+`Welcome to ADA2017, This email is just to inform you that your ADA Judge account is created.
 Here are your account and password.
 
 - Account: ${args.user}
 - Password: ${randPass}
 
-Head on to https://ada01-judge.csie.org to try it !
+Head on to https://ada-judge.csie.org to try it !
 ` );
 
     const mailOptions = {
-        from: '"ADA2016" <ada01@csie.ntu.edu.tw>',
+        from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
         to: args.user,
         subject: 'Your ADA Judge Account',
         text,
@@ -126,13 +126,13 @@ const resetUser = async (args, transporter) => {
 
 - Password: ${randPass}
 
-Head on to https://ada01-judge.csie.org and change it.
+Head on to https://ada-judge.csie.org and change it.
 ` );
 
     const mailOptions = {
-        from: '"ADA2016" <ada01@csie.ntu.edu.tw>',
+        from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
         to: args.user,
-        subject: `Your ADA Judge Account's password has been reset`,
+        subject: `[ADA2017]Password of your ADA Judge Account has been reset`,
         text,
     };
 
@@ -152,7 +152,7 @@ const main = async () => {
     const result = await promisify(prompt.get)({
         properties: {
             account: {
-                description: `Your NTU account, don't input @ntu.edu.tw\n (The mail would be send by your account)`,
+                description: `Your NTU account, don't input @ntu.edu.tw (The mail will be sent by your account)`,
                 pattern: /^\w+$/,
                 message: 'Input a valid NTU account',
                 required: true,

@@ -1,4 +1,4 @@
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import config from '/config';
 import errors from 'common-errors';
 import {compile, run, reset} from './joe';

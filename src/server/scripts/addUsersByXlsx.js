@@ -52,11 +52,20 @@ const main = async () => {
     const wb = XLSX.readFile(args.file);
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_csv(sheet).split('\n').slice(1);
-    const ID=4, NAME = 5, EMAIL = 8;
+
+    // Choose the correct columns according to input xls file
+    //const ID=3, NAME = 4, EMAIL = 5;
+    const ID=0, NAME = 1, EMAIL = 2;
     for (let r of rows) {
         if (!r || !r.length) break;
         const td = r.split(',');
-        await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
+        const user = {
+            email: td[EMAIL],
+            id: td[ID] || '',
+            name: td[NAME],
+        };
+      console.log(td[EMAIL], td[ID], td[NAME]);
+        //await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
     }
 
     console.log('Ended...');
@@ -79,20 +88,19 @@ const newUser = async (email, id, name, transporter) => {
     });
 
     const text = (
-`Welcome to ADA2016, This email is just to inform you that your ADA Judge account is created.
-Here are your account and password.
+`Welcome to ADA2017, this email is to inform you that your ADA Judge account has been created.
+Here is your account and temporary password. (You can change your password after logging in.)
 
 - Account: ${email}
 - Password: ${randPass}
 
-HW#0 and HW#1 would be announced soon.
-Head on to https://ada01-judge.csie.org and try it !
+Head on to https://ada-judge.csie.org and try it!
 ` );
 
     const mailOptions = {
-        from: '"ADA2016" <ada01@csie.ntu.edu.tw>',
+        from: '"ADA2017" <ada-ta@csie.ntu.edu.tw>',
         to: email,
-        subject: 'Your ADA Judge Account',
+        subject: '[ADA2017]Your ADA Judge Account',
         text,
     };
 

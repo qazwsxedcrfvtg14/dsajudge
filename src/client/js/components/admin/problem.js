@@ -4,7 +4,7 @@ import {errToast, okToast} from '/utils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import './problem.css';
-import marked from 'marked';
+import marked from '/marked_mutated';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {

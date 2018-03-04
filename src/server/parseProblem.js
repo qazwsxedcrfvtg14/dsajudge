@@ -1,5 +1,5 @@
 import config from '/config';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import path from 'path';
 import {promisify} from 'bluebird';
 import jsonfile from 'jsonfile';

@@ -9,7 +9,7 @@ export const requireKey = (req, res, next) => {
     next();
 };
 export const requireLogin = (req, res, next) => {
-    if (!req.user && !req.body.key) return res.sendStatus(401);
+    if (!req.user) return res.status(401).send(`You are not logged in`);
     next();
 };
 

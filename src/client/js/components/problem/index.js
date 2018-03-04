@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import marked from 'marked';
+import marked from '/marked_mutated';
 import sleep from 'sleep-promise';
 import probUtils from '/mixins/probUtils';
 import './index.css';

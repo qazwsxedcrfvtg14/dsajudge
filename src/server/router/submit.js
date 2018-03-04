@@ -7,7 +7,7 @@ import Problem from '/model/problem';
 import Submission from '/model/submission';
 import User from '/model/user';
 import {requireLogin,requireKey} from '/utils';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 
 const router = express.Router();
 
