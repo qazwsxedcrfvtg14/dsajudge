@@ -9,7 +9,7 @@ export default {
         gitadmin: path.join(__dirname, './gitosis-admin'),
     },
     mongo: {
-        url: 'mongodb://localhost/adajudge',
+        url: 'mongodb://localhost/dsajudge',
     },
     maxWorkers: 4,
 };
