@@ -66,7 +66,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
         //res.send(`Password changed successfully.`);
     }
     let newSshKey = req.body['new-sshkey'];
-    let newSshKeys=newSshKey.trim().replace(/\n/g,"").split("").filter(s=>s!==" ");
+    let newSshKeys=newSshKey.trim().replace(/\n/g,"").split(" ").filter(s=>s!==" ");
     let changeSshKey=false;
     if(newSshKeys.length>=2){
         if(newSshKeys[0]!="ssh-rsa"){
