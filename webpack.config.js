@@ -5,17 +5,38 @@ const cssnano = require('cssnano')({autoprefixer: false});
 const webpack = require('webpack');
 const path = require('path');
 module.exports = {
+	resolve:{
+		alias:{
+			vue: 'vue/dist/vue.js'
+		},
+		modules: [
+			path.resolve('./src/client'),
+			path.resolve('./node_modules')
+		]
+	},
     output: {
         path: path.join(__dirname, 'client'),
         filename: 'app.js',
     },
     module: {
-        preLoaders: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: 'eslint',
-            }
+                loader: 'eslint-loader',
+            },
+			{
+				test: /\.css$/,
+				use: [
+					{ loader: 'style-loader' },
+					{ loader: 'css-loader' },
+					{ loader: 'postcss-loader', options: { plugins: [precss, cssnext, cssnano] }}
+				]
+			},
+			{
+				test: /\.pug$/,
+				use: ['raw-loader', 'pug-html-loader']
+			}
         ],
         loaders: [
             {
@@ -45,9 +66,8 @@ module.exports = {
                 test: /\.json$/, 
                 loaders: ['json-loader'],
             },
-        ]
+        ],
     },
-    postcss: () => [precss, cssnext, cssnano],
     stats: {
         errorDetails: true,
     }
