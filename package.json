@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "ace-builds": "^1.2.5",
+    "ajv": "^6.2.1",
     "argparse": "^1.0.9",
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-polyfill": "^6.13.0",
@@ -93,10 +94,10 @@
     "temp": "^0.8.3",
     "toastr": "^2.1.2",
     "underscore": "^1.8.3",
-    "vue": "^1.0.27",
-    "vue-resource": "^1.0.3",
-    "vue-router": "^0.7.13",
-    "vuex": "^1.0.0-rc.2",
+    "vue": "^1.0.28",
+    "vue-resource": "1.0.3",
+    "vue-router": "0.7.13",
+    "vuex": "1.0.0-rc.2",
     "winston": "^2.2.0",
     "xlsx": "^0.12.3",
     "yamljs": "^0.3.0"
