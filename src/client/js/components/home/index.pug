@@ -2,7 +2,7 @@
   .ui.segments( v-for="hw of homeworks" )
     .ui.segment
       h2.ui.heading 
-        .ui.ribbon.label( :class="[ {running: 'purple', ended: 'red', unpublished: 'black'}[hw.status] ]",
+        .ui.ribbon.label( :class="[ {running: 'blue', ended: 'red', unpublished: 'black'}[hw.status] ]",
           style="top: -2px;" )
           | {{ hw.status | capitalize }}
         | {{ hw.name }}
@@ -78,7 +78,7 @@
 component( v-else )
   .ui.vertical.masthead.center.aligned.segment
     .ui.text.container
-      h1.ui.purple.header#main-header.menu-font
+      h1.ui.blue.header#main-header.menu-font
         p
           i.terminal.icon
           | DSA JUDGE
