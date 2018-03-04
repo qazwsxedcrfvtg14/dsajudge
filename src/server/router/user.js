@@ -1,3 +1,4 @@
+import config from '/config';
 import express from 'express';
 import {requireLogin} from '/utils';
 import bcrypt from 'bcrypt';
