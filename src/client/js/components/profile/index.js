@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import _ from 'lodash';
-import {getUser} from 'js/store';
+import {userLogin, getUser} from 'js/store';
 import toastr from 'toastr';
 
 $.fn.form.settings.rules.emptyOrMinLength = function(value, length) {
@@ -78,6 +78,10 @@ export default Vue.extend({
                             else toastr.error(err);
                         }
                         toastr.success(res.body);
+                        const result = (await this.$http.get('/user/me')).data;
+                        if (result.login) {
+                            this.userLogin(result.user);
+                        }
                         ['current', 'new', 'confirm'].forEach(x => {
                             $form.form('set value', `${x}-password`, '');
                         });
