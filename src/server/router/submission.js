@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
-    console.log(skip);
+    //console.log(skip);
     const data = await Submission
         .find({submittedBy: req.user._id})
         .sort('-_id')
@@ -27,7 +27,7 @@ async function loadCompileErr(id) {
     try {
         const buf = await fs.readFile(path.join(config.dirs.submissions, `${id}.compile.err`));
         const str = buf.toString();
-        console.log(str.length);
+        //console.log(str.length);
         if (str.length > MAX_COMPILE_LOG_LEN) return str.slice(0, MAX_COMPILE_LOG_LEN) + '\n... [The remained was omitted]\n';
         return str;
     } catch(e) {
