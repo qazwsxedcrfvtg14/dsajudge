@@ -14,10 +14,11 @@ const GIT_CP="/home/git/cp";
 const tmpDir="/tmp/judge_git";
 const gitRepoDir="/home/git/repositories";
 const gitAdminDir="/home/git/gitosis-admin";
+const gitUid=1003;
 
 function gitCpWrap(opt) {
     return new Promise((resolve, reject) => {
-        execFile(GIT_CP,opt,{},
+        execFile(GIT_CP,opt,{uid:1003},
             (err, stdout, stderr) => {
                 if (err) return reject(err);
                 resolve(_.assignIn({stdout,stderr}));
@@ -71,7 +72,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
             const tmpPath=path.join(tmpDir,userId);
             await fs.writeFile(
                 tmpPath+".pub",
-                newSshKey,
+                newSshKey+"\n\n",
             );
             await fs.copy(tmpPath+".pub",path.join(gitAdminDir,"keydir",userId+".pub"));
             try {
