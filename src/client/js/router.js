@@ -17,67 +17,82 @@ const router = new VueRouter({
     linkActiveClass: 'active',
 });
 
-router.routes({
-    '/': {
+router.routes = [
+    {
+        path: '/',
         component: Home,
     },
-    '/problems': {
+    {
+        path: '/problems',
         name: 'problems',
         component: Problems,
     },
-    '/problem/:id': {
+    {
+        path: '/problem/:id',
         name: 'problem',
         component: Problem,
     },
-    '/problem/:id/statistic': {
+    {
+        path: '/problem/:id/statistic',
         name: 'problem.statistic',
         component: ProblemStatistic,
     },
-    '/homework/:id/statistic': {
+    {
+        path: '/homework/:id/statistic',
         name: 'homework.statistic',
         component: HomeworkStatistic,
     },
-    '/submissions': {
+    {
+        path: '/submissions',
         name: 'submissions',
         component: Submissions,
     },
-    '/submission/:id': {
+    {
+        path: '/submission/:id',
         name: 'submission',
         component: Submission,
     },
-    '/submit/:id': {
+    {
+        path: '/submit/:id',
         name: 'submit',
         component: Submit,
     },
-    '/admin': {
+    {
+        path: '/admin',
         name: 'admin',
         component: Admin.index,
-        subRoutes: {
-            '/problems': {
+        children: [
+            {
+                path: '/problems',
                 component: Admin.problems,
             },
-            '/submissions': {
+            {
+                path: '/submissions',
                 name: 'admin.submissions',
                 component: Admin.submissions,
             },
-            '/homework/:id': {
+            {
+                path: '/homework/:id',
                 name: 'admin.homework',
                 component: Admin.homework,
             },
-            '/problem/:id': {
+            {
+                path: '/problem/:id',
                 name: 'admin.problem',
                 component: Admin.problem,
             },
-            '/newProblem': {
+            {
+                path: '/newProblem',
                 component: Admin.newProblem,
             },
-        },
+        ],
     },
-    '/profile': {
+    {
+        path: '/profile',
         name: 'profile',
         component: Profile,
     }
-});
+];
 
 router.redirect({
     '/admin': '/admin/problems',
