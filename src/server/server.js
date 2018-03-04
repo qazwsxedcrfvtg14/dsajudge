@@ -8,9 +8,7 @@ import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 
 import mongoose from 'mongoose';
-mongoose.connect(config.mongo.url, {
-  useMongoClient: true,
-});
+mongoose.connect(config.mongo.url);
 mongoose.Promise = Promise;
 
 import autoIncrement from 'mongoose-auto-increment';
