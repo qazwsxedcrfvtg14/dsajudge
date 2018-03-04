@@ -78,6 +78,7 @@ export default Vue.extend({
                             else toastr.error(err);
                         }
                         toastr.success(res.body);
+                        getUser();
                         ['current', 'new', 'confirm'].forEach(x => {
                             $form.form('set value', `${x}-password`, '');
                         });
