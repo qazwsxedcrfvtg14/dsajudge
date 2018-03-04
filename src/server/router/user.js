@@ -35,7 +35,7 @@ router.get('/me', (req, res) => {
         delete user.password;
         res.send({
             login: true,
-            user: req.user,
+            user: user,
         });
     } else {
         res.send({
