@@ -18,7 +18,7 @@ const gitUid=1003;
 
 function gitCpWrap(opt) {
     return new Promise((resolve, reject) => {
-        execFile(GIT_CP,opt,{uid:1003},
+        execFile(GIT_CP,opt,{},
             (err, stdout, stderr) => {
                 if (err) return reject(err);
                 resolve(_.assignIn({stdout,stderr}));
