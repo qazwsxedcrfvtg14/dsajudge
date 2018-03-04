@@ -13,8 +13,7 @@ import randomString from 'randomstring';
 const GIT_CP="/home/git/cp";
 const tmpDir="/tmp/judge_git";
 const gitRepoDir="/home/git/repositories";
-const gitAdminDir="/home/git/gitosis-admin";
-const gitUid=1003;
+const gitAdminDir=config.dirs.gitadmin;
 
 function gitCpWrap(opt) {
     return new Promise((resolve, reject) => {
