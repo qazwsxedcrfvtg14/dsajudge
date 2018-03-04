@@ -3,7 +3,7 @@ import express from 'express';
 import {requireLogin} from '/utils';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import fs from 'fs-promise';
+import fs from 'fs-extra';
 import wrap from 'express-async-wrap';
 import {promisify} from 'bluebird';
 import {execFile} from 'child_process';
