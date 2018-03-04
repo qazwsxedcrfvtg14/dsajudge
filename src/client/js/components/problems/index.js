@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
-import store, {getUser} from 'src/js/store';
+import store, {getUser} from 'js/store';
 
 export default Vue.extend({
     data() {

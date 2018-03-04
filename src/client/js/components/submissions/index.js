@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
-import probMixin from 'src/js/mixins/probUtils';
-import {ResultString} from 'src/js/block/result';
+import probMixin from 'js/mixins/probUtils';
+import {ResultString} from 'js/block/result';
 
 export default Vue.extend({
     mixins: [probMixin],

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import html from './index.pug';
-import store, {getUser} from 'src/js/store';
+import store, {getUser} from 'js/store';
 import toastr from 'toastr';
-import marked from 'src/js/marked_mutated';
+import marked from 'js/marked_mutated';
 import './index.css';
 
 export default Vue.extend({

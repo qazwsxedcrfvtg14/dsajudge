@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './submissions.pug';
-import probUtils from 'src/js/mixins/probUtils';
+import probUtils from 'js/mixins/probUtils';
 import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import _ from 'lodash';

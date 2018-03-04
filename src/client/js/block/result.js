@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import './result.css';
-import probUtils from 'src/js/mixins/probUtils';
+import probUtils from 'js/mixins/probUtils';
 
 export const ResultString = Vue.extend({
     mixins: [probUtils],
