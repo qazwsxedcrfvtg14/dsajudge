@@ -97,16 +97,16 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         if(!req.user.homeworks)req.user.homeworks=[];
         const homeworks=req.user.homeworks;
         let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
-        let res ;
+        let rs ;
         if (filter_res === undefined || filter_res.length == 0){
-            res={
+            rs={
                 homework_id: hid,
             };
-            req.user.homeworks.push(res);
+            req.user.homeworks.push(rs);
         }else{
-            res = filter_res[0];
+            rs = filter_res[0];
         }
-        res.file_name=file_name;
+        rs.file_name=file_name;
         await req.user.save();
         return res.send(`Upload successfully.`);
     } catch(e) {
