@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import html from './index.pug';
-import store, {getUser} from 'js/store';
+import store, {userLogin, getUser} from 'js/store';
 import toastr from 'toastr';
 import marked from 'js/marked_mutated';
 import _ from 'lodash';
@@ -19,6 +19,9 @@ export default Vue.extend({
     },
     store,
     vuex: {
+        actions: {
+            userLogin,
+        },
         getters: {
             user: getUser,
         }
@@ -34,6 +37,7 @@ export default Vue.extend({
     },
     methods: {
         async clickSubmit(hw_id) {
+            const me = this;
             let str;
             const files = document.getElementById('source-file'+hw_id.toString()).files;
             if (!files || !files.length) {
@@ -61,6 +65,10 @@ export default Vue.extend({
                     toastr.error(e.body);
                 else console.log(e);
                 return;
+            }
+            const result = (await me.$http.get('/user/me')).data;
+            if (result.login) {
+                me.userLogin(result.user);
             }
             console.log("done");
         },
