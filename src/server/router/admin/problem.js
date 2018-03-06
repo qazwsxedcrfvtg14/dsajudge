@@ -39,7 +39,7 @@ async function updateProblemByGzip(id, file) {
     } catch (e) {
         throw e;
     } finally {
-        fs.unlink(file.path, () => {});
+        await fs.unlink(file.path, () => {});
     }
 }
 

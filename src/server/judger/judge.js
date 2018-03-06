@@ -89,7 +89,7 @@ export default class Judger {
     }
     async prepare() {
         this.sub._result = this.result._id;
-        this.sub.save();
+        await this.sub.save();
     }
 
     generateUserCompileTask() {
@@ -297,8 +297,8 @@ export default class Judger {
         await this.result.save();
     }
     async cleanUp() {
-        if(this.userExec)fs.remove(this.userExec);
-        if(this.checkerExec)fs.remove(this.checkerExec);
+        if(this.userExec)await fs.remove(this.userExec);
+        if(this.checkerExec)await fs.remove(this.checkerExec);
         //if (this.rootDir) await fs.remove(this.rootDir);
     }
     async go(workers) {

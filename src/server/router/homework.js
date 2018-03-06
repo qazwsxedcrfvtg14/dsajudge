@@ -4,13 +4,16 @@ import Homework from '/model/homework';
 import Submission from '/model/submission';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
-import fs from 'fs';
+import fs from 'fs-extra';
 import bluebird from 'bluebird';
 import config from '/config';
 import path from 'path';
 import {requireLogin} from '/utils';
 import HomeworkResult from '/model/homeworkResult';
 import {getRank} from '/statistic/rank';
+import moment from 'moment';
+import filesize from 'filesize';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -70,26 +73,58 @@ router.get('/', requireLogin, wrap(async (req, res) => {
 }));
 
 router.get('/:id', wrap(async (req, res) => {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) return res.sendStatus(404);
-    let problem;
-    if (req.user && _.includes(req.user.roles, 'admin'))
-        problem = await Problem.findOne({_id: id});
-    else
-        problem = await Problem.findOne({_id: id, visible: true});
+    res.send("not construct");
+}));
 
-    if (!problem) {
-        return res.sendStatus(404);
+router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
+    try{
+        const hid=req.params.id;
+        const hwDir=path.join(config.dirs.homeworks, hid);
+        try {
+            await fs.stat(hwDir);
+        } catch(e) {
+            await fs.mkdir(hwDir);
+        }
+        const userDir=path.join(hwDir,req.user.meta.id);
+        try {
+            await fs.stat(userDir);
+        } catch(e) {
+            await fs.mkdir(userDir);
+        }
+        const file_name=moment(Date.now()).tz('Asia/Taipei').format('YYYY-MM-DD_HH-mm-ss')+".pdf";
+        await fs.writeFile(
+            path.join(userDir, file_name ),
+            req.body.file,
+            'base64'
+        );
+        const stats = await fs.stat(path.join(userDir,file_name));
+        const fileSizeInBytes = stats.size;
+        
+        const buffer = await fs.readFile(path.join(userDir,file_name));
+        const fsHash = crypto.createHash('sha1');
+
+        fsHash.update(buffer);
+
+        if(!req.user.homeworks)req.user.homeworks=[];
+        const homeworks=req.user.homeworks;
+        let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
+        let rs ;
+        if (filter_res === undefined || filter_res.length == 0){
+            rs={
+                homework_id: hid,
+            };
+            req.user.homeworks.push(rs);
+        }else{
+            rs = filter_res[0];
+        }
+        rs.file_name=file_name;
+        rs.file_size=filesize(fileSizeInBytes);
+        rs.file_sha1=fsHash.digest('hex');
+        await req.user.save();
+        return res.send(`Upload successfully.`);
+    } catch(e) {
+        return res.status(500).send(`Something bad happened... Your file may not be saved.`);
     }
-
-    problem = problem.toObject();
-
-    let fl = await bluebird.promisify(fs.readFile)(
-        path.join(config.dirs.problems, req.params.id, 'prob.md'));
-
-    problem.desc = fl.toString();
-
-    res.send(problem);
 }));
 
 export default router;

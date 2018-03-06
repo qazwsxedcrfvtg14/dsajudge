@@ -65,7 +65,7 @@ const main = async () => {
             name: td[NAME],
         };
       console.log(td[EMAIL], td[ID], td[NAME]);
-        //await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
+        await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
     }
 
     console.log('Ended...');
@@ -98,21 +98,21 @@ Head on to https://dsa.csie.org and try it!
 ` );
 
     const mailOptions = {
-        from: '"DSA2018" <dsa@csie.ntu.edu.tw>',
+        from: '"DSA2018" <dsa@csie.org>',
         to: email,
         subject: '[DSA2018]Your DSA Judge Account',
         text,
     };
-
+	
     await new Promise( (resolve, reject) => {
         transporter.sendMail(mailOptions, (err, result) => {
             if (err) return reject(err);
             resolve(result);
         });
     } );
-
-    await user.save();
-    console.log(`User ${email} successfully added`);
+    //await user.save();
+    
+	console.log(`User ${email} successfully added`);
 };
 
 if (require.main === module) {

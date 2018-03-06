@@ -28,7 +28,7 @@ router.post('/:id', requireKey, wrap(async (req, res) => {
 	if (!problem){
         return res.status(500).send(`Problem #${req.params.id} not found.`);
     }
-	if (user.isAdmin() || user.checkQuota(probId)){
+	if (user.isAdmin() || await user.checkQuota(probId)){
 	//	console.log("admin or quota sufficient.");
 	}else{
         return res.status(500).send(`Problem #${req.params.id} quota used up.`);
