@@ -89,7 +89,7 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         } catch(e) {
             await fs.mkdir(userDir);
         }
-        const file_name=moment(Date.now()).tz('Asia/Taipei').format('YYYY/MM/DD HH:mm:ss')+".pdf";
+        const file_name=moment(Date.now()).tz('Asia/Taipei').format('YYYY-MM-DD_HH-mm-ss')+".pdf";
         await fs.writeFile(
             path.join(userDir, file_name ),
             req.body.file,
