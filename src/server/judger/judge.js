@@ -136,7 +136,7 @@ export default class Judger {
 
     async compileUser(workers) {
         let error = null;
-        const task = generateUserCompileTask();
+        const task = this.generateUserCompileTask();
         const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
         worker.run(task, (err) => {
             if (err) {
@@ -152,7 +152,7 @@ export default class Judger {
     }
     async compileChecker(workers) {
         let error = null;
-        const task = generateCheckerCompileTask();
+        const task = this.generateCheckerCompileTask();
         const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
         worker.run(task, (err) => {
             if (err) {
