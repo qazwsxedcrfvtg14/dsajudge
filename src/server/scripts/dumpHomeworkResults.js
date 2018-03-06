@@ -42,7 +42,7 @@ const main = async () => {
     if (cnt % 100 == 0) console.log(`Updated ${cnt}/${len}`);
   }
 
-  fs.writeFile('result.csv', output, (err) => {
+  await fs.writeFile('result.csv', output, (err) => {
     if (err) throw err;
 
     console.log('done');
