@@ -45,7 +45,7 @@
       div( v-html="hw.desc | marked" )
       
     .ui.segment
-      h3.ui.header Non Programming
+      h3.ui.header Non Programming Problems
       label.ui.icon.button( v-bind:for="'source-file'+hw._id" )
         i.file.icon
         | Choose File
@@ -67,7 +67,7 @@
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_sha1 }}
 
     .ui.segment
-      h3.ui.header Problems
+      h3.ui.header Programming Problems
       table.ui.celled.table.selectable.pointer
         thead
           tr
