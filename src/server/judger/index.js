@@ -8,6 +8,8 @@ import sleep from 'sleep-promise';
 import _ from 'lodash';
 import logger from '/logger';
 import Judge from './judge';
+import config from '/config';
+import Worker from './pool';
 import {lazyUpdateHomeworkResult, updateProblemResult} from '/statistic';
 
 async function updateStatistic(sub) {
@@ -22,8 +24,7 @@ async function updateStatistic(sub) {
         await lazyUpdateHomeworkResult(hw, sub);
     }
 }
-
-async function startJudge(sub) {
+async function prepareJudge(sub) {
     sub.status = 'judging';
     sub.result = null;
     sub.judgeTs = Date.now();
@@ -34,12 +35,13 @@ async function startJudge(sub) {
         }
     }
     await sub.save();
-
+}
+async function startJudge(sub, workers) {
     let result;
     try {
         logger.info(`judging #${sub._id}`);
         const judge = new Judge(sub);
-        result = await judge.go();
+        result = await judge.go(workers);
     } catch(e) {
         sub.status = 'error';
         sub.result = 'JE';
@@ -62,6 +64,12 @@ async function startJudge(sub) {
 }
 
 async function mainLoop() {
+
+    const workers = [];
+    for (let i=0; i<config.maxWorkers; i++) {
+        workers.push(new Worker(i));
+    }
+
     while (true) {
         const pending = await (
             Submission.findOne({status: 'pending'})
@@ -71,8 +79,8 @@ async function mainLoop() {
             await sleep(1000);
             continue;
         }
-
-        await startJudge(pending);
+        await prepareJudge(pending);
+        startJudge(pending, workers);
         await sleep(50);
     }
 }

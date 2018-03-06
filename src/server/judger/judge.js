@@ -12,7 +12,7 @@ import Worker from './pool';
 
 const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
 const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
-const JAIL = path.join(__dirname, 'jail');
+const CTMP = path.join('/tmp', 'judge-comp');
 
 const resultMap = {
     'CE': 100000,
@@ -69,7 +69,7 @@ const GPP = [
 ];
 
 const isolateDir = "/tmp/isolate/";
-const compileBoxId = 999;
+//const compileBoxId = 999;
 export default class Judger {
     constructor(sub) {
         this.sub = sub;
@@ -89,38 +89,81 @@ export default class Judger {
         this.sub._result = this.result._id;
         this.sub.save();
     }
-    async prepareUserCpp() {
-        await reset(compileBoxId);
-        this.rootDir=path.join(isolateDir,compileBoxId.toString(),'box');
-        //this.userDir = path.join(this.rootDir, 'user');
-        this.userDir = this.rootDir;
-        //await mkdir777(this.userDir);
-        this.userCpp = await copyToDir(this.userCpp, this.userDir, 'user.c');
+
+    generateUserCompileTask() {
+        return async (compileBoxId) => {
+            await (async () => {
+                await reset(compileBoxId);
+                this.rootDir=path.join(isolateDir,compileBoxId.toString(),'box');
+                await copyToDir(this.userCpp, this.rootDir, 'user.c');
+
+                const result = await compile(compileBoxId, 'user.c', 'user', GCC);
+                if (result.RE) {
+                    saveResult(this.result, 'CE');
+                    await copyToDir(
+                        path.join(this.rootDir, 'compile.err'),
+                        config.dirs.submissions,
+                        `${this.sub._id}.compile.err`,
+                    );
+                    return false;
+                }
+                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub);
+                this.userExec = path.join(CTMP,this.sub);
+                return true;
+            })();
+        };
     }
-    async prepareCheckerCpp() {
-        this.checkerCpp = await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
-        await copyToDir(TESTLIB, this.rootDir);
+
+    generateCheckerCompileTask() {
+        return async (compileBoxId) => {
+            await (async () => {
+                await reset(compileBoxId);
+                
+                this.rootDir=path.join(isolateDir,compileBoxId.toString(),'box');
+                await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
+                await copyToDir(TESTLIB, this.rootDir);
+
+                const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP);
+                if (result.RE) {
+                    throw Error('Judge Error: Checker Compiled Error.');
+                }
+                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub+'_checker');
+                this.checkerExec = path.join(CTMP,this.sub+'_checker');
+                return true;
+            })();
+        };
     }
-    async compileUser() {
-        const result = await compile(compileBoxId, 'user.c', 'user', GCC);
-        if (result.RE) {
-            saveResult(this.result, 'CE');
-            await copyToDir(
-                path.join(this.userDir, 'compile.err'),
-                config.dirs.submissions,
-                `${this.sub._id}.compile.err`,
-            );
-            return false;
+
+    async compileUser(workers) {
+        let error = null;
+        const task = generateUserCompileTask();
+        const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
+        worker.run(task, (err) => {
+            if (err) {
+                logger.error(`Judge error @ ${taskID}`, err);
+                error = err;
+            }
+        });
+        await worker.finish();
+        if (error) {
+            throw Error('Judge error when running.');
         }
-        this.userExec = path.join(this.userDir, 'user');
-        return true;
+        return Boolean(this.userExec);
     }
-    async compileChecker() {
-        const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP);
-        if (result.RE) {
-            throw Error('Judge Error: Checker Compiled Error.');
+    async compileChecker(workers) {
+        let error = null;
+        const task = generateCheckerCompileTask();
+        const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
+        worker.run(task, (err) => {
+            if (err) {
+                logger.error(`Judge error @ ${taskID}`, err);
+                error = err;
+            }
+        });
+        await worker.finish();
+        if (error) {
+            throw Error('Judge error when running.');
         }
-        this.checkerExec = path.join(this.rootDir, 'checker');
     }
     async prepareFiles() {
         return ;
@@ -136,7 +179,7 @@ export default class Judger {
                 const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
                 const userTDir = path.join(isolateDir,worker_id.toString(),'box');
                 await copyToDir(inp, userTDir, 'prob.in');
-                await copyToDir(this.userExec, userTDir);
+                await copyToDir(this.userExec, userTDir, 'user');
 
                 const userRes = await run(worker_id, 'user', 
                     'prob.in', 'prob.out', 'prob.err', 
@@ -155,7 +198,7 @@ export default class Judger {
 
                 
                 await copyToDir(outp, userTDir, 'prob.ans');
-                await copyToDir(this.checkerExec, userTDir);
+                await copyToDir(this.checkerExec, userTDir, 'checker');
                 
 
                 const files = [
@@ -223,15 +266,13 @@ export default class Judger {
         }
         await this.result.save();
     }
-    async runAndCheck() {
-        const workers = [];
-        for (let i=0; i<config.maxWorkers; i++) {
-            workers.push(new Worker(i));
-        }
+    async runAndCheck(workers) {
 
         let error = null;
+        let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
             const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
+            run_workers.push(worker);
             worker.run(task, (err) => {
                 if (err) {
                     logger.error(`Judge error @ ${taskID}`, err);
@@ -240,7 +281,7 @@ export default class Judger {
             });
             if (error) break;
         }
-        await Promise.all(workers.map(x => x.finish()));
+        await Promise.all(run_workers.map(x => x.finish()));
         if (error) {
             throw Error('Judge error when running.');
         }
@@ -254,27 +295,23 @@ export default class Judger {
         await this.result.save();
     }
     async cleanUp() {
+        if(this.userExec)fs.remove(this.userExec);
+        if(this.checkerExec)fs.remove(this.checkerExec);
         //if (this.rootDir) await fs.remove(this.rootDir);
     }
-    async go() {
+    async go(workers) {
         try {
             logger.info('Preparing...');
             await this.prepare();
 
-            logger.info('Preparing User Cpp...');
-            await this.prepareUserCpp();
-
             logger.info('Compiling User Cpp...');
-            const compileFlag = await this.compileUser();
+            const compileFlag = await this.compileUser(workers);
             if (!compileFlag) {
                 return this.result;
             }
 
-            logger.info('Preparing Checker Cpp...');
-            await this.prepareCheckerCpp();
-
             logger.info('Compiling Checker Cpp...');
-            await this.compileChecker();
+            await this.compileChecker(workers);
 
             logger.info('Preparing Files...');
             await this.prepareFiles();
@@ -283,7 +320,7 @@ export default class Judger {
             await this.loadTasks();
 
             logger.info('Finally, Run and Check...');
-            await this.runAndCheck();
+            await this.runAndCheck(workers);
 
             return this.result;
         } catch(e) {
