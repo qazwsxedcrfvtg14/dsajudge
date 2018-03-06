@@ -65,7 +65,7 @@ const main = async () => {
             name: td[NAME],
         };
       console.log(td[EMAIL], td[ID], td[NAME]);
-        await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
+      await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
     }
 
     console.log('Ended...');
