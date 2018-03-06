@@ -96,8 +96,8 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
             req.body.file,
             'base64'
         );
-        const stats = await fs.stat(path.join(userDir,file_name))
-        const fileSizeInBytes = stats.size
+        const stats = await fs.stat(path.join(userDir,file_name));
+        const fileSizeInBytes = stats.size;
         if(!req.user.homeworks)req.user.homeworks=[];
         const homeworks=req.user.homeworks;
         let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
