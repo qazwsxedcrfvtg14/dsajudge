@@ -140,7 +140,7 @@ export default class Judger {
         const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
         worker.run(task, (err) => {
             if (err) {
-                logger.error(`Judge error @ ${taskID}`, err);
+                logger.error(`Judge error @ compileUser`, err);
                 error = err;
             }
         });
@@ -156,7 +156,7 @@ export default class Judger {
         const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
         worker.run(task, (err) => {
             if (err) {
-                logger.error(`Judge error @ ${taskID}`, err);
+                logger.error(`Judge error @ compileChecker`, err);
                 error = err;
             }
         });
