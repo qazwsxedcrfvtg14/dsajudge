@@ -10,6 +10,7 @@ export default Vue.extend({
     data() {
         return { 
             homeworks: [ ],
+            filename: [ ],
         };
     },
     template: html,

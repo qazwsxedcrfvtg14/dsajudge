@@ -49,8 +49,8 @@
       label.ui.icon.button( v-bind:for="'source-file'+hw._id" )
         i.file.icon
         | Choose File
-      input(type="file" v-model="filename" v-bind:id="'source-file'+hw._id")
-      span.filename-text {{ filename | getPath }}
+      input(type="file" v-model="filename[hw._id]" v-bind:id="'source-file'+hw._id")
+      span.filename-text {{ filename[hw,_id] | getPath }}
       a.ui.right.floated.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
         i.send.icon
         | Upload
