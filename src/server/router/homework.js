@@ -74,7 +74,7 @@ router.get('/:id', wrap(async (req, res) => {
     res.send("not construct");
 }));
 
-router.get('/:id/submit', requireLogin, wrap(async (req, res) => {
+router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
     try{
         const hid=req.params.id;
         const hwDir=path.join(config.dirs.homeworks, hid);
