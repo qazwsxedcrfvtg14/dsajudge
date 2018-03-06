@@ -7,6 +7,7 @@ export default {
         submissions: path.join(__dirname, './submissions'),
         cfiles: path.join(__dirname, './cfiles'),
         gitadmin: path.join(__dirname, './gitosis-admin'),
+        homeworks: path.join(__dirname, './homeworks'),
     },
     mongo: {
         url: 'mongodb://localhost/dsajudge',
