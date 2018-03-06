@@ -18,12 +18,16 @@ const userSchema = Schema({
         name: String,
         id: String,
     },
-	submission_limit:[{
+	submission_limit: [{
 		problem_id:Number,
 		last_submission:Date,
 		quota:Number,
 	}],
-    roles: [String],
+	roles: [String],
+	homeworks: [{
+		homework_id: Number,
+		file_name: Date,
+	}],
 });
 
 userSchema.methods.hasRole = function(role) {
