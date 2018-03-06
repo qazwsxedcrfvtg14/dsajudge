@@ -52,7 +52,7 @@ export default Vue.extend({
                 //uploader.readAsText(file);
             } );
             const u8a=new Uint8Array(await promise);
-            str = u8a.toString();
+            str = atob(btoa(u8a));
             console.log(hw_id);
             //console.log(str);
 
