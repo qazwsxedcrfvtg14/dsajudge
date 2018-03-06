@@ -48,10 +48,10 @@ export default Vue.extend({
             const uploader = new FileReader();
             const promise = new Promise( (resolve, reject) => {
                 uploader.onload = () => resolve(uploader.result);
-                //uploader.readAsArrayBuffer(file);
-                uploader.readAsText(file);
+                uploader.readAsArrayBuffer(file);
+                //uploader.readAsText(file);
             } );
-            str = await promise;
+            str = Uint8Array(await promise);
             console.log(hw_id);
             //console.log(str);
 
