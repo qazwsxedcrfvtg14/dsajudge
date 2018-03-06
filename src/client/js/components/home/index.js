@@ -51,10 +51,9 @@ export default Vue.extend({
             console.log(hw_id);
             //console.log(str);
 
-            const uid = this.$root.user._id;
             let result;
             try{
-                result = await this.$http.post(`/homework/${this.$route.params.id}/submit`, {
+                result = await this.$http.post(`/homework/${hw_id}/submit`, {
                     file: str,
                 });
             } catch (e){
