@@ -92,4 +92,8 @@ router.get('/:id', wrap(async (req, res) => {
     res.send(problem);
 }));
 
+router.get('/:id/submit', wrap(async (req, res) => {
+    
+}));
+
 export default router;
