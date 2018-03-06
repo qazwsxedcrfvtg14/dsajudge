@@ -127,7 +127,7 @@ export default class Judger {
                 if (result.RE) {
                     throw Error('Judge Error: Checker Compiled Error.');
                 }
-                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub._id.toString()+'_checker');
+                await copyToDir(path.join(this.rootDir, 'checker'),CTMP,this.sub._id.toString()+'_checker');
                 this.checkerExec = path.join(CTMP,this.sub._id.toString()+'_checker');
                 return true;
             })();
