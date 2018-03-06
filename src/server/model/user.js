@@ -42,7 +42,7 @@ userSchema.methods.isAdmin = function() {
 
 const default_quota = 5;
 
-userSchema.methods.checkQuota = function(pid){
+userSchema.methods.checkQuota = async function(pid){
 	const limit=this.submission_limit;
 	let filter_res = _.filter(limit,_.conforms({ problem_id : id => id==pid }));
     let res ;
