@@ -51,8 +51,7 @@ export default Vue.extend({
                 uploader.readAsArrayBuffer(file);
                 //uploader.readAsText(file);
             } );
-            const u8a=new Uint8Array(await promise);
-            str = atob(btoa(u8a));
+            str = atob(btoa(new Uint8Array(await promise).reduce((data, byte) => data + String.fromCharCode(byte), '')));
             console.log(hw_id);
             //console.log(str);
 
