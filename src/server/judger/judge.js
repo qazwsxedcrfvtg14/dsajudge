@@ -107,7 +107,7 @@ export default class Judger {
                     );
                     return false;
                 }
-                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub_id.toString());
+                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub._id.toString());
                 this.userExec = path.join(CTMP,this.sub._id.toString());
                 return true;
             })();
