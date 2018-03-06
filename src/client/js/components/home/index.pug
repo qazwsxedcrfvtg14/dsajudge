@@ -57,6 +57,7 @@
       table.ui.definition.table(v-if="user && _.includes(_.map(user.homeworks,getHwId),hw._id)")
         tbody
           tr
+            td.collapsing Your File
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_name }}
 
     .ui.segment
