@@ -58,13 +58,13 @@
         tbody
           tr
             td.collapsing File Name
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_name }}
+            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_name }}
           tr
             td.collapsing File Size
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_size }}
+            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_size }}
           tr
             td.collapsing SHA-1
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_sha1 }}
+            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_sha1 }}
 
     .ui.segment
       h3.ui.header Problems
