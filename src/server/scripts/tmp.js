@@ -1,3 +1,4 @@
+/*
 System.register(['./common', '/model/user', 'nodemailer', 'bcrypt', 'prompt', 'randomstring', 'bluebird', 'lodash', 'argparse'], function (_export, _context) {
     "use strict";
 
@@ -189,3 +190,4 @@ Head on to https://dsa.csie.org and change it.
     };
 });
 
+*/
