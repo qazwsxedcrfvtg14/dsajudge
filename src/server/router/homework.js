@@ -79,13 +79,13 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         const hid=req.params.id;
         const hwDir=path.join(config.dirs.homeworks, hid);
         try {
-            stat = await fs.stat(hwDir);
+            await fs.stat(hwDir);
         } catch(e) {
             await fs.mkdir(hwDir);
         }
         const userDir=path.join(hwDir,req.user.meta.id);
         try {
-            stat = await fs.stat(userDir);
+            await fs.stat(userDir);
         } catch(e) {
             await fs.mkdir(userDir);
         }
