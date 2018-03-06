@@ -11,6 +11,7 @@ import path from 'path';
 import {requireLogin} from '/utils';
 import HomeworkResult from '/model/homeworkResult';
 import {getRank} from '/statistic/rank';
+import moment from 'moment';
 
 const router = express.Router();
 
@@ -70,30 +71,11 @@ router.get('/', requireLogin, wrap(async (req, res) => {
 }));
 
 router.get('/:id', wrap(async (req, res) => {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) return res.sendStatus(404);
-    let problem;
-    if (req.user && _.includes(req.user.roles, 'admin'))
-        problem = await Problem.findOne({_id: id});
-    else
-        problem = await Problem.findOne({_id: id, visible: true});
-
-    if (!problem) {
-        return res.sendStatus(404);
-    }
-
-    problem = problem.toObject();
-
-    let fl = await bluebird.promisify(fs.readFile)(
-        path.join(config.dirs.problems, req.params.id, 'prob.md'));
-
-    problem.desc = fl.toString();
-
-    res.send(problem);
+    res.send("not construct");
 }));
 
 router.get('/:id/submit', wrap(async (req, res) => {
-    
+
 }));
 
 export default router;
