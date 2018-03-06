@@ -107,8 +107,8 @@ export default class Judger {
                     );
                     return false;
                 }
-                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub.toString());
-                this.userExec = path.join(CTMP,this.sub.toString());
+                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub_id.toString());
+                this.userExec = path.join(CTMP,this.sub._id.toString());
                 return true;
             })();
         };
@@ -127,8 +127,8 @@ export default class Judger {
                 if (result.RE) {
                     throw Error('Judge Error: Checker Compiled Error.');
                 }
-                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub.toString()+'_checker');
-                this.checkerExec = path.join(CTMP,this.sub.toString()+'_checker');
+                await copyToDir(path.join(this.rootDir, 'user'),CTMP,this.sub._id.toString()+'_checker');
+                this.checkerExec = path.join(CTMP,this.sub._id.toString()+'_checker');
                 return true;
             })();
         };
