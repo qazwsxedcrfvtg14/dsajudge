@@ -32,7 +32,36 @@ export default Vue.extend({
     },
     methods: {
         async clickSubmit(hw_id) {
+            let str;
+            const files = document.getElementById('source-file'+hw_id.toString()).files;
+            if (!files || !files.length) {
+                this.errFile = 'A file is required.';
+                return;
+            }
+            const file = files[0];
+            const uploader = new FileReader();
+            const promise = new Promise( (resolve, reject) => {
+                uploader.onload = () => resolve(uploader.result);
+                //uploader.readAsArrayBuffer(file);
+                uploader.readAsText(file);
+            } );
+            str = await promise;
             console.log(hw_id);
+            //console.log(str);
+
+            const uid = this.$root.user._id;
+            let result;
+            try{
+                result = await this.$http.post(`/homework/submit/${this.$route.params.id}`, {
+                    file: str,
+                });
+            } catch (e){
+                if ('body' in e)
+                    toastr.error(e.body);
+                else console.log(e);
+                return;
+            }
+            console.log("done");
         },
         async fetchHomeworks() {
             if (!this.user) {
