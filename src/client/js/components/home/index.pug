@@ -43,21 +43,18 @@
     .ui.segment
       h3.ui.header Description
       div( v-html="hw.desc | marked" )
-
-########
+      
     .ui.segment
       h3.ui.header Non Programming
-      a.ui.button.right.labeled.icon.primary.button.spaced(
-        v-link="{name: 'submit', params: {id: hw._id}}" )
+      label.ui.icon.button( v-bind:for="'source-file'+hw._id" )
+        i.file.icon
+        | Choose File
+      input(type="file" v-model="filename" v-bind:id="'source-file'+hw._id")
+        span.filename-text {{ filename | getPath }}
+        .ui.error.message( v-if="errFile" ) {{ errFile }}
+      a.ui.right.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
         i.send.icon
-        | Submit
-
-            v-link="{name: 'submit', params: {id: problem._id}}" ).ui.right.labeled.icon.primary.button.spaced
-            i.send.icon
-            | Submit
-
-
-########
+        | Upload
 
     .ui.segment
       h3.ui.header Problems
