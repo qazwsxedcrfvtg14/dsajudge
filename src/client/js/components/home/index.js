@@ -40,8 +40,9 @@ export default Vue.extend({
             const me = this;
             let str;
             const fname=document.getElementById('source-file'+hw_id.toString()).value;
-            if(/^.*\.pdf$/i.test(fname)){
+            if(!(/^.*\.pdf$/i.test(fname))){
                 toastr.error("Only allow pdf file.");
+                return ;
             }
             const files = document.getElementById('source-file'+hw_id.toString()).files;
             if (!files || !files.length) {
