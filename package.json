@@ -68,6 +68,7 @@
     "express": "^4.14.0",
     "express-async-wrap": "^1.0.0",
     "express-session": "^1.14.1",
+    "filesize": "^3.6.0",
     "fs-extra": "^5.0.0",
     "gulp-run": "^1.7.1",
     "gulp-sequence": "^1.0.0",
