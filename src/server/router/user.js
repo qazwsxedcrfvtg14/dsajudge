@@ -36,6 +36,7 @@ router.get('/me', (req, res) => {
         user.roles=req.user.roles;
         user.email=req.user.email;
         user.ssh_key=req.user.ssh_key;
+        user.homeworks=req.user.homeworks;
         res.send({
             login: true,
             user: user,
