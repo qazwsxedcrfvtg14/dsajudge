@@ -3,6 +3,7 @@ import html from './index.pug';
 import store, {getUser} from 'js/store';
 import toastr from 'toastr';
 import marked from 'js/marked_mutated';
+import _ from 'lodash';
 import './index.css';
 
 export default Vue.extend({
