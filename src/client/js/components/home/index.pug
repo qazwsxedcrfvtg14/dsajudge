@@ -54,10 +54,10 @@
       a.ui.right.floated.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
         i.send.icon
         | Upload
-      table.ui.definition.table(v-if="_.includes(_.map(user.homeworks,(val)=>val.homework_id),hw._id)")
+      table.ui.definition.table(v-if="user && _.includes(_.map(user.homeworks,getHwId),hw._id)")
         tbody
           tr
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,(val)=>val.homework_id) , val=>val==hw._id )].file_name }}
+            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_name }}
 
     .ui.segment
       h3.ui.header Problems

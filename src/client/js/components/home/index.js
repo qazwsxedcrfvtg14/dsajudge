@@ -109,6 +109,12 @@ export default Vue.extend({
             else if (pr < 1.0 / 4) s = 'bronze';
             return s ? `images/medal_${s}.jpg` : null; 
         },
+        getHwId(hw) {
+            return hw.homework_id; 
+        },
+        checkHwId(hwid) {
+            return id=>hwid==id; 
+        },
     },
     watch: {
         user() {
