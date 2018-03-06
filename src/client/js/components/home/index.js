@@ -31,6 +31,9 @@ export default Vue.extend({
         }
     },
     methods: {
+        async clickSubmit(hw_id) {
+            console.log(hw_id);
+        },
         async fetchHomeworks() {
             if (!this.user) {
                 this.homeworks = [];
