@@ -110,7 +110,7 @@ Head on to https://dsa.csie.org and try it!
             resolve(result);
         });
     } );
-    //await user.save();
+    await user.save();
     
 	console.log(`User ${email} successfully added`);
 };
