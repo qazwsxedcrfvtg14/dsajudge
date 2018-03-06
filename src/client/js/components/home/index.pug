@@ -57,13 +57,13 @@
       table.ui.definition.table(v-if="user && _.includes(_.map(user.homeworks,getHwId),hw._id)")
         tbody
           tr
-            td.collapsing Your File
+            td.collapsing File Name
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_name }}
           tr
-            td.collapsing Your File
+            td.collapsing File Size
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_size }}
           tr
-            td.collapsing Your File
+            td.collapsing SHA-1
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_sha1 }}
 
     .ui.segment
