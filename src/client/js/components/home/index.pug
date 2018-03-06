@@ -50,7 +50,7 @@
         i.file.icon
         | Choose File
       input(type="file" v-model="filename[hw._id]" v-bind:id="'source-file'+hw._id")
-      span.filename-text {{ filename[hw,_id] | getPath }}
+      span.filename-text {{ filename[hw._id] | getPath }}
       a.ui.right.floated.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
         i.send.icon
         | Upload
