@@ -93,6 +93,7 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         await fs.writeFile(
             path.join(userDir, file_name ),
             req.body.file,
+            'base64'
         );
         if(!req.user.homeworks)req.user.homeworks=[];
         const homeworks=req.user.homeworks;
