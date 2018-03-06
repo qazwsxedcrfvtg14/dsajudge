@@ -51,7 +51,8 @@ export default Vue.extend({
                 uploader.readAsArrayBuffer(file);
                 //uploader.readAsText(file);
             } );
-            str = new Uint8Array(await promise);
+            const u8a=new Uint8Array(await promise);
+            str = u8a.toString();
             console.log(hw_id);
             //console.log(str);
 
