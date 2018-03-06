@@ -51,7 +51,7 @@
         | Choose File
       input(type="file" v-model="filename" v-bind:id="'source-file'+hw._id")
       span.filename-text {{ filename | getPath }}
-      a.ui.right.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
+      a.ui.right.floated.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
         i.send.icon
         | Upload
 
