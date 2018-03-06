@@ -28,6 +28,7 @@ const userSchema = Schema({
 		homework_id: Number,
 		file_name: String,
 		file_size: String,
+		file_sha1: String,
 	}],
 });
 

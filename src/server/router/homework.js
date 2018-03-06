@@ -13,6 +13,7 @@ import HomeworkResult from '/model/homeworkResult';
 import {getRank} from '/statistic/rank';
 import moment from 'moment';
 import filesize from 'filesize';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -98,6 +99,12 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         );
         const stats = await fs.stat(path.join(userDir,file_name));
         const fileSizeInBytes = stats.size;
+        
+        const buffer = await fs.readFile(path.join(userDir,file_name));
+        const fsHash = crypto.createHash('sha1');
+
+        fsHash.update(buffer);
+
         if(!req.user.homeworks)req.user.homeworks=[];
         const homeworks=req.user.homeworks;
         let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
@@ -112,6 +119,7 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         }
         rs.file_name=file_name;
         rs.file_size=filesize(fileSizeInBytes);
+        rs.file_sha1=fsHash.digest('hex');
         await req.user.save();
         return res.send(`Upload successfully.`);
     } catch(e) {
