@@ -66,6 +66,8 @@ export default Vue.extend({
                 else console.log(e);
                 return;
             }
+            if ('body' in result)
+                toastr.success(result.body);
             this.filename[hw_id]=null;
             document.getElementById('source-file'+hw_id.toString()).value='';
             result = (await me.$http.get('/user/me')).data;
