@@ -25,6 +25,10 @@ export default Vue.extend({
         marked(x) {
             return marked(x);
         },
+        getPath(x) {
+            if (!x) return 'No file selected.';
+            return x.split('\\').pop();
+        }
     },
     methods: {
         async fetchHomeworks() {
