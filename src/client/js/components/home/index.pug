@@ -59,6 +59,7 @@
           tr
             td.collapsing Your File
             td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_name }}
+            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId )].file_size }}
 
     .ui.segment
       h3.ui.header Problems

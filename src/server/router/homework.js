@@ -12,6 +12,7 @@ import {requireLogin} from '/utils';
 import HomeworkResult from '/model/homeworkResult';
 import {getRank} from '/statistic/rank';
 import moment from 'moment';
+import filesize from 'filesize';
 
 const router = express.Router();
 
@@ -95,6 +96,8 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
             req.body.file,
             'base64'
         );
+        const stats = await fs.stat(path.join(userDir,file_name))
+        const fileSizeInBytes = stats.size
         if(!req.user.homeworks)req.user.homeworks=[];
         const homeworks=req.user.homeworks;
         let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
@@ -108,6 +111,7 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
             rs = filter_res[0];
         }
         rs.file_name=file_name;
+        rs.file_size=filesize(fileSizeInBytes);
         await req.user.save();
         return res.send(`Upload successfully.`);
     } catch(e) {
