@@ -59,6 +59,8 @@ const GCC = [
     'gcc',
     '-static',
     '-O2',
+    '-std=c11',
+    '-lm',
 ];
 const GPP = [
     '/usr/bin/env',
