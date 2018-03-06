@@ -43,6 +43,22 @@
     .ui.segment
       h3.ui.header Description
       div( v-html="hw.desc | marked" )
+
+########
+    .ui.segment
+      h3.ui.header Non Programming
+      a.ui.button.right.labeled.icon.primary.button.spaced(
+        v-link="{name: 'submit', params: {id: hw._id}}" )
+        i.send.icon
+        | Submit
+
+            v-link="{name: 'submit', params: {id: problem._id}}" ).ui.right.labeled.icon.primary.button.spaced
+            i.send.icon
+            | Submit
+
+
+########
+
     .ui.segment
       h3.ui.header Problems
       table.ui.celled.table.selectable.pointer
