@@ -73,7 +73,6 @@ export default Vue.extend({
             if (result.login) {
                 me.userLogin(result.user);
             }
-            console.log("done");
         },
         async fetchHomeworks() {
             if (!this.user) {
