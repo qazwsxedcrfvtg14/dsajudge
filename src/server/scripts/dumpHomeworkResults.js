@@ -1,5 +1,5 @@
 import './common';
-import fs from 'fs';
+import fs from 'fs-extra';
 import {promisify} from 'bluebird';
 import prompt from 'prompt';
 

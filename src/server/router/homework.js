@@ -4,7 +4,7 @@ import Homework from '/model/homework';
 import Submission from '/model/submission';
 import wrap from 'express-async-wrap';
 import _ from 'lodash';
-import fs from 'fs';
+import fs from 'fs-extra';
 import bluebird from 'bluebird';
 import config from '/config';
 import path from 'path';
@@ -79,13 +79,13 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         const hid=req.params.id;
         const hwDir=path.join(config.dirs.homeworks, hid);
         try {
-            await fs.stat(hwDir);
+            stat = await fs.stat(hwDir);
         } catch(e) {
             await fs.mkdir(hwDir);
         }
         const userDir=path.join(hwDir,req.user.meta.id);
         try {
-            await fs.stat(userDir);
+            stat = await fs.stat(userDir);
         } catch(e) {
             await fs.mkdir(userDir);
         }
@@ -108,7 +108,7 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
         }
         res.file_name=file_name;
         await req.user.save();
-        res.send(`Upload successfully.`);
+        return res.send(`Upload successfully.`);
     } catch(e) {
         return res.status(500).send(`Something bad happened... Your file may not be saved.`);
     }
