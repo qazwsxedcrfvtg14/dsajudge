@@ -66,7 +66,7 @@ export default Vue.extend({
                 else console.log(e);
                 return;
             }
-            const result = (await me.$http.get('/user/me')).data;
+            result = (await me.$http.get('/user/me')).data;
             if (result.login) {
                 me.userLogin(result.user);
             }
