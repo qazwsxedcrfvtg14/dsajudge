@@ -22,6 +22,8 @@
   font-weight: bold;
   color: #ffffff;
   -webkit-text-shadow: 0 1px 0 #ffffff;
+  -moz-text-shadow: 0 1px 0 #ffffff;
+  -ms-text-shadow: 0 1px 0 #ffffff;
   text-shadow: 0 1px 0 #ffffff;
   opacity: 0.8;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
@@ -44,6 +46,9 @@ button.toast-close-button {
   cursor: pointer;
   background: transparent;
   border: 0;
+  appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
   -webkit-appearance: none;
 }
 .toast-top-center {
@@ -89,6 +94,7 @@ button.toast-close-button {
 
 }
 #toast-container * {
+  -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -99,11 +105,13 @@ button.toast-close-button {
   margin: 0 0 6px;
   padding: 15px 15px 15px 50px;
   width: 300px;
+  -ms-border-radius: 3px 3px 3px 3px;
   -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
   background-position: 15px center;
   background-repeat: no-repeat;
+  -ms-box-shadow: 0 0 12px #999999;
   -moz-box-shadow: 0 0 12px #999999;
   -webkit-box-shadow: 0 0 12px #999999;
   box-shadow: 0 0 12px #999999;
@@ -113,6 +121,7 @@ button.toast-close-button {
   filter: alpha(opacity=80);
 }
 #toast-container > :hover {
+  -ms-box-shadow: 0 0 12px #000000;
   -moz-box-shadow: 0 0 12px #000000;
   -webkit-box-shadow: 0 0 12px #000000;
   box-shadow: 0 0 12px #000000;
