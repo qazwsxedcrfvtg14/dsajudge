@@ -15,6 +15,17 @@ export default Vue.extend({
             user: getUser,
         }
     },
+    methods:{
+        getQuota(val){
+            return val?val:5;
+        },
+        getProbId(prob) {
+            return prob.problem_id; 
+        },
+        checkProbId(probId) {
+            return id=>probId==id; 
+        },
+    },
     template: html,
     async ready() {
         this.problems = (await this.$http.get('/problem/')).data; 

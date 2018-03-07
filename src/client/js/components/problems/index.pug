@@ -4,13 +4,15 @@
       tr
         th ID
         th Problem Name
-        th.collapsing Your Result
+        th.collapsing Quota
+        th.collapsing Result
     tbody
       tr( v-for="prob of problems" v-link="{ name: 'problem', params: { id: prob._id }}",
         :class="{ disabled: !prob.visible, positive: prob.userRes.AC }" )
         td.force-pointer {{ prob._id }}
         td.force-pointer {{ prob.name }}
         td.force-pointer.collasping.center.aligned {{ prob.userRes.points ? prob.userRes.points : '-' }}
+        td.force-pointer.collasping.center.aligned {{ user ? ( getQuota(user.submission_limit[_.findIndex( _.map(user.submission_limit,getProbId) , checkProbId(prob._id) )].quota)  ) : '-' }}
       tr( v-if="user && user.isAdmin" )
         td.positive.center.aligned( colspan="3" v-link="{ path: '/admin/newProblem' }" ) 
           i.plus.icon
