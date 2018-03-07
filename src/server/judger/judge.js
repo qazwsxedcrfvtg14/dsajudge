@@ -140,15 +140,17 @@ export default class Judger {
     async compileUser(workers) {
         let error = null;
         const task = this.generateUserCompileTask();
+        let worker;
         while(true){
             try{
-                const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
-                worker.run(task, (err) => {
+                const {_worker, ret} = await Promise.race(workers.map(x => x.finish()));
+                _worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileUser`, err);
                         error = err;
                     }
                 });
+                worker=_worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
@@ -167,15 +169,17 @@ export default class Judger {
     async compileChecker(workers) {
         let error = null;
         const task = this.generateCheckerCompileTask();
+        let worker;
         while(true){
             try{
-                const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
-                worker.run(task, (err) => {
+                const {_worker, ret} = await Promise.race(workers.map(x => x.finish()));
+                _worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileChecker`, err);
                         error = err;
                     }
                 });
+                worker=_worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
