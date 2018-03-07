@@ -109,7 +109,7 @@ component( v-else )
           | 2018
       h2.ui.teal.header.menu-font Login to begin...
 
-component( v-if="homeworks.length==0" )
+component( v-if="user && homeworks.length==0" )
   .ui.vertical.masthead.center.aligned.segment
     .ui.text.container
       h1.ui.teal.header#main-header.menu-font
