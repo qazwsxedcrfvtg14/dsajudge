@@ -57,11 +57,10 @@ userSchema.methods.checkQuota = async function(pid){
 			quota : default_quota ,
 		};
 		this.submission_limit.push(res);
-	}else{
-		res = filter_res[0];
+		filter_res = _.filter(this.submission_limit,_.conforms({ problem_id : id => id==pid }));
 	}
-	if ( 	String(today).substr(0,15) != String(res.last_submission).substr(0,15)){
-
+	res = filter_res[0];
+	if ( String(today).substr(0,15) != String(res.last_submission).substr(0,15)){
 		res.quota = default_quota;
 		res.last_submission = today;
 	}
