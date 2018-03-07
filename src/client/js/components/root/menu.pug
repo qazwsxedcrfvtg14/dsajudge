@@ -3,7 +3,7 @@ component
     .top-menu.ui.fixed.top.secondary.pointing.teal.menu
       .ui.container
         div.item.menu-font( style="color: #008080 !important;" )
-          i.terminal.icon
+          i.cubes.icon
           | DSA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
         a.item( v-link="'/problems'" ) Problems
@@ -32,5 +32,5 @@ component
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
         div.item.menu-font( style="color: #008080 !important;" )
-          i.terminal.icon
+          i.cubes.icon
           | DSA Judge
