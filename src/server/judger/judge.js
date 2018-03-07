@@ -143,14 +143,14 @@ export default class Judger {
         let worker;
         while(true){
             try{
-                const {now_worker, ret} = await Promise.race(workers.map(x => x.finish()));
-                now_worker.run(task, (err) => {
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
+                worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileUser`, err);
                         error = err;
                     }
                 });
-                worker=now_worker;
+                worker=worker_result.worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
@@ -172,14 +172,14 @@ export default class Judger {
         let worker;
         while(true){
             try{
-                const {now_worker, ret} = await Promise.race(workers.map(x => x.finish()));
-                now_worker.run(task, (err) => {
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
+                worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileChecker`, err);
                         error = err;
                     }
                 });
-                worker=now_worker;
+                worker=worker_result.worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
@@ -302,14 +302,14 @@ export default class Judger {
         for (let [taskID, task] of this.tasks.entries()) {
             while(true){
                 try{
-                    const {worker, ret} = await Promise.race(workers.map(x => x.finish()));
-                    worker.run(task, (err) => {
+                    const worker_result = await Promise.race(workers.map(x => x.finish()));
+                    worker_result.worker.run(task, (err) => {
                         if (err) {
                             logger.error(`Judge error @ ${taskID}`, err);
                             error = err;
                         }
                     });
-                    run_workers.push(worker);
+                    run_workers.push(worker_result.worker);
                 }catch(e){
                     if (e instanceof InvalidOperationError) {
                         continue;
