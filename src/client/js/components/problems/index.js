@@ -16,14 +16,16 @@ export default Vue.extend({
         }
     },
     methods:{
-        getQuota(val){
-            return val?val:5;
+        getQuota(res){
+            if(!res)return 5;
+            if(String(new Date(Date.now())).substr(0,15) != String(res.last_submission).substr(0,15)) return 5;
+            return res.quota;
         },
         getProbId(prob) {
             return prob.problem_id; 
         },
-        checkProbId(probId) {
-            return id=>probId==id; 
+        checkProbId(pid) {
+            return { problem_id : id => id==pid }; 
         },
     },
     template: html,
