@@ -5,7 +5,7 @@
         th ID
         th Problem Name
         th.collapsing Quota
-        th.collapsing Result
+        th.collapsing Score
     tbody
       tr( v-for="prob of problems" v-link="{ name: 'problem', params: { id: prob._id }}",
         :class="{ disabled: !prob.visible, positive: prob.userRes.AC }" )

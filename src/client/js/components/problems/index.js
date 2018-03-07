@@ -18,7 +18,7 @@ export default Vue.extend({
     methods:{
         getQuota(res){
             if(!res)return 5;
-            if(String(new Date(Date.now())).substr(0,15) != String(res.last_submission).substr(0,15)) return 5;
+            if(String(new Date(Date.now())).substr(0,15) != String(new Date(res.last_submission).substr(0,15))) return 5;
             return res.quota;
         },
         getProbId(prob) {
