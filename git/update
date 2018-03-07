@@ -13,7 +13,8 @@ if old_commit != "0000000000000000000000000000000000000000":
 else:
 	proc = subprocess.Popen(['git','show','--pretty=',"--name-only",new_commit],stdout=subprocess.PIPE)
 file_name="/main.c"
-exitcode=0
+exitcode=1
+exitcode2=0
 while True:
 	line = proc.stdout.readline()
 	if line != '':
@@ -35,16 +36,17 @@ while True:
 					try:
 						result=json.loads(r.content)
 						print("\033[93mSubmission: \033[94m\033[4mhttps://dsa.csie.org/#!/submission/"+str(result["id"])+"\033[0m")
+						exitcode=0
 					except:
 						print("\033[91m"+r.content+"\033[0m")
-						exitcode=1
+						exitcode2=1
 					#print "You submit Proble #"+str(problem_id)+" !"
 			except:
 				pass
 		#print line
 	else:
 		break
-sys.exit(exitcode)
+sys.exit(exitcode&exitcode2)
 #print "Moving '%s' from %s to %s" % (branch, old_commit, new_commit)
 # Abort pushing only this branch
 # sys.exit(1)
