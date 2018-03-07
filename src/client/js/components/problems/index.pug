@@ -14,6 +14,6 @@
         td.force-pointer.collasping.center.aligned {{ user ? ( getQuota( _.filter(user.submission_limit,_.conforms(checkProbId(prob._id)))[0] ) ) : '-' }}
         td.force-pointer.collasping.center.aligned {{ prob.userRes.points ? prob.userRes.points : '-' }}
       tr( v-if="user && user.isAdmin" )
-        td.positive.center.aligned( colspan="3" v-link="{ path: '/admin/newProblem' }" ) 
+        td.positive.center.aligned( colspan="4" v-link="{ path: '/admin/newProblem' }" ) 
           i.plus.icon
           | Add new problem
