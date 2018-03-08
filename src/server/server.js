@@ -1,13 +1,15 @@
 import 'source-map-support/register';
 import 'babel-polyfill';
+import http from 'http';
 import express from 'express';
 import config from './config';
 import auth from './auth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
-
+import Socketio from 'socket.io';
 import mongoose from 'mongoose';
+
 mongoose.connect(config.mongo.url);
 mongoose.Promise = Promise;
 
@@ -17,6 +19,7 @@ const MongoStore = require('connect-mongo')(expressSession);
 import logger from './logger';
 
 const app = express();
+const server = http.createServer(app);
 
 app.use('/static',express.static('static'));
 app.use(express.static('static'));
@@ -39,7 +42,19 @@ auth(app);
 import setRouter from './router';
 setRouter(app);
 
-app.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
+const io = Socketio(server);
+/*io.use((socket, next) => {
+    session(socket.handshake, {}, next);
+});*/
+io.on('connection',(socket)=>{
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
+});
+
+server.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
+//app.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
 
 import judger from '/judger';
 judger();
