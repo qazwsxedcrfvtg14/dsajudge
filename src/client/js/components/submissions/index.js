@@ -2,6 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import probMixin from 'js/mixins/probUtils';
 import {ResultString} from 'js/block/result';
+import sleep from 'sleep-promise';
 
 export default Vue.extend({
     mixins: [probMixin],
@@ -13,7 +14,15 @@ export default Vue.extend({
         };
     },
     template: html,
-    ready() {
+    async ready() {
+        (async () => {
+            while (true) {
+                if(_.isNil(document.getElementById("submissions-page-checker")))
+                    break;
+                await getSubmissions();
+                await sleep(3000);
+            }
+        })();
     },
     methods: {
         async getSubmissions() {
