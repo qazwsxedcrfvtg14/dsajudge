@@ -20,7 +20,7 @@ router.post('/:id', requireKey, wrap(async (req, res) => {
     }
     const probId = parseInt(req.params.id);
     let problem;
-    if (user && (req.user.isAdmin()||req.user.isTA()) )
+    if (user && (user.isAdmin()||user.isTA()) )
         problem = await Problem.findOne({_id: probId});
     else
         problem = await Problem.findOne({_id: probId, visible: true});
@@ -28,7 +28,7 @@ router.post('/:id', requireKey, wrap(async (req, res) => {
 	if (!problem){
         return res.status(500).send(`Problem #${req.params.id} not found.`);
     }
-	if ( (req.user.isAdmin() || req.user.isTA()) || await user.checkQuota(probId)){
+	if ( (user.isAdmin() || user.isTA()) || await user.checkQuota(probId)){
 	//	console.log("admin or quota sufficient.");
 	}else{
         return res.status(500).send(`Problem #${req.params.id} quota used up.`);
