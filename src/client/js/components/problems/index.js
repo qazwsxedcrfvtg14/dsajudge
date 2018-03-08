@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
-import store, {getUser} from 'js/store';
+import store, {userLogin, getUser} from 'js/store';
 
 export default Vue.extend({
     data() {
@@ -11,6 +11,9 @@ export default Vue.extend({
     },
     store,
     vuex: {
+        actions: {
+            userLogin,
+        },
         getters: {
             user: getUser,
         }
@@ -31,5 +34,16 @@ export default Vue.extend({
     template: html,
     async ready() {
         this.problems = (await this.$http.get('/problem/')).data; 
+        (async () => {
+            while (true) {
+                if(_.isNil(document.getElementById("problems-page-checker")))
+                    break;
+                const result = (await this.$http.get('/user/me')).data;
+                if (result.login) {
+                    this.userLogin(result.user);
+                }
+                await sleep(3000);
+            }
+        })();
     },
 });
