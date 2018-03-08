@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
+import sleep from 'sleep-promise';
 import store, {userLogin, getUser} from 'js/store';
 
 export default Vue.extend({
