@@ -10,6 +10,7 @@ import expressSession from 'express-session';
 import sharedsession from 'express-socket.io-session';
 import Socketio from 'socket.io';
 import mongoose from 'mongoose';
+import User from '/model/user';
 
 mongoose.connect(config.mongo.url);
 mongoose.Promise = Promise;
@@ -48,14 +49,17 @@ const io = Socketio(server);
 io.use(sharedsession(session, {
     autoSave:true
 }));
-io.on('connection',(socket)=>{
-    console.log('a user connected');
+io.on('connection',async (socket)=>{
+    //console.log('a user connected');
     
-    var user = socket.handshake.session.passport.user;
+    const userId = socket.handshake.session.passport.user;
+    const user = await User.findOne({_id: userId});
     console.log("Your User is", user);
+    //socket.id;
+    //socket.send({data:"123"});
     
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        //console.log('user disconnected');
     });
 });
 
