@@ -7,6 +7,7 @@ import auth from './auth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
+import sharedsession from 'express-socket.io-session';
 import Socketio from 'socket.io';
 import mongoose from 'mongoose';
 
@@ -24,7 +25,7 @@ const server = http.createServer(app);
 app.use('/static',express.static('static'));
 app.use(express.static('static'));
 app.use(cookieParser());
-app.use(expressSession({
+const session = expressSession({
     secret: config.secret,
     maxAge: 1000 * 3600 * 1000,
     secure: false,
@@ -34,7 +35,8 @@ app.use(expressSession({
         url: config.mongo.url,
         touchAfter: 3600,
     }),
-}));
+});
+app.use(session);
 app.use(bodyParser.json({limit: '20mb'}));
 app.use(bodyParser.urlencoded({limit: '20mb',extended: true}));
 auth(app);
@@ -43,9 +45,9 @@ import setRouter from './router';
 setRouter(app);
 
 const io = Socketio(server);
-/*io.use((socket, next) => {
-    session(socket.handshake, {}, next);
-});*/
+io.use(sharedsession(session, {
+    autoSave:true
+}));
 io.on('connection',(socket)=>{
     console.log('a user connected');
     socket.on('disconnect', function(){
