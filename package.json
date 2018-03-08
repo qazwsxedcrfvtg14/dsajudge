@@ -65,6 +65,7 @@
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "chart.js": "^2.3.0",
+    "cluster": "^0.7.7",
     "common-errors": "^1.0.0",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
