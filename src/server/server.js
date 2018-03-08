@@ -8,13 +8,15 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 import mongoose from 'mongoose';
+mongoose.connect(config.mongo.url);
+mongoose.Promise = Promise;
 import autoIncrement from 'mongoose-auto-increment';
+const MongoStore = require('connect-mongo')(expressSession); 
 import logger from './logger';
+const app = express();
 import setRouter from './router';
 import judger from '/judger';
 
-mongoose.connect(config.mongo.url);
-mongoose.Promise = Promise;
     
 if (cluster.isMaster) {
     logger.info(`Master ${process.pid} is running`);
@@ -32,8 +34,6 @@ if (cluster.isMaster) {
 }
 else{
     logger.info(`Worker ${process.pid} started`);
-    const MongoStore = require('connect-mongo')(expressSession); 
-    const app = express();
     app.use('/static',express.static('static'));
     app.use(express.static('static'));
     app.use(cookieParser());
