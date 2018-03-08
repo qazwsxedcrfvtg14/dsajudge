@@ -18,6 +18,7 @@ import logger from './logger';
 
 const app = express();
 
+app.use('/static',express.static('static'));
 app.use(express.static('static'));
 app.use(cookieParser());
 app.use(expressSession({
