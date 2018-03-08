@@ -14,32 +14,24 @@ import setRouter from './router';
 import judger from '/judger';
 
 if (cluster.isMaster) {
-    console.log(`Master ${process.pid} is running`);
-
+    logger.info(`Master ${process.pid} is running`);
     // Fork workers.
     for (let i = 0; i < config.maxNodeWorkers; i++) {
         cluster.fork();
     }
-  
     //Check if work id is died
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died`);
+        logger.info(`worker ${worker.process.pid} died`);
         cluster.fork();
     });
-
     judger();
 }
 else{
-    console.log(`Worker ${process.pid} started`);
-
+    logger.info(`Worker ${process.pid} started`);
     mongoose.connect(config.mongo.url);
     mongoose.Promise = Promise;
-
     const MongoStore = require('connect-mongo')(expressSession); 
-
-
     const app = express();
-
     app.use('/static',express.static('static'));
     app.use(express.static('static'));
     app.use(cookieParser());
@@ -57,8 +49,6 @@ else{
     app.use(bodyParser.json({limit: '20mb'}));
     app.use(bodyParser.urlencoded({limit: '20mb',extended: true}));
     auth(app);
-
     setRouter(app);
-
     app.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
 }
