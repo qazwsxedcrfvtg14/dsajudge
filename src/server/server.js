@@ -13,6 +13,9 @@ import logger from './logger';
 import setRouter from './router';
 import judger from '/judger';
 
+mongoose.connect(config.mongo.url);
+mongoose.Promise = Promise;
+    
 if (cluster.isMaster) {
     logger.info(`Master ${process.pid} is running`);
     // Fork workers.
@@ -24,12 +27,11 @@ if (cluster.isMaster) {
         logger.info(`worker ${worker.process.pid} died`);
         cluster.fork();
     });
+    logger.info(`Judger ${process.pid} is running`);
     judger();
 }
 else{
     logger.info(`Worker ${process.pid} started`);
-    mongoose.connect(config.mongo.url);
-    mongoose.Promise = Promise;
     const MongoStore = require('connect-mongo')(expressSession); 
     const app = express();
     app.use('/static',express.static('static'));
