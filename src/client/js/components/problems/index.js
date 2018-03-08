@@ -39,6 +39,7 @@ export default Vue.extend({
             while (true) {
                 if(_.isNil(document.getElementById("problems-page-checker")))
                     break;
+                this.problems = (await this.$http.get('/problem/')).data; 
                 const result = (await this.$http.get('/user/me')).data;
                 if (result.login) {
                     this.userLogin(result.user);
