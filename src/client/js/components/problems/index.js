@@ -38,12 +38,14 @@ export default Vue.extend({
             if (result.login) {
                 this.userLogin(result.user);
             }
-            this.timer = setInterval(updateData, 2000);
+            if(!_.isNil(this.timer))
+                this.timer = setInterval(updateData, 2000);
         },
     },
     template: html,
     beforeDestroy(){
         clearInterval(this.timer);
+        this.timer=null;
     },
     async ready() {
         this.problems = (await this.$http.get('/problem/')).data; 

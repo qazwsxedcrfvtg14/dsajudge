@@ -19,12 +19,14 @@ export default Vue.extend({
     },
     beforeDestroy(){
         clearInterval(this.timer);
+        this.timer=null;
     },
     methods: {
         async updateData(){
             clearInterval(this.timer);
             await this.getSubmissions();
-            this.timer = setInterval(updateData, 2000);
+            if(!_.isNil(this.timer))
+                this.timer = setInterval(updateData, 2000);
         },
         async getSubmissions() {
             let result;
