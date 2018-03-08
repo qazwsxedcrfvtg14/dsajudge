@@ -19,7 +19,7 @@ export default Vue.extend({
             while (true) {
                 if(_.isNil(document.getElementById("submissions-page-checker")))
                     break;
-                await getSubmissions();
+                await this.getSubmissions();
                 await sleep(3000);
             }
         })();
