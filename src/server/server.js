@@ -50,6 +50,10 @@ io.use(sharedsession(session, {
 }));
 io.on('connection',(socket)=>{
     console.log('a user connected');
+    
+    var user = socket.handshake.session.passport.user;
+    console.log("Your User is", user);
+    
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
