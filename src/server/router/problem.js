@@ -11,8 +11,8 @@ import {checkProblem} from '/utils';
 const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
-    const isAdmin = req.user && req.user.isAdmin();
-    let data = await Problem.find(isAdmin ? {} : {visible: true});
+    const isTA = req.user && (req.user.isAdmin()||req.user.isTA());
+    let data = await Problem.find(isTA ? {} : {visible: true});
     data = await Promise.all(data.map( _prob => (async () => {
         let prob = _prob.toObject();
         const pr = req.user ? 
@@ -41,7 +41,7 @@ router.get('/:id', wrap(async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.sendStatus(404);
     let problem;
-    if (req.user && _.includes(req.user.roles, 'admin'))
+    if (req.user && (req.user.isAdmin()||req.user.isTA()) )
         problem = await Problem.findOne({_id: id});
     else
         problem = await Problem.findOne({_id: id, visible: true});

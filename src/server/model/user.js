@@ -42,6 +42,10 @@ userSchema.methods.isAdmin = function() {
     return this.hasRole('admin');
 };
 
+userSchema.methods.isTA = function() {
+    return this.hasRole('TA');
+};
+
 const default_quota = 5;
 
 userSchema.methods.checkQuota = async function(pid){
