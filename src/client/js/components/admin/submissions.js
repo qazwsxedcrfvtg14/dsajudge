@@ -24,16 +24,17 @@ export default Vue.extend({
     ready() {
         this.getSubmissions();
         $('#status-select').dropdown();
-        (async () => {
-            while (true) {
-                await sleep(3000);
-                if(_.isNil(document.getElementById("admin-submissions-page-checker")))
-                    break;
-                await this.getSubmissions();
-            }
-        })();
+        this.timer = setInterval(this.updateData, 2000);
+    },
+    beforeDestroy(){
+        clearInterval(this.timer);
     },
     methods: {
+        async updateData(){
+            clearInterval(this.timer);
+            await this.getSubmissions();
+            this.timer = setInterval(updateData, 2000);
+        },
         async getSubmissions() {
             let result;
             const params = { skipPage: this.curTabId };

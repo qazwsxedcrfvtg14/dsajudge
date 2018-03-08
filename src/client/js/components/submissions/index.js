@@ -15,16 +15,17 @@ export default Vue.extend({
     },
     template: html,
     async ready() {
-        (async () => {
-            while (true) {
-                if(_.isNil(document.getElementById("submissions-page-checker")))
-                    break;
-                await this.getSubmissions();
-                await sleep(3000);
-            }
-        })();
+        this.timer = setInterval(this.updateData, 2000);
+    },
+    beforeDestroy(){
+        clearInterval(this.timer);
     },
     methods: {
+        async updateData(){
+            clearInterval(this.timer);
+            await this.getSubmissions();
+            this.timer = setInterval(updateData, 2000);
+        },
         async getSubmissions() {
             let result;
             try {

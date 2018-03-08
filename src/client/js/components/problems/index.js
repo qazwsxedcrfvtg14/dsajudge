@@ -31,21 +31,22 @@ export default Vue.extend({
         checkProbId(pid) {
             return { problem_id : id => id==pid }; 
         },
+        async updateData(){
+            clearInterval(this.timer);
+            this.problems = (await this.$http.get('/problem/')).data; 
+            const result = (await this.$http.get('/user/me')).data;
+            if (result.login) {
+                this.userLogin(result.user);
+            }
+            this.timer = setInterval(updateData, 2000);
+        },
     },
     template: html,
+    beforeDestroy(){
+        clearInterval(this.timer);
+    },
     async ready() {
         this.problems = (await this.$http.get('/problem/')).data; 
-        (async () => {
-            while (true) {
-                if(_.isNil(document.getElementById("problems-page-checker")))
-                    break;
-                this.problems = (await this.$http.get('/problem/')).data; 
-                const result = (await this.$http.get('/user/me')).data;
-                if (result.login) {
-                    this.userLogin(result.user);
-                }
-                await sleep(3000);
-            }
-        })();
+        this.timer = setInterval(this.updateData, 2000);
     },
 });
