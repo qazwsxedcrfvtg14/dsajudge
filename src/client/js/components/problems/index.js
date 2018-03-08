@@ -39,7 +39,7 @@ export default Vue.extend({
                 this.userLogin(result.user);
             }
             if(!_.isNil(this.timer))
-                this.timer = setInterval(updateData, 2000);
+                this.timer = setInterval(this.updateData, 2000);
         },
     },
     template: html,
