@@ -1,6 +1,17 @@
 import cluster from 'cluster';
 import config from './config';
-
+import 'source-map-support/register';
+import 'babel-polyfill';
+import express from 'express';
+import auth from './auth';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import expressSession from 'express-session';
+import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
+import logger from './logger';
+import setRouter from './router';
+import judger from '/judger';
 
 if (cluster.isMaster) {
     console.log(`Master ${process.pid} is running`);
@@ -16,27 +27,16 @@ if (cluster.isMaster) {
         cluster.fork();
     });
 
-    import judger from '/judger';
     judger();
 }
 else{
     console.log(`Worker ${process.pid} started`);
 
-    import 'source-map-support/register';
-    import 'babel-polyfill';
-    import express from 'express';
-    import auth from './auth';
-    import bodyParser from 'body-parser';
-    import cookieParser from 'cookie-parser';
-    import expressSession from 'express-session';
-    import mongoose from 'mongoose';
     mongoose.connect(config.mongo.url);
     mongoose.Promise = Promise;
 
-    import autoIncrement from 'mongoose-auto-increment';
     const MongoStore = require('connect-mongo')(expressSession); 
 
-    import logger from './logger';
 
     const app = express();
 
@@ -58,7 +58,6 @@ else{
     app.use(bodyParser.urlencoded({limit: '20mb',extended: true}));
     auth(app);
 
-    import setRouter from './router';
     setRouter(app);
 
     app.listen(config.port, '127.0.0.1', () => logger.info(`Server start @ ${config.port}`));
