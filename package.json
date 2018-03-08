@@ -96,6 +96,8 @@
     "randomstring": "^1.1.5",
     "semantic-ui": "^2.3.0",
     "sleep-promise": "^2.0.0",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
     "tar": "^4.0.1",
     "temp": "^0.8.3",
     "toastr": "^2.1.2",

@@ -31,6 +31,7 @@ const CONFIG = {
         'node_modules/ace-builds/src-min-noconflict/mode-markdown.js',
         'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js',
         'node_modules/chart.js/dist/Chart.bundle.min.js',
+		'node_modules/socket.io-client/dist/socket.io.js',
     ],
     linkDirs: [
         'problems',
