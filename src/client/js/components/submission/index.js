@@ -26,7 +26,7 @@ export default Vue.extend({
             await this.getSubmission();
 
             while (this.submission.status === 'pending' || this.submission.status === 'judging') {
-                await sleep(3000);
+                await sleep(2000);
                 await this.getSubmission();
             }
             
