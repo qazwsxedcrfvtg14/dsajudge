@@ -33,11 +33,13 @@ export default Vue.extend({
         },
         async updateData(){
             clearInterval(this.timer);
-            this.problems = (await this.$http.get('/problem/')).data; 
-            const result = (await this.$http.get('/user/me')).data;
-            if (result.login) {
-                this.userLogin(result.user);
-            }
+            try{
+                this.problems = (await this.$http.get('/problem/')).data; 
+                const result = (await this.$http.get('/user/me')).data;
+                if (result.login) {
+                    this.userLogin(result.user);
+                }
+            }catch(e){}
             if(!_.isNil(this.timer))
                 this.timer = setInterval(this.updateData, 2000);
         },
