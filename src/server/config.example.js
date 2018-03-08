@@ -13,4 +13,5 @@ export default {
         url: 'mongodb://localhost/dsajudge',
     },
     maxWorkers: 4,
+    maxNodeWorkers: 4,
 };
