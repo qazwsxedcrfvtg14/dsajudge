@@ -39,7 +39,7 @@
             th By
             th Runtime
         tbody
-          tr( v-for="sub of stats.fastest",
+          tr( v-for="sub of (stats.fastest?stats.fastest:[])",
             v-link="problem.solutionVisible ? {name: 'submission', params: {id: sub._id}} : null" )
             td.collapsing.center.aligned( :class="{ 'blue-link': problem.solutionVisible }" ) {{ sub._id }}
             td {{ _.get(sub, 'submittedBy.meta.name', '') }} ({{ _.get(sub, 'submittedBy.meta.id') }})
