@@ -20,9 +20,9 @@ component
   .ui.grid.mobile.only.tablet.only
     .top-menu.ui.fixed.top.secondary.pointing.teal.menu
       .ui.container
-        div.ui.simple.dropdown.item(style="margin-top: 0px;")
+        div.ui.simple.dropdown.item
           i.content.icon
-          .menu
+          .menu(style="margin-top: 0px;")
             a.item( v-link="{ path: '/', exact: true }" ) Home
             a.item( v-link="'/problems'" ) Problems
             a.item( v-link="'/submissions'" ) Submissions
