@@ -118,6 +118,9 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
             //res.send(`SSH Key changed successfully.`);
         }
     }
+    else if(newSshKeys.length==1){
+        return res.status(400).send(`Your SSH Key is not start with "ssh-rsa" or too short!`);
+    }
     if(changePassword&&changeSshKey){
         res.send(`Password & SSH Key changed successfully.`);
     }else if(changePassword){
