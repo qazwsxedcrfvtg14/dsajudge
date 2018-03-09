@@ -34,3 +34,6 @@ table.ui.table.selectable.pointer td {
     text-decoration: underline;
     color: #4183C4;
 }
+.ui.text.menu .dropdown.item>.menu{
+    margin-top: 0px !important;
+}
