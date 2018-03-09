@@ -80,8 +80,10 @@ git push
 
 1. 如果你沒有在 Judge 上面的 Submission 中看到，就是代表沒有繳交紀錄。
 2. 每人每天每題最多只能上傳五次，無法累積。
-3. Git 上傳方式只會檢查你對於 master 分支上的修改，其他分支上的修改都不會上傳至 Judge。
-4. Git 上傳方式只會上傳你對於 master 分支上有符合正確位置的程式碼(```<problem_id>/main.c```)，其於的東西皆不會傳到Judge上。
-5. Git 上傳方式只會上傳你上次 push 跟這次 push 間對於 master 分支上有做修改的檔案，未做修改的程式碼不會上傳。
-6. 對於已經傳上 master 分支的 commit，請勿對其做 rebase 之類會影響commit的樹狀結構的操作，否則你很可能會傳不上來。
-7. 請不要把太多的大型垃圾 commit 上來，否則如過超過了使用上限，你可能之後的東西會 push 不上來。
+3. 這個 Judge 上的 git 和 Github(某章魚貓)無關，請勿混淆。
+4. 這個 Judge 上的 git 只支援 ```ssh-rsa <base64> <comment>``` 這種格式的SSH Key，其餘皆不接受。
+5. Git 上傳方式只會檢查你對於 master 分支上的修改，其他分支上的修改都不會上傳至 Judge。
+6. Git 上傳方式只會上傳你對於 master 分支上有符合正確位置的程式碼(```<problem_id>/main.c```)，其於的東西皆不會傳到Judge上。
+7. Git 上傳方式只會上傳你上次 push 跟這次 push 間對於 master 分支上有做修改的檔案，未做修改的程式碼不會上傳。
+8. 對於已經傳上 master 分支的 commit，請勿對其做 rebase 之類會影響commit的樹狀結構的操作，否則你很可能會傳不上來。
+9. 請不要把太多的大型垃圾 commit 上來，否則如過超過了使用上限，你可能之後的東西會 push 不上來。
