@@ -71,7 +71,7 @@ const GPP = [
     '-O2',
 ];
 
-const isolateDir = "/tmp/isolate/";
+const isolateDir = config.dirs.isolate;
 //const compileBoxId = 999;
 export default class Judger {
     constructor(sub) {

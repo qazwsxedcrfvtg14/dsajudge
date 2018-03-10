@@ -8,6 +8,7 @@ export default {
         cfiles: path.join(__dirname, './cfiles'),
         gitadmin: path.join(__dirname, './gitosis-admin'),
         homeworks: path.join(__dirname, './homeworks'),
+        isolate: "/dev/shm/isolate",
     },
     mongo: {
         url: 'mongodb://localhost/dsajudge',

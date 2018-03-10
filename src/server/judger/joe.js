@@ -71,7 +71,7 @@ export async function reset(id) {
     await init(id);
 }
 
-const metaDir = '/tmp/isolate/META';
+const metaDir = path.join(config.dirs.isolate,'META');
 
 export async function compile(worker_id, cppFile, execName, GPP) {
     const opt = {
