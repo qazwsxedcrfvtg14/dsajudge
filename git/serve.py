@@ -217,7 +217,7 @@ class Main(app.App):
                     pad=len(str(result["_id"]))
                     print("Submission #"+str(result["_id"])+":")
                     if result["status"] != "finished":
-                        print("Last submission: \033[96m"+result["status"]+"\033[0m")
+                        print("    \033[96m"+result["status"]+"\033[0m")
                     else:
                         self.print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
                         for grp, sb in enumerate(result["_result"]["subresults"]):
