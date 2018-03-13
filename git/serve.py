@@ -171,6 +171,26 @@ class Main(app.App):
         parser.set_description(
             'Allow restricted git operations under DIR')
         return parser
+    def print_result(self,header="",status=None,points=None,tim=None):
+        out=header
+        if status:
+            if status=="AC":
+                out=out+"\033[92m"+status+"\033[0m"
+            elif status=="TLE":
+                out=out+"\033[93m"+status+"\033[0m"
+            elif status=="WA":
+                out=out+"\033[91m"+status+"\033[0m"
+            elif status=="RE":
+                out=out+"\033[95m"+status+"\033[0m"
+            elif status=="CE":
+                out=out+"\033[96m"+status+"\033[0m"
+            else:
+                out=out+"\033[90m"+status+"\033[0m"
+        if status and points:
+            out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
+        if status and tim:
+            out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
+        print out
 
     def handle_args(self, parser, cfg, options, args):
         try:
@@ -183,30 +203,30 @@ class Main(app.App):
         cmd = os.environ.get('SSH_ORIGINAL_COMMAND', None)
         if cmd is None:
             try:
+                print("------------------------------------")
                 print "Hi, "+args[0]+"!"
                 key_file=open(os.path.join("repositories",args[0]+".git","hooks","key"),"r")
                 data={"key":key_file.read()}
                 key_file.close()
                 r = requests.post("https://dsa.csie.org/submission/get/last",json=data)
+                print("------------------------------------")
                 try:
                     result=json.loads(r.content)
+                    print(result["problem"]["name"])
+                    print("------------------------------------")
+                    pad=len(str(result["_id"]))
+                    print("Submission #"+str(result["_id"])+":")
                     if result["status"] != "finished":
-                        print("Last submission: \034[96m"+result["status"]+"\033[0m")
+                        print("Last submission: \033[96m"+result["status"]+"\033[0m")
                     else:
-                        if result["result"]=="AC":
-                            print("Last submission: \033[92m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
-                        elif result["result"]=="TLE":
-                            print("Last submission: \033[93m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
-                        elif result["result"]=="WA":
-                            print("Last submission: \033[91m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
-                        elif result["result"]=="RE":
-                            print("Last submission: \033[95m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
-                        elif result["result"]=="CE":
-                            print("Last submission: \033[96m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
-                        else:
-                            print("Last submission: \033[90m"+result["result"]+"\033[0m, Points: \033[94m"+str(result["points"])+"\033[0m")
+                        self.print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                        for grp, sb in enumerate(result["_result"]["subresults"]):
+                            self.print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                            for sb2 in sb["subresults"]:
+                                self.print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
                 except:
                     print("\033[91m"+r.content+"\033[0m")
+                print("------------------------------------")
                 sys.exit(0)
             except:
                 #pass
