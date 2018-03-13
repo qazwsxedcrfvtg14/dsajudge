@@ -48,6 +48,7 @@ router.get('/', wrap(async (req, res) => {
 }));
 
 router.get('/:id/rejudge', wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
 
     let sub = await Submission.findById(req.params.id);
     if (!sub) return res.status(404).send(`Submission #${req.params.id} not found`);
@@ -92,6 +93,7 @@ async function loadSourceCode(id) {
 }
 
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const id = req.params.id;
     const submission = await Submission.findById(id);
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
@@ -102,6 +104,7 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
 }));
 
 router.get('/:id', requireLogin, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
 
     const id = req.params.id;
     let submission;

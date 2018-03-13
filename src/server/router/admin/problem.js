@@ -51,6 +51,7 @@ router.get('/', wrap(async (req, res) => {
 }));
 
 router.get('/:id', wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     let problem = await Problem.findOne({_id: req.params.id});
     if (!problem) return res.status(404).send('Problem not found');
 
@@ -93,6 +94,7 @@ router.put('/:id',
     upload.single('problem-file'),
     checkGzip,
     wrap(async (req, res) => {
+        if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
         const problem = await Problem.findById(req.params.id);
         if (!problem) res.status(404).send(`Problem #${req.params.id} not found`);
 
@@ -115,6 +117,7 @@ router.put('/:id',
 
 router.post('/:id/updateTests',
     wrap(async (req, res) => {
+        if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
         const problem = await Problem.findById(req.params.id);
         if (!problem) res.status(404).send(`Problem #${req.params.id} not found`);
 
@@ -133,6 +136,7 @@ router.post('/:id/updateTests',
 ));
 
 router.put('/:id/settings', wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const upd = req.body;
     if ('_id' in upd) _.remove(upd, '_id');
     if ('__v' in upd) _.remove(upd, '__v');
@@ -167,7 +171,7 @@ router.put('/:id/settings', wrap(async (req, res) => {
 
 // Rejudge
 router.post('/:id/rejudge', wrap(async (req, res) => {
-
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     try {
         await Submission.update(
             {problem: req.params.id},

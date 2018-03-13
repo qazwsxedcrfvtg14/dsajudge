@@ -47,6 +47,7 @@ async function loadSourceCode(id) {
 }
 
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const id = req.params.id;
     const submission = await Submission.findById(id)
         .populate('problem', 'resource')
@@ -63,6 +64,7 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
 }));
 
 router.get('/:id', requireLogin, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
 
     const id = req.params.id;
     let submission;

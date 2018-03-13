@@ -77,6 +77,7 @@ router.get('/:id', wrap(async (req, res) => {
 }));
 
 router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     try{
         const hid=req.params.id;
         const hwDir=path.join(config.dirs.homeworks, hid);

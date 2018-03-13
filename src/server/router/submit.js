@@ -12,6 +12,7 @@ import fs from 'fs-extra';
 const router = express.Router();
 
 router.post('/:id', requireKey, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     let user;
     if(req.user)user=req.user;
     else user=await User.findOne({git_upload_key: req.body.key});

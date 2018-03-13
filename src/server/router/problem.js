@@ -38,6 +38,7 @@ router.get('/', wrap(async (req, res) => {
 }));
 
 router.get('/:id', wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.sendStatus(404);
     let problem;
@@ -64,6 +65,7 @@ router.get('/:id', wrap(async (req, res) => {
 router.get('/:id/assets/:path', 
     checkProblem(),
     wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
 
     const pathname = req.params.path;
     if (!pathname || !pathname.match(/^[A-Za-z.0-9]+$/))
