@@ -67,7 +67,6 @@ router.post('/last', requireKey, wrap(async (req, res) => {
                 },
             },
         });
-    ;
     if(data.length==0)
         res.send({});
     else{
