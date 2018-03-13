@@ -54,10 +54,10 @@ async function proceedHw(hw, userID, isAdmin) {
 
 router.get('/', requireLogin, wrap(async (req, res) => {
     let qry = Homework.find();
-    if (!req.user.isAdmin())
+    if (!req.user.isAdmin()&&!req.user.isTA())
         qry = qry.where('visible').equals(true);
     const _data = await qry;
-    const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id, req.user.isAdmin())));
+    const data = await Promise.all(_data.map(hw => proceedHw(hw, req.user._id, req.user.isAdmin()||req.user.isTA())));
     data.sort((h1, h2) => {
         if (h1.status != h2.status) {
             const ord = {
