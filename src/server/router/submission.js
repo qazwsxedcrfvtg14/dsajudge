@@ -103,7 +103,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     res.send(submission);
 }));
 
-router.post('/last', requireKey, wrap(async (req, res) => {
+router.post('/last/', requireKey, wrap(async (req, res) => {
     let user;
     if(req.user)user=req.user;
     else user=await User.findOne({git_upload_key: req.body.key});
