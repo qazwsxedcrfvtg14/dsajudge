@@ -57,12 +57,6 @@ router.post('/last', requireKey, wrap(async (req, res) => {
         .find({submittedBy: user._id})
         .sort('-_id')
         .limit(1)
-    ;
-    if(data.length==0)
-        res.send({});
-    else{
-        //res.send(data[0]);
-        const submission = await Submission.findById(data[0]._id)
         .populate('problem', 'name testdata.points resource')
         .populate({
             path: '_result',
@@ -73,7 +67,12 @@ router.post('/last', requireKey, wrap(async (req, res) => {
                 },
             },
         });
-        return submission;
+    ;
+    if(data.length==0)
+        res.send({});
+    else{
+        //res.send(data[0]);
+        res.send(data[0]);
     }
 }));
 
