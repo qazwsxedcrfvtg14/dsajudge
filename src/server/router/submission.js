@@ -45,6 +45,37 @@ async function loadSourceCode(id) {
     }
 }
 
+router.get('/last', requireKey, wrap(async (req, res) => {
+    let user;
+    if(req.user)user=req.user;
+    else user=await User.findOne({git_upload_key: req.body.key});
+    if (!user) {
+        return res.status(403).send("User not found!");
+    }
+    const data = await Submission
+        .find({submittedBy: user._id})
+        .sort('-_id')
+        .limit(1)
+    ;
+    if(data.length==0)
+        res.send({});
+    else{
+        //res.send(data[0]);
+        const submission = await Submission.findById(data[0]._id)
+        .populate('problem', 'name testdata.points resource')
+        .populate({
+            path: '_result',
+            populate: {
+                path: 'subresults',
+                populate: {
+                    path: 'subresults',
+                },
+            },
+        });
+        return submission;
+    }
+}));
+
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
     const submission = await Submission.findById(id)
