@@ -4,7 +4,8 @@ import wrap from 'express-async-wrap';
 import _ from 'lodash';
 import config from '/config';
 import path from 'path';
-import {requireLogin} from '/utils';
+import User from '/model/user';
+import {requireLogin,requireKey} from '/utils';
 import fs from 'fs-extra';
 
 const router = express.Router();
