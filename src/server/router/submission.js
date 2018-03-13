@@ -46,35 +46,6 @@ async function loadSourceCode(id) {
     }
 }
 
-router.post('/last', requireKey, wrap(async (req, res) => {
-    let user;
-    if(req.user)user=req.user;
-    else user=await User.findOne({git_upload_key: req.body.key});
-    if (!user) {
-        return res.status(403).send("User not found!");
-    }
-    const data = await Submission
-        .find({submittedBy: user._id})
-        .sort('-_id')
-        .limit(1)
-        .populate('problem', 'name testdata.points resource')
-        .populate({
-            path: '_result',
-            populate: {
-                path: 'subresults',
-                populate: {
-                    path: 'subresults',
-                },
-            },
-        });
-    if(data.length==0)
-        res.send({});
-    else{
-        //res.send(data[0]);
-        res.send(data[0]);
-    }
-}));
-
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
     const submission = await Submission.findById(id)
@@ -130,6 +101,35 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     //console.log(JSON.stringify(submission, null, 4))
 
     res.send(submission);
+}));
+
+router.post('/last', requireKey, wrap(async (req, res) => {
+    let user;
+    if(req.user)user=req.user;
+    else user=await User.findOne({git_upload_key: req.body.key});
+    if (!user) {
+        return res.status(403).send("User not found!");
+    }
+    const data = await Submission
+        .find({submittedBy: user._id})
+        .sort('-_id')
+        .limit(1)
+        .populate('problem', 'name testdata.points resource')
+        .populate({
+            path: '_result',
+            populate: {
+                path: 'subresults',
+                populate: {
+                    path: 'subresults',
+                },
+            },
+        });
+    if(data.length==0)
+        res.send({});
+    else{
+        //res.send(data[0]);
+        res.send(data[0]);
+    }
 }));
 
 export default router;
