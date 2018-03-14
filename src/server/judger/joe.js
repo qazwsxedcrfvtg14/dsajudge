@@ -73,7 +73,7 @@ export async function reset(id) {
 
 const metaDir = path.join(config.dirs.isolate,'META');
 
-export async function compile(worker_id, cppFile, execName, GPP) {
+export async function compile(worker_id, cppFile, execName, GPP, GPPLink) {
     const opt = {
         cg:true,
         "box-id": worker_id,
@@ -94,7 +94,7 @@ export async function compile(worker_id, cppFile, execName, GPP) {
     const _opt = [
         ...flat_opt(opt),
         "--",
-        ...[...GPP, '-o', execName, cppFile]
+        ...[...GPP, '-o', execName, cppFile, ...GPPLink]
     ];
 
     let result = await isolateWrap(_opt);

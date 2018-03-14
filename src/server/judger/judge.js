@@ -61,6 +61,8 @@ const GCC = [
     '-static',
     '-O2',
     '-std=c11',
+];
+const GCCLink = [
     '-lm',
 ];
 const GPP = [
@@ -69,6 +71,8 @@ const GPP = [
     '-std=c++14',
     '-static',
     '-O2',
+];
+const GPPLink = [
 ];
 
 const isolateDir = config.dirs.isolate;
@@ -100,7 +104,7 @@ export default class Judger {
                 this.rootDir=path.join(isolateDir,compileBoxId.toString(),'box');
                 await copyToDir(this.userCpp, this.rootDir, 'user.c');
 
-                const result = await compile(compileBoxId, 'user.c', 'user', GCC);
+                const result = await compile(compileBoxId, 'user.c', 'user', GCC, GCCLink);
                 if (result.RE) {
                     saveResult(this.result, 'CE');
                     await copyToDir(
@@ -126,7 +130,7 @@ export default class Judger {
                 await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
                 await copyToDir(TESTLIB, this.rootDir);
 
-                const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP);
+                const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP, GPPLink);
                 if (result.RE) {
                     throw Error('Judge Error: Checker Compiled Error.');
                 }
