@@ -31,8 +31,8 @@ app.use(expressSession({
         touchAfter: 3600,
     }),
 }));
-app.use(bodyParser.json({limit: '20mb'}));
-app.use(bodyParser.urlencoded({limit: '20mb',extended: true}));
+app.use(bodyParser.json({limit: '40mb'}));
+app.use(bodyParser.urlencoded({limit: '40mb',extended: true}));
 auth(app);
 setRouter(app);
     
