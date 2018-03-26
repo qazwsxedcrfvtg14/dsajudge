@@ -13,11 +13,17 @@ const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
     const skipPage = parseInt(req.query.skipPage) || 0;
-
-    let query = Submission.find()
-        .sort('-_id')
-        .limit(15).skip(skipPage*15)
-    ;
+    let query;
+    if(skipPage===-1){
+        query = Submission.find()
+        .sort('-_id');
+    }
+    else{
+        query = Submission.find()
+            .sort('-_id')
+            .limit(15).skip(skipPage*15)
+        ;
+    }
     if (req.query.result && req.query.result !== 'ALL') 
         query = query.where('result').equals(req.query.result);
 
