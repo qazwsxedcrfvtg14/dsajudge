@@ -58,12 +58,10 @@ router.get('/:id', wrap(async (req, res) => {
     problem = problem.toObject();
 
     try {
-        let fl = await fs.readFile(
-            path.join(config.dirs.problems, req.params.id, 'prob.md')
-        );
-    
+        const md=path.join(config.dirs.problems, req.params.id, 'prob.md');
+        await fs.stat(md);
+        let fl = await fs.readFile(md);
         problem.desc = fl.toString();
-    
     } catch(e) {
         problem.desc = "";
     }
