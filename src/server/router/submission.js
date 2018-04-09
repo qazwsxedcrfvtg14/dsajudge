@@ -13,7 +13,7 @@ const router = express.Router();
 router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
-    if (req.user && req.user.isAdmin()){
+    if (req.user && (req.user.isAdmin() || req.user.isTA())){
         const data = await Submission
             .find({submittedBy: req.user._id})
             .sort('-_id')
@@ -67,7 +67,7 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
 
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!(req.user && req.user.isAdmin()) && 
+    if (!(req.user && (req.user.isAdmin() || req.user.isTA() ) ) && 
         !( ( submission.submittedBy.equals(req.user._id) && submission.problem.visible ) || submission.problem.resource.includes('solution'))) { 
         return res.status(403).send(`Permission denided.`);
     }
@@ -95,7 +95,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     ;
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
-    if (!req.user.isAdmin() && 
+    if (!(req.user.isAdmin() || req.user.isTA() )  && 
         !( (submission.submittedBy.equals(req.user._id) && submission.problem.visible) || submission.problem.resource.includes('solution'))) {
         return res.status(403).send(`Permission denided.`);
     }
