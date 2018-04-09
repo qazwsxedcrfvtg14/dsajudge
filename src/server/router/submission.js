@@ -14,7 +14,7 @@ const router = express.Router();
 router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
-    if (req.user && (req.user.isAdmin())){
+    if (req.user && (req.user.isAdmin()||req.user.isTA())){
         const data = await Submission
             .find({submittedBy: req.user._id})
             .sort('-_id')
