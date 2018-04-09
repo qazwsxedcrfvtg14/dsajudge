@@ -1,3 +1,10 @@
+# DSA Judge
+https://dsa.csie.org
+
+# Original Project
+https://github.com/bobogei81123/adajudge  
+https://github.com/tzupengwang/adajudge
+
 # Installation
 ```
 # make sure you have node, npm, mongo installed
