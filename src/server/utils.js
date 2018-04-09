@@ -4,8 +4,20 @@ import Homework from '/model/homework';
 import _ from 'lodash';
 import wrap from 'express-async-wrap';
 
-export const requireKey = (req, res, next) => {
+export const requireKey = wrap(async(req, res, next) => {
     if ( ( !req.user || !req.user.isAdmin() ) && !req.body.key) return res.status(401).send('Please use "git" to submit!');
+    if (!req.user) req.user=await User.findOne({git_upload_key: req.body.key});
+    if (!req.user) return res.status(403).send("User not found!");
+    next();
+});
+export const checkKey = wrap(async(req, res, next) => {
+    if ( !req.user && !req.body.key ) return res.status(401).send('Please use "git" to submit!');
+    if (!req.user) req.user=await User.findOne({git_upload_key: req.body.key});
+    if (!req.user) return res.status(403).send("User not found!");
+    next();
+});
+export const requireKeyOrNotGit = (req, res, next) => {
+    if ( ( !req.user || !req.user.isAdmin() ) && !req.body.key && (!req.problem || !req.problem.notGitOnly) ) return res.status(401).send('Please use "git" to submit!');
     next();
 };
 export const requireLogin = (req, res, next) => {
@@ -24,7 +36,7 @@ export const checkProblem = (_id='id') => wrap(async (req, res, next) => {
     const id = parseInt(req.params[_id]);
     if (isNaN(id)) return res.status(404).send(`Problem #${id} not found`);
     let problem;
-    if (req.user && req.user.isAdmin())
+    if (req.user && (req.user.isAdmin()||req.user.isTA()) )
         problem = await Problem.findOne({_id: id});
     else
         problem = await Problem.findOne({_id: id, visible: true});

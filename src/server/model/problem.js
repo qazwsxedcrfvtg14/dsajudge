@@ -22,6 +22,10 @@ const schema = Schema({
         type: Boolean,
         default: false,
     },
+    notGitOnly: {
+        type: Boolean,
+        default: false,
+    },
     testdata: {
         count: Number,
         points: Number,

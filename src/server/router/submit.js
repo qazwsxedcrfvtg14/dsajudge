@@ -6,19 +6,14 @@ import wrap from 'express-async-wrap';
 import Problem from '/model/problem';
 import Submission from '/model/submission';
 import User from '/model/user';
-import {requireLogin,requireKey} from '/utils';
+import {requireLogin,checkKey,checkProblem,requireKeyOrNotGit} from '/utils';
 import fs from 'fs-extra';
 
 const router = express.Router();
 
-router.post('/:id', requireKey, wrap(async (req, res) => {
-    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
-    let user;
-    if(req.user)user=req.user;
-    else user=await User.findOne({git_upload_key: req.body.key});
-    if (!user) {
-        return res.status(403).send("User not found!");
-    }
+router.post('/:id', checkKey, checkProblem(), requireKeyOrNotGit, wrap(async (req, res) => {
+    if(isNaN(req.params.id))return res.status(404).send(`id must be a number`);
+    const user=req.user;
     const probId = parseInt(req.params.id);
     let problem;
     if (user && (user.isAdmin()||user.isTA()) )
