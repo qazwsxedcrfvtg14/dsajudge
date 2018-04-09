@@ -7,6 +7,7 @@ import path from 'path';
 import User from '/model/user';
 import {requireLogin,requireKey} from '/utils';
 import fs from 'fs-extra';
+import Problem from '/model/problem';
 
 const router = express.Router();
 
@@ -23,15 +24,12 @@ router.get('/', requireLogin, wrap(async (req, res) => {
         res.send(data);
     }
     else{
+        const visibleProblems=(await Problem.find({visible:true})).map(problem=>problem._id);
         const data = await Submission
-            .find({submittedBy: req.user._id})
-            .populate({
-                path: 'problem',
-                match: { visible: true},
-                select: 'name -_id'
-            })
+            .find({submittedBy: req.user._id,problem:{$in:visibleProblems}})
             .sort('-_id')
             .limit(15).skip(skip*15)
+            .populate('problem', 'name')
             ;
         res.send(data);
     }
