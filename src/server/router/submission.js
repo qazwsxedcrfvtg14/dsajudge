@@ -13,13 +13,28 @@ const router = express.Router();
 router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
-    const data = await Submission
-        .find({submittedBy: req.user._id})
-        .sort('-_id')
-        .limit(15).skip(skip*15)
-        .populate('problem', 'name')
-        ;
-    res.send(data);
+    if (req.user && (req.user.isAdmin())){
+        const data = await Submission
+            .find({submittedBy: req.user._id})
+            .sort('-_id')
+            .limit(15).skip(skip*15)
+            .populate('problem', 'name')
+            ;
+        res.send(data);
+    }
+    else{
+        const data = await Submission
+            .find({submittedBy: req.user._id})
+            .populate({
+                path: 'problem',
+                match: { visible: true},
+                select: 'name'
+            })
+            .sort('-_id')
+            .limit(15).skip(skip*15)
+            ;
+        res.send(data);
+    }
     //console.log(skip);
     
 }));
