@@ -28,7 +28,7 @@ router.get('/', requireLogin, wrap(async (req, res) => {
             .populate({
                 path: 'problem',
                 match: { visible: true},
-                select: 'name'
+                select: 'name -_id'
             })
             .sort('-_id')
             .limit(15).skip(skip*15)
