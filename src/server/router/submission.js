@@ -13,14 +13,26 @@ const router = express.Router();
 router.get('/', requireLogin, wrap(async (req, res) => {
     const skip = parseInt(req.query.start) || 0;
 
+    if (req.user && req.user.isAdmin()){
+        const data = await Submission
+            .find({submittedBy: req.user._id})
+            .sort('-_id')
+            .limit(15).skip(skip*15)
+            .populate('problem', 'name')
+            ;
+        res.send(data);
+    }
+    else{
+        const data = await Submission
+            .find({submittedBy: req.user._id, visible:true})
+            .sort('-_id')
+            .limit(15).skip(skip*15)
+            .populate('problem', 'name')
+            ;
+        res.send(data);
+    }
     //console.log(skip);
-    const data = await Submission
-        .find({submittedBy: req.user._id})
-        .sort('-_id')
-        .limit(15).skip(skip*15)
-        .populate('problem', 'name')
-    ;
-    res.send(data);
+    
 }));
 
 const MAX_COMPILE_LOG_LEN = 10000;
@@ -50,13 +62,13 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
     if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const id = req.params.id;
     const submission = await Submission.findById(id)
-        .populate('problem', 'resource')
+    .populate('problem', 'resource visible')
     ;
 
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
     if (!(req.user && req.user.isAdmin()) && 
-        !(submission.submittedBy.equals(req.user._id) || submission.problem.resource.includes('solution'))) { 
+        !( ( submission.submittedBy.equals(req.user._id) && submission.problem.visible ) || submission.problem.resource.includes('solution'))) { 
         return res.status(403).send(`Permission denided.`);
     }
     const src = await loadSourceCode(id);
@@ -69,7 +81,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     const id = req.params.id;
     let submission;
     submission = await Submission.findById(id)
-        .populate('problem', 'name testdata.points resource')
+        .populate('problem', 'name testdata.points resource visible')
         .populate('submittedBy', (req.user.isAdmin() ? 'email meta' : 'meta'))
         .populate({
             path: '_result',
@@ -84,7 +96,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
 
     if (!submission) return res.status(404).send(`Submission ${id} not found.`);
     if (!req.user.isAdmin() && 
-        !(submission.submittedBy.equals(req.user._id) || submission.problem.resource.includes('solution'))) {
+        !( (submission.submittedBy.equals(req.user._id) && submission.problem.visible) || submission.problem.resource.includes('solution'))) {
         return res.status(403).send(`Permission denided.`);
     }
 
