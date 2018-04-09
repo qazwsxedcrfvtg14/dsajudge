@@ -40,10 +40,13 @@
           .four.wide.field
             label TimeLimit
             input(type="text" v-model="problem.timeLimit") 
-        .field
+        .two.fields
           .ui.toggle.checkbox
             input(type="checkbox" v-model="problem.visible")
             label Visible to non-admin
+          .ui.toggle.checkbox
+            input(type="checkbox" v-model="problem.notGitOnly")
+            label Allow submit without git
 
     .ui.segment.clear-after
       h3.ui.dividing.header Test Groups
