@@ -114,13 +114,15 @@ router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
             rs={
                 homework_id: hid,
             };
-            req.user.homeworks.push(rs);
         }else{
             rs = filter_res[0];
         }
         rs.file_name=file_name;
         rs.file_size=filesize(fileSizeInBytes);
         rs.file_sha1=fsHash.digest('hex');
+        if (filter_res === undefined || filter_res.length == 0){
+            req.user.homeworks.push(rs);
+        }
         await req.user.save();
         return res.send(`Upload successfully.`);
     } catch(e) {
