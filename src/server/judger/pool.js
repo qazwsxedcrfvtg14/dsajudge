@@ -8,7 +8,9 @@ export default class Worker {
         this.timeoutMs = timeout * 1000;
         this.ret = null;
         this.wait=[];
-        this.finish=new Promise((resolve, reject) => {
+    }
+    finish() {
+        return new Promise((resolve, reject) => {
             if(this.isIdle)
                 resolve({
                     worker: this,
@@ -22,23 +24,7 @@ export default class Worker {
                     });
                 });
         });
-        //wait.shift()
     }
-    /*
-    async finish() {
-        let waitedCnt = 0;
-        while (!this.isIdle) {
-            if (waitedCnt > this.timeoutMs) {
-                throw TimeoutError('Runner timeout');
-            }
-            await sleep(100);
-            waitedCnt += 100;
-        }
-        return {
-            worker: this,
-            ret: this.ret,
-        };
-    }*/
     run(taskFactory, err) {
         if (!this.isIdle) throw InvalidOperationError('Runner not finished.');
         this.isIdle = false;

@@ -142,7 +142,7 @@ export default class Judger {
         let worker;
         while(true){
             try{
-                const worker_result = await Promise.race(workers.map(x => x.finish));
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
                 worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileUser`, err);
@@ -171,7 +171,7 @@ export default class Judger {
         let worker;
         while(true){
             try{
-                const worker_result = await Promise.race(workers.map(x => x.finish));
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
                 worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileChecker`, err);
@@ -300,7 +300,7 @@ export default class Judger {
         for (let [taskID, task] of this.tasks.entries()) {
             while(true){
                 try{
-                    const worker_result = await Promise.race(workers.map(x => x.finish));
+                    const worker_result = await Promise.race(workers.map(x => x.finish()));
                     worker_result.worker.run(task, (err) => {
                         if (err) {
                             logger.error(`Judge error @ ${taskID}`, err);
