@@ -9,13 +9,13 @@ export default class Worker {
         this.ret = null;
         this.wait=[];
         this.finish=new Promise((resolve, reject) => {
-            if(isIdle)
+            if(this.isIdle)
                 resolve({
                     worker: this,
                     ret: this.ret,
                 });
             else
-                wait.push(async ()=>{
+                this.wait.push(async ()=>{
                     resolve({
                         worker: this,
                         ret: this.ret,
