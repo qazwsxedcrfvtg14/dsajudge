@@ -139,7 +139,10 @@ export default class Judger {
     async compileUser(workers) {
         let error = null;
         const task = this.generateUserCompileTask();
-        let worker;
+        let resol;
+        let worker_finish=new Promise((resolve, reject) => {
+            resol=resolve;
+        });
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
@@ -149,8 +152,7 @@ export default class Judger {
                         logger.error(`Judge error @ compileUser`, err);
                         error = err;
                     }
-                });
-                worker=worker_result.worker;
+                },resol);
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
@@ -160,7 +162,7 @@ export default class Judger {
             }
             break;
         }
-        await worker.finish();
+        await worker_finish;
         if (error) {
             throw Error('Judge error when running.');
         }
@@ -169,7 +171,10 @@ export default class Judger {
     async compileChecker(workers) {
         let error = null;
         const task = this.generateCheckerCompileTask();
-        let worker;
+        let resol;
+        let worker_finish=new Promise((resolve, reject) => {
+            resol=resolve;
+        });
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
@@ -179,7 +184,7 @@ export default class Judger {
                         logger.error(`Judge error @ compileChecker`, err);
                         error = err;
                     }
-                });
+                },resol);
                 worker=worker_result.worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
@@ -190,7 +195,7 @@ export default class Judger {
             }
             break;
         }
-        await worker.finish();
+        await worker_finish;
         if (error) {
             throw Error('Judge error when running.');
         }
