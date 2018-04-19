@@ -6,11 +6,16 @@
       form.ui.form
         .field
           label Name
-          input(type="text" v-model="hw.name") 
-        .field
-          .ui.toggle.checkbox
-            input(type="checkbox" v-model="hw.visible")
-            label Visible to non-admin
+          input(type="text" v-model="hw.name")
+        .three.fields
+          .field
+            .ui.toggle.checkbox
+              input(type="checkbox" v-model="hw.visible")
+              label Visible to non-admin
+          .field
+            .ui.toggle.checkbox
+              input(type="checkbox" v-model="hw.showStatistic")
+              label Show statistic
         .field
           label Due Time
           input(type="text" v-model="hw.due")

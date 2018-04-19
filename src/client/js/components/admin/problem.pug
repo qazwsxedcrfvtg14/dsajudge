@@ -43,7 +43,7 @@
           .four.wide.field
             label Quota
             input(type="text" v-model="problem.quota") 
-        .two.fields
+        .three.fields
           .field
             .ui.toggle.checkbox
               input(type="checkbox" v-model="problem.visible")
@@ -52,6 +52,11 @@
             .ui.toggle.checkbox
               input(type="checkbox" v-model="problem.notGitOnly")
               label Allow submit without git
+          .field
+            .ui.toggle.checkbox
+              input(type="checkbox" v-model="problem.showStatistic")
+              label Show statistic
+              
 
     .ui.segment.clear-after
       h3.ui.dividing.header Test Groups

@@ -6,10 +6,11 @@
       .ui.right.floated.header(style="margin-bottom: 5px; padding-top: 20px;")
         div.clear-after
           .hack
-          a( v-link="{name: 'problem.statistic', params: {id: problem._id}}" ).ui.right.labeled.icon.green.button.spaced
-            | Statistic
+          a( v-if="user && (user.isAdmin || problem.showStatistic)"
+            v-link="{name: 'problem.statistic', params: {id: problem._id}}" ).ui.right.labeled.icon.green.button.spaced
             i.area.chart.icon
-          a( v-if="user && (user.isAdmin||problem.notGitOnly)",
+            | Statistic
+          a( v-if="user && (user.isAdmin || problem.notGitOnly)",
             v-link="{name: 'submit', params: {id: problem._id}}" ).ui.right.labeled.icon.primary.button.spaced
             i.send.icon
             | Submit
