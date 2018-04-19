@@ -80,7 +80,7 @@ async function mainLoop() {
             continue;
         }
         let ok=false;
-        for(worker of workers)
+        for(const worker of workers)
             if(worker.wait.length<30)
                 ok=true;
         if(!ok){
