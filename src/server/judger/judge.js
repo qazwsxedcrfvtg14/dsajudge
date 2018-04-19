@@ -199,51 +199,53 @@ export default class Judger {
 
     generateTask(gid, groupResult, tid, testResult) {
         return async (worker_id) => {
-            await reset(worker_id);
-            const test = this.groups[gid].tests[tid];
-            const tdBase = path.join(this.problemDir, 'testdata', test);
-            const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
-            const userTDir = path.join(isolateDir,worker_id.toString(),'box');
-            await copyToDir(inp, userTDir, 'prob.in');
-            await copyToDir(this.userExec, userTDir, 'user');
+            await (async () => {
+                await reset(worker_id);
+                const test = this.groups[gid].tests[tid];
+                const tdBase = path.join(this.problemDir, 'testdata', test);
+                const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
+                const userTDir = path.join(isolateDir,worker_id.toString(),'box');
+                await copyToDir(inp, userTDir, 'prob.in');
+                await copyToDir(this.userExec, userTDir, 'user');
 
-            const userRes = await run(worker_id, 'user', 
-                'prob.in', 'prob.out', 'prob.err', 
-                this.problem.timeLimit);
+                const userRes = await run(worker_id, 'user', 
+                    'prob.in', 'prob.out', 'prob.err', 
+                    this.problem.timeLimit);
 
-            testResult.runtime = userRes.time;
-            if (userRes.RE) {
-                await saveResult(testResult, 'RE');
-                return;
-            }
-            if (userRes.TLE) {
-                testResult.runtime = this.problem.timeLimit;
-                await saveResult(testResult, 'TLE');
-                return;
-            }
+                testResult.runtime = userRes.time;
+                if (userRes.RE) {
+                    await saveResult(testResult, 'RE');
+                    return;
+                }
+                if (userRes.TLE) {
+                    testResult.runtime = this.problem.timeLimit;
+                    await saveResult(testResult, 'TLE');
+                    return;
+                }
 
-            
-            await copyToDir(outp, userTDir, 'prob.ans');
-            await copyToDir(this.checkerExec, userTDir, 'checker');
-            
+                
+                await copyToDir(outp, userTDir, 'prob.ans');
+                await copyToDir(this.checkerExec, userTDir, 'checker');
+                
 
-            const files = [
-                'prob.in',
-                'prob.out',
-                'prob.ans',
-            ];
-            const checkerRes = await run(worker_id, 'checker', 
-                null, 'checker.out', 'checker.err',
-                20, 1<<23, files);
+                const files = [
+                    'prob.in',
+                    'prob.out',
+                    'prob.ans',
+                ];
+                const checkerRes = await run(worker_id, 'checker', 
+                    null, 'checker.out', 'checker.err',
+                    20, 1<<23, files);
 
-            if (checkerRes.TLE) {
-                throw new Error('Judge Error: Checker TLE.');
-            }
-            if (checkerRes.RE) {
-                await saveResult(testResult, 'WA');
-            } else {
-                await saveResult(testResult, 'AC', testResult.maxPoints);
-            }
+                if (checkerRes.TLE) {
+                    throw new Error('Judge Error: Checker TLE.');
+                }
+                if (checkerRes.RE) {
+                    await saveResult(testResult, 'WA');
+                } else {
+                    await saveResult(testResult, 'AC', testResult.maxPoints);
+                }
+            })();
             this.remains[gid] --;
             if (!this.remains[gid]) {
                 const _groupResult = _.reduce(
