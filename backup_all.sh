@@ -15,7 +15,7 @@ mongodump --archive=$root_dir/dsajudge.${DATE}.gz --gzip --db dsajudge
 tar -zcf $root_dir/submissions.tar.gz $submissions_dir
 tar -zcf $root_dir/homeworks.tar.gz $homeworks_dir
 tar -zcf $root_dir/git.tar.gz $git_dir
-tar -zcf $root_dir/problems.tar.gz $problems_dir/*/prob.md
+tar -zcf $root_dir/problems.tar.gz $problems_dir
 tar -zcf $root_dir/gitosis_admin.tar.gz $gitosis_admin
 #gdrive upload -r $root_dir
 gdrive sync upload $backup_dir 175ohpqrGDKRqNQc2GNVNu6m06iMSeOlj
