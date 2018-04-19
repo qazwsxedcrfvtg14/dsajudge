@@ -319,7 +319,7 @@ export default class Judger {
             }
             //if (error) break;
         }
-        await Promise.all(run_workers.map(x => x.finish()));
+        await Promise.race(run_workers.map(x => x.finish()));
         if (error) {
             throw Error('Judge error when running.');
         }
