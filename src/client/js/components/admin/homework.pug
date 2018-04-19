@@ -42,7 +42,7 @@
               button.ui.icon.red.button( @click="removeProblem(idx)" )
                 i.remove.icon
           tr
-            td.center.aligned( colspan="3" ) 
+            td.center.aligned( colspan="4" ) 
               select.ui.search.dropdown#prob-select( v-model="choosedID" )
                 option( v-for="prob of probs", :value="prob._id" ) {{ prob._id + ': ' + prob.name }}
               button.ui.button.right.labeled.icon.green.button( @click="addProblem" )#new-prob-btn
