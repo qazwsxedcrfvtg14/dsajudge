@@ -30,6 +30,10 @@ const schema = Schema({
         type: Boolean,
         default: false,
     },
+    showStatistic: {
+        type: Boolean,
+        default: false,
+    },
     testdata: {
         count: Number,
         points: Number,

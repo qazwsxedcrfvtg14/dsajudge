@@ -39,6 +39,10 @@ const schema = Schema({
     meta: {
         pdfLink: String,
     },
+    showStatistic: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 schema.plugin(autoIncrement.plugin, 'Homework');

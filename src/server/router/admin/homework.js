@@ -22,8 +22,6 @@ router.get('/:id', wrap(async (req, res) => {
     if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
     const hw = await Homework.findById(req.params.id);
     if (!hw) return res.status(404).send(`Homework #${req.params.id} not found`);
-
-
     res.send(hw.toObject());
 }));
 
