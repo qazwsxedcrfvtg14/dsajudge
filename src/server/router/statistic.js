@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get('/problem/:id', requireLogin, checkProblem(), wrap(async (req, res) => {
     if(isNaN(req.problem._id))return res.status(400).send(`id must be a number`);
-    if( (!req.user || !req.user.isAdmin()) && !req.problem.showStatistic)return res.status(403).send(`you should not see this`);
+    if( (!req.user || !( req.user.isAdmin()||req.user.isTA()) ) && !req.problem.showStatistic)return res.status(403).send(`you should not see this`);
     const result = await Promise.all([
         probStat.getProblemResultStats(req.problem._id),
         probStat.getProblemResultBucket(req.problem._id),
@@ -29,7 +29,7 @@ router.get('/problem/:id', requireLogin, checkProblem(), wrap(async (req, res) =
 
 router.get('/homework/:id', requireLogin, checkHomework(), wrap(async (req, res) => {
     if(isNaN(req.homework._id))return res.status(400).send(`id must be a number`);
-    if( (!req.user || !req.user.isAdmin()) && !req.homework.showStatistic)return res.status(403).send(`you should not see this`);
+    if( (!req.user || !(req.user.isAdmin()||req.user.isTA()) ) && !req.homework.showStatistic)return res.status(403).send(`you should not see this`);
     const result = await Promise.all([
         hwStat.getHomeworkResultStats(req.homework._id),
         hwStat.getHomeworkPointsDistribution(req.homework._id),

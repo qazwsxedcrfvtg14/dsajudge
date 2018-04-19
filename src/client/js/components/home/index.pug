@@ -85,7 +85,7 @@
               small {{ ' ×' + problem.weight }} = {{ problem.weight * problem.userPoints }}
 
     .ui.segment( v-if="user" )
-      a.ui.button.right.labeled.icon.green.button.spaced( v-if="user.isAdmin || hw.showStatistic"
+      a.ui.button.right.labeled.icon.green.button.spaced( v-if="user.isAdmin || user.isTA || hw.showStatistic"
         v-link="{name: 'homework.statistic', params: {id: hw._id}}" )
         | Statistic
         i.area.chart.icon
