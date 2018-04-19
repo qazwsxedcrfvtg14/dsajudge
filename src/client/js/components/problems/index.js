@@ -20,10 +20,11 @@ export default Vue.extend({
         }
     },
     methods:{
-        getQuota(res){
-            if(!res)return 5;
-            if(String(new Date(Date.now())).substr(0,15) != String(new Date(res.last_submission)).substr(0,15)) return 5;
-            return res.quota;
+        getQuota(res,prob){
+            if(!res&&!prob)return null;
+            if(!res)return prob.quota;
+            if(String(new Date(Date.now())).substr(0,15) != String(new Date(res.last_submission)).substr(0,15)) return prob.quota;
+            return prob.quota-res.quota;
         },
         getProbId(prob) {
             return prob.problem_id; 

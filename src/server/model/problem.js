@@ -18,6 +18,10 @@ const schema = Schema({
         type: Number,
         default: 1,
     },
+    quota: {
+        type: Number,
+        default: 5,
+    },
     hasSpecialJudge: {
         type: Boolean,
         default: false,

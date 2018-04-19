@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import _ from 'lodash';
+import Problem from '/model/problem';
 const Schema = mongoose.Schema;
 
 const userSchema = Schema({
@@ -46,9 +47,11 @@ userSchema.methods.isTA = function() {
     return this.hasRole('TA');
 };
 
-const default_quota = 5;
+//const default_quota = 5;
 
 userSchema.methods.checkQuota = async function(pid){
+	const problem=Problem.findOne({_id:pid});
+	if(!problem)return false;
 	const limit=this.submission_limit;
 	let filter_res = _.filter(limit,_.conforms({ problem_id : id => id==pid }));
     let res ;
@@ -58,20 +61,20 @@ userSchema.methods.checkQuota = async function(pid){
 		res={
 			problem_id: pid,
 			last_submission: today,
-			quota : default_quota ,
+			quota : 0 ,
 		};
 		this.submission_limit.push(res);
 		filter_res = _.filter(this.submission_limit,_.conforms({ problem_id : id => id==pid }));
 	}
 	res = filter_res[0];
 	if ( String(today).substr(0,15) != String(res.last_submission).substr(0,15)){
-		res.quota = default_quota;
+		res.quota = 0;
 		res.last_submission = today;
 	}
-	if (res.quota < 1){
+	if (res.quota >= problem.quota ){
 		return false;
 	}else{
-		res.quota -= 1;
+		res.quota += 1;
 		await this.save();
 		return true;
 	}

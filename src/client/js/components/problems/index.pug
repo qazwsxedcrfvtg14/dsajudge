@@ -11,7 +11,7 @@
         :class="{ disabled: !prob.visible, positive: prob.userRes.AC }" )
         td.force-pointer {{ prob._id }}
         td.force-pointer {{ prob.name }}
-        td.force-pointer.collasping.center.aligned {{ user ? ( getQuota( _.filter(user.submission_limit,_.conforms(checkProbId(prob._id)))[0] ) ) : '-' }}
+        td.force-pointer.collasping.center.aligned {{ user ? ( getQuota( _.filter(user.submission_limit,_.conforms(checkProbId(prob._id)))[0],porb ) ) : '-' }}
         td.force-pointer.collasping.center.aligned {{ prob.userRes.points ? prob.userRes.points : '-' }}
       tr( v-if="user && user.isAdmin" )
         td.positive.center.aligned( colspan="4" v-link="{ path: '/admin/newProblem' }" ) 
