@@ -81,7 +81,7 @@ async function mainLoop() {
         }
         let ok=false;
         for(const worker of workers)
-            if(worker.wait.length<30)
+            if(worker.wait.length<50)
                 ok=true;
         if(!ok){
             await sleep(100);
