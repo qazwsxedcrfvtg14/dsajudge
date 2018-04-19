@@ -79,6 +79,7 @@ async function mainLoop() {
             await sleep(1000);
             continue;
         }
+        await Promise.race(workers.map(x => x.finish()));
         await prepareJudge(pending);
         startJudge(pending, workers);
         await sleep(50);
