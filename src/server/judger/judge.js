@@ -143,6 +143,7 @@ export default class Judger {
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if(!worker_result.worker.isIdle)continue;
                 worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileUser`, err);
@@ -172,6 +173,7 @@ export default class Judger {
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if(!worker_result.worker.isIdle)continue;
                 worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(`Judge error @ compileChecker`, err);
@@ -305,6 +307,7 @@ export default class Judger {
             while(true){
                 try{
                     const worker_result = await Promise.race(workers.map(x => x.finish()));
+                    if(!worker_result.worker.isIdle)continue;
                     worker_result.worker.run(task, (err) => {
                         if (err) {
                             logger.error(`Judge error @ ${taskID}`, err);
