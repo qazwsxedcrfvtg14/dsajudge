@@ -25,7 +25,7 @@ export default class Worker {
                 });
         });
     }
-    run(taskFactory, err) {
+    run(taskFactory, err, fin) {
         if (!this.isIdle) throw InvalidOperationError('Runner not finished.');
         this.isIdle = false;
         this.ret = null;
@@ -34,11 +34,13 @@ export default class Worker {
             this.isIdle = true;
             while(this.wait.length)
                 (this.wait.shift())();
+            if(fin)fin();
         }).catch(e => {
             this.isIdle = true;
             while(this.wait.length)
                 (this.wait.shift())();
             err(e);
+            if(fin)fin();
         });
     }
 }

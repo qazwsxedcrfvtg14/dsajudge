@@ -298,6 +298,10 @@ export default class Judger {
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
+            let resol;
+            run_workers.push(new Promise((resolve, reject) => {
+                resol=resolve;
+            }));
             while(true){
                 try{
                     const worker_result = await Promise.race(workers.map(x => x.finish()));
@@ -306,8 +310,7 @@ export default class Judger {
                             logger.error(`Judge error @ ${taskID}`, err);
                             error = err;
                         }
-                    });
-                    run_workers.push(worker_result.worker);
+                    },resol);
                 }catch(e){
                     if (e instanceof InvalidOperationError) {
                         continue;
@@ -319,7 +322,7 @@ export default class Judger {
             }
             //if (error) break;
         }
-        await Promise.race(run_workers.map(x => x.finish()));
+        await Promise.all(run_workers);
         if (error) {
             throw Error('Judge error when running.');
         }
