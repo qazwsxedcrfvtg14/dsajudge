@@ -185,7 +185,6 @@ export default class Judger {
                         error = err;
                     }
                 },resol);
-                worker=worker_result.worker;
             }catch(e){
                 if (e instanceof InvalidOperationError) {
                     continue;
