@@ -51,7 +51,7 @@ export default Vue.extend({
         this.timer=null;
     },
     async ready() {
-        this.problems = (await this.$http.get('/problem/')).data; 
+        await this.updateData();
         this.timer = setInterval(this.updateData, 2000);
     },
 });

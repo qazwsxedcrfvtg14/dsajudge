@@ -15,6 +15,7 @@ export default Vue.extend({
     },
     template: html,
     async ready() {
+        await this.updateData();
         this.timer = setInterval(this.updateData, 2000);
     },
     beforeDestroy(){
