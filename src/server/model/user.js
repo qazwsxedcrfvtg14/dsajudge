@@ -50,7 +50,7 @@ userSchema.methods.isTA = function() {
 //const default_quota = 5;
 
 userSchema.methods.checkQuota = async function(pid){
-	const problem=Problem.findOne({_id:pid});
+	const problem=await Problem.findOne({_id:pid});
 	if(!problem)return false;
 	const limit=this.submission_limit;
 	let filter_res = _.filter(limit,_.conforms({ problem_id : id => id==pid }));
