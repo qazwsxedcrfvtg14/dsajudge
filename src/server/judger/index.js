@@ -79,7 +79,14 @@ async function mainLoop() {
             await sleep(1000);
             continue;
         }
-        await Promise.race(workers.map(x => x.finish()));
+        let ok=false;
+        for(worker of workers)
+            if(worker.wait.length<30)
+                ok=true;
+        if(!ok){
+            await sleep(100);
+            continue;
+        }
         await prepareJudge(pending);
         startJudge(pending, workers);
         await sleep(50);
