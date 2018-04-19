@@ -81,9 +81,12 @@ async function mainLoop() {
         }
         let ok=false;
         for(const worker of workers)
-            if(worker.wait.length<50)
+            if(worker.wait.length<32)
                 ok=true;
         if(!ok){
+            for(const worker of workers)
+                while(worker.wait.length)
+                    (worker.wait.shift())();
             await sleep(100);
             continue;
         }
