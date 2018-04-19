@@ -21,8 +21,8 @@ export default Vue.extend({
         };
     },
     template: html,
-    ready() {
-        this.getSubmissions();
+    async ready() {
+        //this.getSubmissions();
         $('#status-select').dropdown();
         await this.updateData();
         this.timer = setInterval(this.updateData, 2000);
