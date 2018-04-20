@@ -139,7 +139,7 @@ export default class Judger {
     async compileUser(workers) {
         let error = null;
         const task = this.generateUserCompileTask();
-        await new Promise((resolve, reject) => {
+        await new Promise(async (resolve, reject) => {
             while(true){
                 try{
                     const worker_result = await Promise.race(workers.map(x => x.finish()));
@@ -168,7 +168,7 @@ export default class Judger {
     async compileChecker(workers) {
         let error = null;
         const task = this.generateCheckerCompileTask();
-        await new Promise((resolve, reject) => {
+        await new Promise(async (resolve, reject) => {
             while(true){
                 try{
                     const worker_result = await Promise.race(workers.map(x => x.finish()));
@@ -298,7 +298,7 @@ export default class Judger {
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
-            run_workers.push(new Promise((resolve, reject) => {
+            run_workers.push(new Promise(async (resolve, reject) => {
                 while(true){
                     try{
                         const worker_result = await Promise.race(workers.map(x => x.finish()));
