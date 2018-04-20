@@ -135,17 +135,15 @@ export default class Judger {
             return true;
         };
     }
-
-    async compileUser(workers) {
+    async compileTask(task,error_msg){
         let error = null;
-        const task = this.generateUserCompileTask();
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
                 if(!worker_result.worker.isIdle)continue;
                 await worker_result.worker.run(task, (err) => {
                     if (err) {
-                        logger.error(`Judge error @ compileUser`, err);
+                        logger.error(error_msg, err);
                         error = err;
                     }
                 });
@@ -158,36 +156,15 @@ export default class Judger {
             }
             break;
         }
-        if (error) {
+        if (error)
             throw Error('Judge error when running.');
-        }
+    }
+    async compileUser(workers) {
+        await compileTask(this.generateUserCompileTask(),"Judge error @ compileUser");
         return Boolean(this.userExec);
     }
     async compileChecker(workers) {
-        let error = null;
-        const task = this.generateCheckerCompileTask();
-        while(true){
-            try{
-                const worker_result = await Promise.race(workers.map(x => x.finish()));
-                if(!worker_result.worker.isIdle)continue;
-                await worker_result.worker.run(task, (err) => {
-                    if (err) {
-                        logger.error(`Judge error @ compileChecker`, err);
-                        error = err;
-                    }
-                });
-            }catch(e){
-                if (e instanceof InvalidOperationError) {
-                    continue;
-                }else{
-                    throw e;
-                }
-            }
-            break;
-        }
-        if (error) {
-            throw Error('Judge error when running.');
-        }
+        await compileTask(this.generateCheckerCompileTask(),"Judge error @ compileChecker");
     }
     async prepareFiles() {
         return ;
