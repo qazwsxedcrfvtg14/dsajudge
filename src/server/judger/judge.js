@@ -139,27 +139,25 @@ export default class Judger {
     async compileUser(workers) {
         let error = null;
         const task = this.generateUserCompileTask();
-        await new Promise(async (resolve, reject) => {
-            while(true){
-                try{
-                    const worker_result = await Promise.race(workers.map(x => x.finish()));
-                    if(!worker_result.worker.isIdle)continue;
-                    worker_result.worker.run(task, (err) => {
-                        if (err) {
-                            logger.error(`Judge error @ compileUser`, err);
-                            error = err;
-                        }
-                    },resolve);
-                }catch(e){
-                    if (e instanceof InvalidOperationError) {
-                        continue;
-                    }else{
-                        throw e;
+        while(true){
+            try{
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if(!worker_result.worker.isIdle)continue;
+                await worker_result.worker.run(task, (err) => {
+                    if (err) {
+                        logger.error(`Judge error @ compileUser`, err);
+                        error = err;
                     }
+                });
+            }catch(e){
+                if (e instanceof InvalidOperationError) {
+                    continue;
+                }else{
+                    throw e;
                 }
-                break;
             }
-        });
+            break;
+        }
         if (error) {
             throw Error('Judge error when running.');
         }
@@ -168,27 +166,25 @@ export default class Judger {
     async compileChecker(workers) {
         let error = null;
         const task = this.generateCheckerCompileTask();
-        await new Promise(async (resolve, reject) => {
-            while(true){
-                try{
-                    const worker_result = await Promise.race(workers.map(x => x.finish()));
-                    if(!worker_result.worker.isIdle)continue;
-                    worker_result.worker.run(task, (err) => {
-                        if (err) {
-                            logger.error(`Judge error @ compileChecker`, err);
-                            error = err;
-                        }
-                    },resolve);
-                }catch(e){
-                    if (e instanceof InvalidOperationError) {
-                        continue;
-                    }else{
-                        throw e;
+        while(true){
+            try{
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if(!worker_result.worker.isIdle)continue;
+                await worker_result.worker.run(task, (err) => {
+                    if (err) {
+                        logger.error(`Judge error @ compileChecker`, err);
+                        error = err;
                     }
+                });
+            }catch(e){
+                if (e instanceof InvalidOperationError) {
+                    continue;
+                }else{
+                    throw e;
                 }
-                break;
             }
-        });
+            break;
+        }
         if (error) {
             throw Error('Judge error when running.');
         }
@@ -298,17 +294,17 @@ export default class Judger {
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
-            run_workers.push(new Promise(async (resolve, reject) => {
+            run_workers.push((async () => {
                 while(true){
                     try{
                         const worker_result = await Promise.race(workers.map(x => x.finish()));
                         if(!worker_result.worker.isIdle)continue;
-                        worker_result.worker.run(task, (err) => {
+                        await worker_result.worker.run(task, (err) => {
                             if (err) {
                                 logger.error(`Judge error @ ${taskID}`, err);
                                 error = err;
                             }
-                        },resolve);
+                        });
                     }catch(e){
                         if (e instanceof InvalidOperationError) {
                             continue;
@@ -318,7 +314,7 @@ export default class Judger {
                     }
                     break;
                 }
-            }));
+            })());
             //if (error) break;
         }
         await Promise.all(run_workers);
