@@ -135,7 +135,7 @@ export default class Judger {
             return true;
         };
     }
-    async compileTask(task,error_msg){
+    async compileTask(workers,task,error_msg){
         let error = null;
         while(true){
             try{
@@ -160,11 +160,11 @@ export default class Judger {
             throw Error('Judge error when running.');
     }
     async compileUser(workers) {
-        await compileTask(this.generateUserCompileTask(),"Judge error @ compileUser");
+        await compileTask(workers,this.generateUserCompileTask(),"Judge error @ compileUser");
         return Boolean(this.userExec);
     }
     async compileChecker(workers) {
-        await compileTask(this.generateCheckerCompileTask(),"Judge error @ compileChecker");
+        await compileTask(workers,this.generateCheckerCompileTask(),"Judge error @ compileChecker");
     }
     async prepareFiles() {
         return ;
