@@ -160,11 +160,11 @@ export default class Judger {
             throw Error('Judge error when running.');
     }
     async compileUser(workers) {
-        await compileTask(workers,this.generateUserCompileTask(),"Judge error @ compileUser");
+        await this.compileTask(workers,this.generateUserCompileTask(),"Judge error @ compileUser");
         return Boolean(this.userExec);
     }
     async compileChecker(workers) {
-        await compileTask(workers,this.generateCheckerCompileTask(),"Judge error @ compileChecker");
+        await this.compileTask(workers,this.generateCheckerCompileTask(),"Judge error @ compileChecker");
     }
     async prepareFiles() {
         return ;
