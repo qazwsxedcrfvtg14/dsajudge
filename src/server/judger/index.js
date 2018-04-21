@@ -36,6 +36,8 @@ async function prepareJudge(sub) {
     }
     await sub.save();
 }
+
+let count=0;
 async function startJudge(sub, workers) {
     let result;
     try {
@@ -61,6 +63,7 @@ async function startJudge(sub, workers) {
     } catch (e) {
         console.log(e);
     }
+    count -= 1;
 }
 
 async function mainLoop() {
@@ -69,7 +72,6 @@ async function mainLoop() {
     for (let i=0; i<config.maxWorkers; i++) {
         workers.push(new Worker(i));
     }
-
     while (true) {
         const pending = await (
             Submission.findOne({status: 'pending'})
@@ -79,17 +81,22 @@ async function mainLoop() {
             await sleep(1000);
             continue;
         }
+        if(count>=5){
+            await sleep(1000);
+            continue;
+        }
         let ok=false;
         for(const worker of workers)
-            if(worker.wait.length<32)
+            if(worker.wait.length<20)
                 ok=true;
         if(!ok){
             for(const worker of workers)
                 while(worker.wait.length)
                     (worker.wait.shift())();
-            await sleep(100);
+            await sleep(1000);
             continue;
         }
+        count += 1;
         await prepareJudge(pending);
         startJudge(pending, workers);
         await sleep(50);
