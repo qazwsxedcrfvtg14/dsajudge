@@ -10,6 +10,7 @@ import _ from 'lodash';
 //import {promisify} from 'bluebird';
 //import temp from 'temp';
 import Worker from './pool';
+import sleep from 'sleep-promise';
 
 const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
 const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
@@ -91,6 +92,7 @@ export default class Judger {
             name: this.problem._id,
             maxPoints: this.testdata.points,
         });
+        this.work_count=0;
     }
     async prepare() {
         this.sub._result = this.result._id;
@@ -267,10 +269,14 @@ export default class Judger {
         await this.result.save();
     }
     async runAndCheck(workers) {
-
+        while(true){
+            if(this.work_count>=workers.length)await sleep(1000);
+            else break;
+        }
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
+            this.work_count+=1;
             run_workers.push((async () => {
                 while(true){
                     try{
@@ -286,9 +292,11 @@ export default class Judger {
                         if (e instanceof InvalidOperationError) {
                             continue;
                         }else{
+                            this.work_count-=1;
                             throw e;
                         }
                     }
+                    this.work_count-=1;
                     break;
                 }
             })());
