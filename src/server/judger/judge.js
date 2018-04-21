@@ -271,7 +271,7 @@ export default class Judger {
     }
     async runAndCheck(workers) {
         while(work_count>=workers.length)
-            await sleep(1000);
+            await sleep(100);
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {

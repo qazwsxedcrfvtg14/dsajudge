@@ -82,7 +82,7 @@ async function mainLoop() {
             continue;
         }
         if(count>=workers.length){
-            await sleep(1000);
+            await sleep(100);
             continue;
         }
         let ok=false;
@@ -93,7 +93,7 @@ async function mainLoop() {
             /*for(const worker of workers)
                 while(worker.wait.length)
                     (worker.wait.shift())();*/
-            await sleep(1000);
+            await sleep(100);
             continue;
         }
         count += 1;
