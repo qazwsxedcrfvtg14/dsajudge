@@ -87,12 +87,12 @@ async function mainLoop() {
         }
         let ok=false;
         for(const worker of workers)
-            if(worker.wait.length<20)
+            if(worker.wait.length<32)
                 ok=true;
         if(!ok){
-            for(const worker of workers)
+            /*for(const worker of workers)
                 while(worker.wait.length)
-                    (worker.wait.shift())();
+                    (worker.wait.shift())();*/
             await sleep(1000);
             continue;
         }
