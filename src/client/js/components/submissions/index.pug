@@ -12,6 +12,7 @@
         th Result
         th.center.aligned.collapsing Runtime
         th.center.aligned.collapsing Points
+        th.center.aligned.collapsing Time
     tbody
       tr.force-pointer( v-for="sub of submissions" v-link="{name: 'submission', params: {id: sub._id}}" )
         td.selectable.center.aligned.collapsing
@@ -26,3 +27,5 @@
           a {{ probUtils.toDisplayTime(sub.runtime) }}
         td.selectable.center.aligned.collapsing
           a {{ probUtils.getPointsString(sub) }}
+        td.selectable.center.aligned.collapsing
+          a {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}

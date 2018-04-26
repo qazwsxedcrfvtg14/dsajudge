@@ -54,6 +54,7 @@
               | {{ sub.result }}
             td.center.aligned.collapsing {{ probUtils.toDisplayTime(sub.runtime) }}
             td.center.aligned.collapsing {{ probUtils.getPointsString(sub) }}
+            td.center.aligned.collapsing {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
             td.collapsing.center.aligned 
               button.ui.icon.red.button( @click="rejudge(sub._id)" )
                 i.refresh.icon
