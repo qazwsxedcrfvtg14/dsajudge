@@ -29,11 +29,14 @@ export default Vue.extend({
         async updateData(){
             clearInterval(this.timer);
             try{
-                this.problem = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
-                Vue.nextTick( () => {
-                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                    this.drawBar();
-                });
+                const data = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
+                if(JSON.stringify(data)!==JSON.stringify(this.problem)){
+                    this.problem=data;
+                    Vue.nextTick( () => {
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                        this.drawBar();
+                    });
+                }
             }catch(e){}
             if(!_.isNil(this.timer))
                 this.timer = setInterval(this.updateData, 2000);
@@ -45,6 +48,7 @@ export default Vue.extend({
         drawBar() {
             if (!this.problem) return;
             const wrapper = $('#testgroup-bar-wrapper');
+            wrapper.empty();
             const tc = this.problem.testdata.groups.length;
             const totp = this.problem.testdata.points;
             const totl = wrapper.width();
