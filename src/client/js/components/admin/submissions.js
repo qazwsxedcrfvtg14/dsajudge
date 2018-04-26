@@ -21,11 +21,10 @@ export default Vue.extend({
         };
     },
     template: html,
-    async ready() {
+    ready() {
         //this.getSubmissions();
         $('#status-select').dropdown();
-        await this.updateData();
-        this.timer = setTimeout(this.updateData, 2000);
+        this.timer = setTimeout(this.updateData, 0);
     },
     beforeDestroy(){
         clearTimeout(this.timer);

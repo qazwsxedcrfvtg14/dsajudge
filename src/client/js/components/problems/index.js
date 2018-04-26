@@ -50,8 +50,7 @@ export default Vue.extend({
         clearTimeout(this.timer);
         this.timer=null;
     },
-    async ready() {
-        await this.updateData();
-        this.timer = setTimeout(this.updateData, 2000);
+    ready() {
+        this.timer = setTimeout(this.updateData, 0);
     },
 });

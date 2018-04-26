@@ -21,9 +21,8 @@ export default Vue.extend({
         };
     },
     template: html,
-    async ready() {
-        await this.updateData();
-        this.timer = setTimeout(this.updateData, 2000);
+    ready() {
+        this.timer = setTimeout(this.updateData, 0);
     },
     methods: {
         async updateData(){
