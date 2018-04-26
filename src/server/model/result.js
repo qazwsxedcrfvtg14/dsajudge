@@ -12,7 +12,7 @@ const schema = Schema({
     runtime: Number,
     subresults: [{
         type: Schema.Types.ObjectId,
-        ref: Result,
+        ref: 'Result',
     }],
     name: String,
 });
