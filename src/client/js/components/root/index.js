@@ -41,7 +41,7 @@ export default Vue.extend({
             this.datetimebase=Date.now();
             (async () => {
                 await Promise.all([this.getUser(), this.initComponents()]);
-                this.datetime=(await this.$http.get('/date')).time;
+                this.datetime=(await this.$http.get('/time')).time;
             })();
         },
         async initComponents() {
