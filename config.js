@@ -39,10 +39,16 @@ const CONFIG = {
 };
 
 CONFIG.babel = {
-    presets: ['latest'],
+    presets: [
+		["env",{
+			"targets":{
+				"node":"current"
+			}
+		}]
+	],
     plugins: [
-        'syntax-async-functions',
-        'transform-es2015-modules-commonjs',
+        /*'syntax-async-functions',*/
+        /*'transform-es2015-modules-commonjs',*/
         'transform-strict-mode',
         ['babel-root-slash-import', {
             rootPathSuffix: CONFIG.dist.base,

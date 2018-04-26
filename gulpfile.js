@@ -140,7 +140,7 @@ gulp.task('clean', () => {
 
 gulp.task('semantic', semantic);
 
-gulp.task('init', ['semantic', 'libs', 'links', 'zbox', 'isolate']);
+gulp.task('init', ['semantic', 'libs', 'links'/*, 'zbox', 'isolate'*/]);
 
 gulp.task('build', ['webpack', 'pug', 'server-js', 'images']);
 
