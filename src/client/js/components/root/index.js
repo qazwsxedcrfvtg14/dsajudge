@@ -65,8 +65,10 @@ export default Vue.extend({
                     try {
                         res = await me.$http.post('/login', fields);
                         me.$loginModal.modal('hide');
-                        await this.getUser();
-                        this.$route.router.go('/');
+                        const result = (await this.$http.get('/user/me')).data;
+                        if (result.login) {
+                            this.userLogin(result.user);
+                        }
                         //location.reload();
                     } catch (err) {
                         if ('status' in err && err.status == 401) {
