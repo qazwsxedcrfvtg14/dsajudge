@@ -65,6 +65,7 @@ export default Vue.extend({
                     try {
                         res = await me.$http.post('/login', fields);
                         me.$loginModal.modal('hide');
+                        this.$route.router.go('/');
                         await this.getUser();
                         //location.reload();
                     } catch (err) {
