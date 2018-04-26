@@ -9,10 +9,10 @@
       tr
         th.center.aligned.collapsing ID
         th Problem
+        th.center.aligned.collapsing Time
         th Result
         th.center.aligned.collapsing Runtime
         th.center.aligned.collapsing Points
-        th.center.aligned.collapsing Time
     tbody
       tr.force-pointer( v-for="sub of submissions" v-link="{name: 'submission', params: {id: sub._id}}" )
         td.selectable.center.aligned.collapsing
@@ -20,6 +20,8 @@
             | {{ sub._id }}
         td.selectable 
           a( v-link="{name: 'problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
+        td.selectable.center.aligned.collapsing
+          a {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
         td.selectable 
           a
             result-string( :status="sub.status", :result="sub.result" )
@@ -27,5 +29,3 @@
           a {{ probUtils.toDisplayTime(sub.runtime) }}
         td.selectable.center.aligned.collapsing
           a {{ probUtils.getPointsString(sub) }}
-        td.selectable.center.aligned.collapsing
-          a {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}

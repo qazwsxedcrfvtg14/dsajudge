@@ -37,6 +37,7 @@
             th.center.aligned ID
             th User
             th Problem
+            th.center.aligned.collapsing Time
             th Result
             th.center.aligned.collapsing Runtime
             th.center.aligned.collapsing Points
@@ -46,15 +47,15 @@
             td.selectable.center.aligned
               a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
             td.selectable 
-              a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) 
+              a( v-link="{name: 'admin.submissions', params: {user: sub.submittedBy.meta.id}}" ) 
                 | {{ displayName(sub.submittedBy) }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
+            td.center.aligned.collapsing {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
             td( :class="{ positive: probUtils.isAC(sub), negative: probUtils.isNotAC(sub)}")
               | {{ sub.result }}
             td.center.aligned.collapsing {{ probUtils.toDisplayTime(sub.runtime) }}
             td.center.aligned.collapsing {{ probUtils.getPointsString(sub) }}
-            td.center.aligned.collapsing {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
             td.collapsing.center.aligned 
               button.ui.icon.red.button( @click="rejudge(sub._id)" )
                 i.refresh.icon
