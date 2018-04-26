@@ -31,6 +31,7 @@ export default Vue.extend({
         return {
             datetime:Date.now(),
             datetimebase:Date.now(),
+            nowdatetime:Date.now(),
         };
     },
     template: html,
@@ -43,6 +44,9 @@ export default Vue.extend({
                 await Promise.all([this.getUser(), this.initComponents()]);
                 this.datetime=(await this.$http.get('/time')).time;
             })();
+            setInterval(()=>{
+                this.nowdatetime=Date.now();
+            },500);
         },
         async initComponents() {
             const me = this;
