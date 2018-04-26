@@ -29,6 +29,8 @@ const formValidateObj = {
 export default Vue.extend({
     data() {
         return {
+            datetime:Date.now(),
+            datetimebase:Date.now(),
         };
     },
     template: html,
@@ -36,9 +38,10 @@ export default Vue.extend({
         init() {
             this.$loginModal = $('#login-modal');
             this.$loginForm = $('#login-form');
-
+            this.datetimebase=Date.now();
             (async () => {
                 await Promise.all([this.getUser(), this.initComponents()]);
+                this.datetime=(await this.$http.get('/date')).time;
             })();
         },
         async initComponents() {

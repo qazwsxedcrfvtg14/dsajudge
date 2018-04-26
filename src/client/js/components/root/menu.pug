@@ -10,6 +10,7 @@ component
         a.item( v-if="user" v-link="'/submissions'" ) Submissions
         //-a.item Resource
         a.item( v-if="user && user.isAdmin" v-link="{name: 'admin'}" ) Admin
+        .item| {{datetime-datetimebase+Date.now()}}
         .right.menu( v-if="user" )
           a.item( v-link="{ name: 'profile' }" ) Profile
           .item {{user.email}}
@@ -34,3 +35,4 @@ component
         div.item.menu-font( style="color: #008080 !important;" )
           i.cubes.icon
           | DSA Judge
+        .item| {{datetime-datetimebase+Date.now()}}
