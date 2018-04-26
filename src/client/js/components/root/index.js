@@ -46,7 +46,7 @@ export default Vue.extend({
             })();
             setInterval(()=>{
                 this.nowdatetime=Date.now();
-            },500);
+            },100);
         },
         async initComponents() {
             const me = this;
