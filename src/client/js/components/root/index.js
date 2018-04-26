@@ -42,7 +42,7 @@ export default Vue.extend({
             this.datetimebase=Date.now();
             (async () => {
                 await Promise.all([this.getUser(), this.initComponents()]);
-                this.datetime=(await this.$http.get('/time')).time;
+                this.datetime=(await this.$http.get('/time')).data.time;
             })();
             setInterval(()=>{
                 this.nowdatetime=Date.now();
