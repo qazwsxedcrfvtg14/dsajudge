@@ -37,8 +37,8 @@
             th.center.aligned ID
             th User
             th Problem
-            th.center.aligned.collapsing Time
-            th Result
+            th Time
+            th.center.aligned.collapsing Result
             th.center.aligned.collapsing Runtime
             th.center.aligned.collapsing Points
             th.center.aligned.collapsing Re
@@ -51,8 +51,8 @@
                 | {{ displayName(sub.submittedBy) }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
-            td.center.aligned.collapsing {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
-            td( :class="{ positive: probUtils.isAC(sub), negative: probUtils.isNotAC(sub)}")
+            td {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
+            td.center.aligned.collapsing( :class="{ positive: probUtils.isAC(sub), negative: probUtils.isNotAC(sub)}")
               | {{ sub.result }}
             td.center.aligned.collapsing {{ probUtils.toDisplayTime(sub.runtime) }}
             td.center.aligned.collapsing {{ probUtils.getPointsString(sub) }}
