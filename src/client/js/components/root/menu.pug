@@ -26,10 +26,10 @@ component
           .menu(style="margin-top: 0px;")
             a.item( v-link="{ path: '/', exact: true }" ) Home
             a.item( v-link="'/problems'" ) Problems
-            a.item( v-link="'/submissions'" ) Submissions
+            a.item( v-if="user" v-link="'/submissions'" ) Submissions
             //-a.item Resource
             a.item( v-if="user && user.isAdmin" v-link="{name: 'admin'}" ) Admin
-            a.item( v-link="{ name: 'profile' }" ) Profile
+            a.item( v-if="user" v-link="{ name: 'profile' }" ) Profile
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
         div.item.menu-font( style="color: #008080 !important;" )
