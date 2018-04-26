@@ -22,13 +22,26 @@ export default Vue.extend({
     },
     template: html,
     async ready() {
-        this.problem = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
-        Vue.nextTick( () => {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            this.drawBar();
-        } );
+        await this.updateData();
+        this.timer = setInterval(this.updateData, 2000);
     },
     methods: {
+        async updateData(){
+            clearInterval(this.timer);
+            try{
+                this.problem = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
+                Vue.nextTick( () => {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                    this.drawBar();
+                });
+            }catch(e){}
+            if(!_.isNil(this.timer))
+                this.timer = setInterval(this.updateData, 2000);
+        },
+        beforeDestroy(){
+            clearInterval(this.timer);
+            this.timer=null;
+        },
         drawBar() {
             if (!this.problem) return;
             const wrapper = $('#testgroup-bar-wrapper');
