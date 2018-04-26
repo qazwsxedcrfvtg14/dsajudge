@@ -58,7 +58,6 @@ export default Vue.extend({
             await this.queryChanged();
         },
         async changeUserId(user) {
-            console.log(user);
             this.filter.user = user.meta.id;
             await this.queryChanged();
         },
