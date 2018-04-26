@@ -47,8 +47,7 @@
             td.selectable.center.aligned
               a( v-link="{name: 'submission', params: {id: sub._id}}" ).selectable  {{ sub._id }}
             td.selectable 
-              a( v-link="{name: 'admin.submissions', params: {user: sub.submittedBy.meta.id}}" ) 
-                | {{ displayName(sub.submittedBy) }}
+              a( @click="changeUserId(sub.submittedBy)") {{ displayName(sub.submittedBy) }}
             td.selectable 
               a( v-link="{name: 'admin.problem', params: {id: sub.problem._id}}" ) {{ sub.problem.name }}
             td.center.aligned.collapsing {{ sub.ts | toFormattedTime 'MM/DD HH:mm:ss' }}
