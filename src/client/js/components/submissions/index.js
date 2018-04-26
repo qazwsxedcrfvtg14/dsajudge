@@ -16,20 +16,20 @@ export default Vue.extend({
     template: html,
     async ready() {
         await this.updateData();
-        this.timer = setInterval(this.updateData, 2000);
+        this.timer = setTimeout(this.updateData, 2000);
     },
     beforeDestroy(){
-        clearInterval(this.timer);
+        clearTimeout(this.timer);
         this.timer=null;
     },
     methods: {
         async updateData(){
-            clearInterval(this.timer);
+            clearTimeout(this.timer);
             try{
                 await this.getSubmissions();
             }catch(e){}
             if(!_.isNil(this.timer))
-                this.timer = setInterval(this.updateData, 2000);
+                this.timer = setTimeout(this.updateData, 2000);
         },
         async getSubmissions() {
             let result;

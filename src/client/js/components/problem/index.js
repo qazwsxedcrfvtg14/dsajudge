@@ -23,11 +23,11 @@ export default Vue.extend({
     template: html,
     async ready() {
         await this.updateData();
-        this.timer = setInterval(this.updateData, 2000);
+        this.timer = setTimeout(this.updateData, 2000);
     },
     methods: {
         async updateData(){
-            clearInterval(this.timer);
+            clearTimeout(this.timer);
             try{
                 const data = (await this.$http.get(`/problem/${this.$route.params.id}`)).data; 
                 if(JSON.stringify(data)!==JSON.stringify(this.problem)){
@@ -39,10 +39,10 @@ export default Vue.extend({
                 }
             }catch(e){}
             if(!_.isNil(this.timer))
-                this.timer = setInterval(this.updateData, 2000);
+                this.timer = setTimeout(this.updateData, 2000);
         },
         beforeDestroy(){
-            clearInterval(this.timer);
+            clearTimeout(this.timer);
             this.timer=null;
         },
         drawBar() {
