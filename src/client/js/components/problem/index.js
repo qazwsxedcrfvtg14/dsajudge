@@ -24,6 +24,10 @@ export default Vue.extend({
     ready() {
         this.timer = setTimeout(this.updateData, 0);
     },
+    beforeDestroy(){
+        clearTimeout(this.timer);
+        this.timer=null;
+    },
     methods: {
         async updateData(){
             clearTimeout(this.timer);
@@ -39,10 +43,6 @@ export default Vue.extend({
             }catch(e){}
             if(!_.isNil(this.timer))
                 this.timer = setTimeout(this.updateData, 2000);
-        },
-        beforeDestroy(){
-            clearTimeout(this.timer);
-            this.timer=null;
         },
         drawBar() {
             if (!this.problem) return;
