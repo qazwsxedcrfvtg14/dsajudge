@@ -46,7 +46,7 @@ export default Vue.extend({
                 const datetime=(await this.$http.get('/time')).data.time;
                 const finitime=Date.now();
                 this.datetime=datetime+(finitime-inittime)/2;
-                this.datetimebase=(finitime-inittime)/2;
+                this.datetimebase=(inittime+finitime)/2;
             })();
             setInterval(()=>{
                 this.nowdatetime=Date.now();
