@@ -1,5 +1,6 @@
 import sleep from 'sleep-promise';
 import {TimeoutError, InvalidOperationError} from 'common-errors';
+import logger from '/logger';
 
 export default class Worker {
     constructor(wid,timeout=30) {
@@ -13,7 +14,7 @@ export default class Worker {
     finish(){
         return this.ready=(async()=>{
             try{await this.ready;}
-            catch(e){logger.error(`Judge error @ worker `, err);}
+            catch(e){logger.error(`Judge error @ worker `, e);}
             return {
                 worker: this,
                 ret: this.ret,
@@ -23,7 +24,7 @@ export default class Worker {
     run(taskFactory, err){
         return this.ready=(async()=>{
             try{await this.ready;}
-            catch(e){logger.error(`Judge error @ worker `, err);}
+            catch(e){logger.error(`Judge error @ worker `, e);}
             this.ret = null;
             try{
                 this.ret=await taskFactory(this.id);
