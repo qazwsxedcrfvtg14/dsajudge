@@ -12,7 +12,8 @@ export default class Worker {
     }
     finish(){
         return this.ready=(async()=>{
-            try{await this.ready;}catch(e){}
+            try{await this.ready;}
+            catch(e){logger.error(`Judge error @ worker `, err);}
             return {
                 worker: this,
                 ret: this.ret,
@@ -21,7 +22,8 @@ export default class Worker {
     }
     run(taskFactory, err){
         return this.ready=(async()=>{
-            try{await this.ready;}catch(e){}
+            try{await this.ready;}
+            catch(e){logger.error(`Judge error @ worker `, err);}
             this.ret = null;
             try{
                 this.ret=await taskFactory(this.id);
