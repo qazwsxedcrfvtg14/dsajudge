@@ -10,6 +10,7 @@ export default class Worker {
         this.ret = null;
         this.wait=[];
         this.ready=null;
+        this.ready_worker=null;
     }
     finish(){
         return this.ready=(async()=>{
@@ -22,6 +23,8 @@ export default class Worker {
         })();
     }
     run(taskFactory, err){
+        if (!this.isIdle) throw InvalidOperationError('Runner not finished.');
+        this.isIdle = false;
         return this.ready=(async()=>{
             try{await this.ready;}
             catch(e){logger.error(`Judge error @ worker `, e);}
@@ -30,6 +33,8 @@ export default class Worker {
                 this.ret=await taskFactory(this.id);
             }catch(e){
                 err(e);
+            }finally{
+                this.isIdle = true;
             }
         })();
     }
