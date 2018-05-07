@@ -8,34 +8,26 @@ export default class Worker {
         this.timeoutMs = timeout * 1000;
         this.ret = null;
         this.wait=[];
+        this.ready=null;
     }
-    finish() {
-        return new Promise((resolve, reject) => {
-            if(this.isIdle)
-                resolve({
-                    worker: this,
-                    ret: this.ret,
-                });
-            else
-                this.wait.push(async ()=>{
-                    resolve({
-                        worker: this,
-                        ret: this.ret,
-                    });
-                });
-        });
+    finish(){
+        return this.ready=(async()=>{
+            try{await this.ready;}catch(e){}
+            return {
+                worker: this,
+                ret: this.ret,
+            };
+        })();
     }
-    async run(taskFactory, err) {
-        if (!this.isIdle) throw InvalidOperationError('Runner not finished.');
-        this.isIdle = false;
-        this.ret = null;
-        try{
-            this.ret=await taskFactory(this.id);
-        }catch(e){
-            err(e);
-        }
-        this.isIdle = true;
-        while(this.wait.length)
-            (this.wait.shift())();
+    run(taskFactory, err){
+        return this.ready=(async()=>{
+            try{await this.ready;}catch(e){}
+            this.ret = null;
+            try{
+                this.ret=await taskFactory(this.id);
+            }catch(e){
+                err(e);
+            }
+        })();
     }
 }

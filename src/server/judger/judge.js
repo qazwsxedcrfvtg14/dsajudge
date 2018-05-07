@@ -79,7 +79,7 @@ const GPPLink = [
 const isolateDir = config.dirs.isolate;
 //const compileBoxId = 999;
 
-let work_count=0;
+//let work_count=0;
 export default class Judger {
     constructor(sub) {
         this.sub = sub;
@@ -270,12 +270,12 @@ export default class Judger {
         await this.result.save();
     }
     async runAndCheck(workers) {
-        while(work_count>=workers.length)
-            await sleep(100);
+        //while(work_count>=workers.length)
+            //await sleep(100);
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
-            work_count+=1;
+            //work_count+=1;
             run_workers.push((async () => {
                 while(true){
                     try{
@@ -291,11 +291,11 @@ export default class Judger {
                         if (e instanceof InvalidOperationError) {
                             continue;
                         }else{
-                            work_count-=1;
+                            //work_count-=1;
                             throw e;
                         }
                     }
-                    work_count-=1;
+                    //work_count-=1;
                     break;
                 }
             })());
