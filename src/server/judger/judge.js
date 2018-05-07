@@ -77,6 +77,8 @@ const GPPLink = [
 ];
 
 const isolateDir = config.dirs.isolate;
+
+let work_count=0;
 export default class Judger {
     constructor(sub) {
         this.sub = sub;
@@ -140,6 +142,7 @@ export default class Judger {
         while(true){
             try{
                 const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if(!worker_result.worker.isIdle)continue;
                 await worker_result.worker.run(task, (err) => {
                     if (err) {
                         logger.error(error_msg, err);
@@ -266,13 +269,17 @@ export default class Judger {
         await this.result.save();
     }
     async runAndCheck(workers) {
+        while(work_count>=workers.length)
+            await sleep(100);
         let error = null;
         let run_workers=[];
         for (let [taskID, task] of this.tasks.entries()) {
+            work_count+=1;
             run_workers.push((async () => {
                 while(true){
                     try{
                         const worker_result = await Promise.race(workers.map(x => x.finish()));
+                        if(!worker_result.worker.isIdle)continue;
                         await worker_result.worker.run(task, (err) => {
                             if (err) {
                                 logger.error(`Judge error @ ${taskID}`, err);
@@ -283,12 +290,15 @@ export default class Judger {
                         if (e instanceof InvalidOperationError) {
                             continue;
                         }else{
+                            work_count-=1;
                             throw e;
                         }
                     }
+                    work_count-=1;
                     break;
                 }
             })());
+            //if (error) break;
         }
         await Promise.all(run_workers);
         if (error) {

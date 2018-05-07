@@ -37,6 +37,7 @@ async function prepareJudge(sub) {
     await sub.save();
 }
 
+let count=0;
 async function startJudge(sub, workers) {
     let result;
     try {
@@ -62,6 +63,7 @@ async function startJudge(sub, workers) {
     } catch (e) {
         console.log(e);
     }
+    count -= 1;
 }
 
 async function mainLoop() {
@@ -79,6 +81,11 @@ async function mainLoop() {
             await sleep(1000);
             continue;
         }
+        if(count>=workers.length){
+            await sleep(100);
+            continue;
+        }
+        count += 1;
         await prepareJudge(pending);
         startJudge(pending, workers);
         await sleep(50);
