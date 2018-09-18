@@ -4,7 +4,7 @@ component
       .ui.container
         div.item.menu-font( style="color: #008080 !important;" )
           i.cubes.icon
-          | DSA Judge
+          | ADA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
         a.item( v-link="'/problems'" ) Problems
         a.item( v-if="user" v-link="'/submissions'" ) Submissions
@@ -34,5 +34,5 @@ component
             a.item( v-if="!user" @click="clickLogin" ) Login
         div.item.menu-font( style="color: #008080 !important;" )
           i.cubes.icon
-          | DSA Judge
+          | ADA Judge
         .item| {{(datetime-datetimebase+nowdatetime) | toFormattedTime 'MM/DD HH:mm:ss'}}

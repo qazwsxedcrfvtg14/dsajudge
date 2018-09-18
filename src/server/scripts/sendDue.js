@@ -42,14 +42,14 @@ const main = async () => {
             homework: 1,
             user: user._id,
         });
-        const text = `This mail is just to remind you that the dsa hw1 would be due tomorrow, which is about 24 hours from now.
+        const text = `This mail is just to remind you that the ada hw1 would be due tomorrow, which is about 24 hours from now.
 Please remember to bring your hard copy homework to class tomorrow, and ensure that you have submit all your solutions 
-to the dsa-judge. Also please check that your score on the dsa-judge website is correct.
+to the ada-judge. Also please check that your score on the ada-judge website is correct.
 Your current score is ${hwResult ? hwResult.points : "0 (it seems that you haven't started yet.)"}
 Thank you`;
 
         const mailOptions = {
-            from: '"DSA2018" <dsa@csie.ntu.edu.tw>',
+            from: '"ADA2018" <ada-ta@csie.ntu.edu.tw>',
             to: user.email,
             subject: `Reminder of the deadline of homework 1`,
             text,

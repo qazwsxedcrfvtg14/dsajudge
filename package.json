@@ -1,7 +1,7 @@
 {
-  "name": "dsa-judge",
+  "name": "ada18-judge",
   "version": "1.0.0",
-  "description": "Judge system for DSA 2018",
+  "description": "Judge system for ADA 2018",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
