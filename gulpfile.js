@@ -109,7 +109,7 @@ gulp.task('isolate:cp', (next) => {
 gulp.task('isolate', $.sequence(['make', 'cp'].map(x => `isolate:${x}`)));
 
 gulp.task('cfiles', () => {
-    gulp.src(path.join(CONFIG.cfiles, '*'))
+    gulp.src(path.join(CONFIG.cfiles,'**' , '*'))
         .pipe(gulp.dest(path.join(CONFIG.dist.base, 'cfiles')));
 });
 

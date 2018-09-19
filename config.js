@@ -34,6 +34,7 @@ const CONFIG = {
     linkDirs: [
         'problems',
         'submissions',
+        'homeworks',
     ],
     cfiles: 'src/server/cfiles',
 };
