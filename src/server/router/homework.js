@@ -77,57 +77,7 @@ router.get('/:id', wrap(async (req, res) => {
 }));
 
 router.post('/:id/submit', requireLogin, wrap(async (req, res) => {
-    if(isNaN(req.params.id))return res.status(400).send(`id must be a number`);
-    try{
-        const hid=req.params.id;
-        const hwDir=path.join(config.dirs.homeworks, hid);
-        try {
-            await fs.stat(hwDir);
-        } catch(e) {
-            await fs.mkdir(hwDir);
-        }
-        const userDir=path.join(hwDir,req.user.meta.id);
-        try {
-            await fs.stat(userDir);
-        } catch(e) {
-            await fs.mkdir(userDir);
-        }
-        const file_name=moment(Date.now()).tz('Asia/Taipei').format('YYYY-MM-DD_HH-mm-ss')+".pdf";
-        await fs.writeFile(
-            path.join(userDir, file_name ),
-            req.body.file,
-            'base64'
-        );
-        const stats = await fs.stat(path.join(userDir,file_name));
-        const fileSizeInBytes = stats.size;
-        
-        const buffer = await fs.readFile(path.join(userDir,file_name));
-        const fsHash = crypto.createHash('sha1');
-
-        fsHash.update(buffer);
-
-        if(!req.user.homeworks)req.user.homeworks=[];
-        const homeworks=req.user.homeworks;
-        let filter_res = _.filter(homeworks,_.conforms({ homework_id : id => id==hid }));
-        let rs ;
-        if (filter_res === undefined || filter_res.length == 0){
-            rs={
-                homework_id: hid,
-            };
-        }else{
-            rs = filter_res[0];
-        }
-        rs.file_name=file_name;
-        rs.file_size=filesize(fileSizeInBytes);
-        rs.file_sha1=fsHash.digest('hex');
-        if (filter_res === undefined || filter_res.length == 0){
-            req.user.homeworks.push(rs);
-        }
-        await req.user.save();
-        return res.send(`Upload successfully.`);
-    } catch(e) {
-        return res.status(500).send(`Something bad happened... Your file may not be saved.`);
-    }
+    return res.status(403).send(`How did you turn this on?`);
 }));
 
 export default router;

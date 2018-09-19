@@ -45,28 +45,6 @@
       div( v-html="hw.desc | marked" )
       
     .ui.segment
-      h3.ui.header Non Programming Problems
-      label.ui.icon.button( v-bind:for="'source-file'+hw._id" )
-        i.file.icon
-        | Choose File
-      input(type="file" v-model="filename[hw._id]" v-bind:id="'source-file'+hw._id")
-      span.filename-text {{ filename[hw._id] | getPath }}
-      a.ui.right.floated.labeled.icon.primary.button( v-on:click="clickSubmit(hw._id)" )
-        i.send.icon
-        | Upload
-      table.ui.definition.table(v-if="user && _.includes(_.map(user.homeworks,getHwId),hw._id)")
-        tbody
-          tr
-            td.collapsing File Name
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_name }}
-          tr
-            td.collapsing File Size
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_size }}
-          tr
-            td.collapsing SHA-1
-            td {{ user.homeworks[_.findIndex( _.map(user.homeworks,getHwId) , checkHwId(hw._id) )].file_sha1 }}
-
-    .ui.segment
       h3.ui.header Programming Problems
       table.ui.celled.table.selectable.pointer
         thead
