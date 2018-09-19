@@ -37,7 +37,7 @@ gulp build
 sudo -H gulp isolate
 
 # Unzip fonts.tar.gz in dist/static
-tar xvf fonts.tar.gz dist/static/
+tar xvf fonts.tar.gz -C dist/static/
 
 # Link MathJax
 ln -s ../../node_modules/mathjax/ dist/static/MathJax
