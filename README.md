@@ -13,19 +13,14 @@ https://github.com/tzupengwang/adajudge
 # install node
 nvm install v10.10.0
 
-# install yarn
-# https://yarnpkg.com/lang/en/docs/install/#debian-stable
-
 # install mongodb
 sudo apt install mongodb
 
 # install gulp and forever
-yarn global add gulp forever
-
-# add ~/.yarn/bin to PATH
+npm install -g gulp forever
 
 # Install package, it would take a while
-yarn
+npm install
 
 # Init
 gulp init
