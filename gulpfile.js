@@ -94,54 +94,33 @@ gulp.task('links', () =>
         .pipe($.sym(x => path.join(CONFIG.dist.base, path.basename(x.relative)), {force: true}))
 );
 
-const zboxMake = new $.run.Command('make', {cwd: './judger'});
-gulp.task('zbox:make', (next) => {
-    zboxMake.exec();
-    next();
-});
-
-const zboxCp = new $.run.Command(`sudo cp -p ./judger/zbox ${path.join(CONFIG.dist.base, 'judger')}`);
-gulp.task('zbox:cp', (next) => {
-    // `sudo cp -p` is used to preserve the ownership and file mode
-    zboxCp.exec();
-    next();
-});
-
-
-const isolateMake = new $.run.Command('make', {cwd: './isolate'});
 gulp.task('isolate:make', (next) => {
-    isolateMake.exec();
+    (new $.run.Command('make', {cwd: './isolate'})).exec();
     next();
 });
 
 gulp.task('isolate:cp', (next) => {
-    //gulp.src('./isolate/isolate')
-    //    .pipe(gulp.dest(path.join(CONFIG.dist.base, 'judger')));
+    (new $.run.Command(`sudo cp ./isolate/isolate ${path.join(CONFIG.dist.base, 'judger', 'isolate')}`)).exec();
+    (new $.run.Command(`sudo chown root:root ${path.join(CONFIG.dist.base, 'judger', 'isolate')}`)).exec();
+    (new $.run.Command(`sudo chmod +s ${path.join(CONFIG.dist.base, 'judger', 'isolate')}`)).exec();
     next();
 });
 
-const mkJail = new $.run.Command('mkdir jail', {cwd: path.join(CONFIG.dist.base, 'judger')});
-gulp.task('zbox:mkjail', (next) => {
-    mkJail.exec();
-    next();
-});
-
-gulp.task('zbox', $.sequence(['make', 'cp', 'mkjail'].map(x => `zbox:${x}`)));
 gulp.task('isolate', $.sequence(['make', 'cp'].map(x => `isolate:${x}`)));
 
 gulp.task('cfiles', () => {
-    gulp.src(path.join(CONFIG.cfiles, '**', '*'))
+    gulp.src(path.join(CONFIG.cfiles, '*'))
         .pipe(gulp.dest(path.join(CONFIG.dist.base, 'cfiles')));
 });
 
 gulp.task('clean', () => {
-    del([CONFIG.dist.base])
+    del([CONFIG.dist.base]);
 });
 
 gulp.task('semantic', semantic);
 
-gulp.task('init', ['semantic', 'libs', 'links'/*, 'zbox', 'isolate'*/]);
+gulp.task('init', ['semantic', 'libs', 'links']);
 
-gulp.task('build', ['webpack', 'pug', 'server-js', 'images']);
+gulp.task('build', ['webpack', 'pug', 'server-js', 'images', 'cfiles']);
 
 gulp.task('default', ['build', 'nodemon', 'browser-sync', 'watch']);

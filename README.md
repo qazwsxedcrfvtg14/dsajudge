@@ -19,14 +19,13 @@ nvm install v10.10.0
 # install mongodb
 sudo apt install mongodb
 
-# install gulp
-yarn global add gulp
+# install gulp and forever
+yarn global add gulp forever
+
+# add ~/.yarn/bin to PATH
 
 # Install package, it would take a while
 yarn
-
-# Make isolate
-(cd isolate && make)
 
 # Init
 gulp init
@@ -39,6 +38,9 @@ gulp init
 # Build
 gulp build
 
+# Build and copy isolate
+sudo -H gulp isolate
+
 # Unzip fonts.tar.gz in dist/static
 tar xvf fonts.tar.gz dist/static/
 
@@ -46,8 +48,8 @@ tar xvf fonts.tar.gz dist/static/
 ln -s ../../node_modules/mathjax/ dist/static/MathJax
 
 # Run server
-cd dist
-node server.js
+./start.sh
+
 ```
 # Issue
 Kindly submit any issue you found on github.
