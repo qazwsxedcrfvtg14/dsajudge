@@ -239,6 +239,7 @@ export default class Judger {
         this.remains = [];
         this.testResults = [];
         this.groupResults = [];
+        const testSet = {};
         for (let [gid, group] of this.groups.entries()) {
             const groupResult = new Result({
                 name: `${this.problem._id}.${gid}`,
@@ -247,17 +248,23 @@ export default class Judger {
 
             const tests = [];
             for (let [tid, test] of group.tests.entries()) {
-                const testResult = new Result({
-                    name: `${this.problem._id}.${gid}.${tid}_${test}`,
-                    maxPoints: group.points,
-                });
-                await testResult.save(); 
-                groupResult.subresults.push(testResult._id);
-                tests.push(testResult);
+                if (test in testSet) {
+                    tests.push(testSet[test]);
+                }
+                else {
+                    const testResult = new Result({
+                        name: `${this.problem._id}_${test}`,
+                        maxPoints: group.points,
+                    });
+                    await testResult.save(); 
+                    groupResult.subresults.push(testResult._id);
+                    testSet[test] = testResult;
+                    tests.push(testResult);
 
-                this.tasks.push(this.generateTask(
-                    gid, groupResult, tid, testResult
-                ));
+                    this.tasks.push(this.generateTask(
+                        gid, groupResult, tid, testResult
+                    ));
+                }
             }
 
             await groupResult.save();
