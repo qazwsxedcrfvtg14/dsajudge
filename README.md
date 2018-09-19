@@ -42,6 +42,10 @@ tar xvf fonts.tar.gz -C dist/static/
 # Link MathJax
 ln -s ../../node_modules/mathjax/ dist/static/MathJax
 
+# Edit isolate config
+sudo mkdir /usr/local/etc
+sudo cp isolate.conf /usr/local/etc/isolate
+
 # Run server
 ./start.sh
 
