@@ -72,55 +72,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
         }
         //res.send(`Password changed successfully.`);
     }
-    let newSshKey = req.body['new-sshkey'];
-    let newSshKeys=newSshKey.trim().replace(/\n/g,"").split(" ").filter(s=>s!==" ");
     let changeSshKey=false;
-    if(newSshKeys.length>=2){
-        if(newSshKeys[0]!="ssh-rsa"){
-            return res.status(400).send(`Your SSH Key is not start with "ssh-rsa"`);
-        }
-        if(!(/^[A-za-z0-9/+=]+$/i.test(newSshKeys[1]))){
-            return res.status(400).send(`Your SSH Key is not valid.`);
-        }
-        newSshKey=newSshKeys[0]+" "+newSshKeys[1];
-        if(req.user.ssh_key!=newSshKey){
-            if( (await User.find({ssh_key: newSshKey})).length != 0 ){
-                return res.status(403).send(`Please don't use the same SSH Key with others!`);
-            }
-            try{
-                const userId=req.user.meta.id;
-                const tmpPath=path.join(tmpDir,userId);
-                await fs.writeFile(
-                    tmpPath+".pub",
-                    newSshKey+"\n",
-                );
-                await fs.copy(tmpPath+".pub",path.join(gitAdminDir,"keydir",userId+".pub"));
-                try {
-                    await fs.stat(path.join(gitRepoDir,userId+".git"));
-                } catch(e) {
-                    //throw new errors.io.FileNotFoundError(file);
-                    await gitCpWrap(["-r",path.join(gitRepoDir,"init.git"),path.join(gitRepoDir,userId+".git")]);
-                }
-                const magic_str=randomString.generate(20)+userId;
-                await fs.writeFile(
-                    tmpPath+".key",
-                    magic_str,
-                );
-                await gitCpWrap([tmpPath+".key",path.join(gitRepoDir,userId+".git","hooks","key")]);
-
-                req.user.ssh_key=newSshKey;
-                req.user.git_upload_key=magic_str;
-                await req.user.save();
-                changeSshKey=true;
-            } catch(e) {
-                return res.status(500).send(`Something bad happened... New SSH Key may not be saved.`);
-            }
-            //res.send(`SSH Key changed successfully.`);
-        }
-    }
-    else if(newSshKeys.length==1){
-        return res.status(400).send(`Your SSH Key is not start with "ssh-rsa" or too short!`);
-    }
     if(changePassword&&changeSshKey){
         res.send(`Password & SSH Key changed successfully.`);
     }else if(changePassword){
