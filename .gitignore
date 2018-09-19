@@ -1,6 +1,5 @@
 node_modules/
 /dist/
 /semantic/
-/submissions
 .DS_store
 /src/server/config.js
