@@ -234,12 +234,27 @@ export default class Judger {
         };
     }
 
+    generateTaskChain(gid, groupResult, originalTask) {
+        return async (worker_id) => {
+            await originalTask(worker_id);
+            this.remains[gid] --;
+            if (!this.remains[gid]) {
+                const _groupResult = _.reduce(
+                    this.testResults[gid],
+                    resultReducer(),
+                    {result: 'AC', runtime: 0, points: groupResult.maxPoints}
+                );
+                _.assignIn(groupResult, _groupResult);
+                await groupResult.save();
+            }
+        };
+    }
     async loadTasks() {
-        this.tasks = [];
         this.remains = [];
         this.testResults = [];
         this.groupResults = [];
         const testSet = {};
+        const testTaskSet = {};
         for (let [gid, group] of this.groups.entries()) {
             const groupResult = new Result({
                 name: `${this.problem._id}.${gid}`,
@@ -249,23 +264,27 @@ export default class Judger {
             const tests = [];
             for (let [tid, test] of group.tests.entries()) {
                 if (test in testSet) {
+                    groupResult.subresults.push(testSet[test]._id);
                     tests.push(testSet[test]);
+                    testTaskSet[test] = this.generateTaskChain(
+                        gid, groupResult, testTaskSet[test]
+                    );
                 }
                 else {
                     const testResult = new Result({
                         name: `${this.problem._id}_${test}`,
                         maxPoints: group.points,
                     });
-                    await testResult.save(); 
+                    await testResult.save();
                     groupResult.subresults.push(testResult._id);
                     testSet[test] = testResult;
                     tests.push(testResult);
-
-                    this.tasks.push(this.generateTask(
+                    testTaskSet[test] = this.generateTask(
                         gid, groupResult, tid, testResult
-                    ));
+                    );
                 }
             }
+
 
             await groupResult.save();
             this.result.subresults.push(groupResult._id);
@@ -273,6 +292,8 @@ export default class Judger {
             this.groupResults.push(groupResult);
             this.remains.push(group.tests.length);
         }
+
+        this.tasks = Object.values(testTaskSet);
         await this.result.save();
     }
     async runAndCheck(workers) {
