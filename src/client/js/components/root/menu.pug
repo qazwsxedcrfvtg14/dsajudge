@@ -2,7 +2,7 @@ component
   .ui.grid.computer.only
     .top-menu.ui.fixed.top.secondary.pointing.brown.menu
       .ui.container
-        div.item.menu-font( style="color: #008080 !important;" )
+        div.item.menu-font( style="color: #a5673f !important;" )
           i.cubes.icon
           | ADA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
@@ -32,7 +32,7 @@ component
             a.item( v-if="user" v-link="{ name: 'profile' }" ) Profile
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
-        div.item.menu-font( style="color: #008080 !important;" )
+        div.item.menu-font( style="color: #a5673f !important;" )
           i.cubes.icon
           | ADA Judge
         .item| {{(datetime-datetimebase+nowdatetime) | toFormattedTime 'MM/DD HH:mm:ss'}}
