@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import config from './config';
 import 'source-map-support/register';
-import 'babel-polyfill';
+import '@babel/polyfill';
 import express from 'express';
 import auth from './auth';
 import bodyParser from 'body-parser';
@@ -13,7 +13,7 @@ import logger from './logger';
 import setRouter from './router';
 import judger from '/judger';
 
-mongoose.connect(config.mongo.url);
+mongoose.connect(config.mongo.url, { useNewUrlParser: true });
 mongoose.Promise = Promise;
 const MongoStore = require('connect-mongo')(expressSession); 
 const app = express();

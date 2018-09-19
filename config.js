@@ -40,7 +40,7 @@ const CONFIG = {
 
 CONFIG.babel = {
     presets: [
-		["env",{
+		["@babel/env",{
 			"targets":{
 				"node":"current"
 			}
@@ -49,8 +49,8 @@ CONFIG.babel = {
     plugins: [
         /*'syntax-async-functions',*/
         /*'transform-es2015-modules-commonjs',*/
-        'transform-strict-mode',
-        ['babel-root-slash-import', {
+        '@babel/transform-strict-mode',
+        ['module:babel-root-slash-import', {
             rootPathSuffix: CONFIG.dist.base,
         }],
     ]

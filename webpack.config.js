@@ -7,7 +7,7 @@ const path = require('path');
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = {
-	entry: ["babel-polyfill", "./src/client/js/app.js"],
+	entry: ["@babel/polyfill", "./src/client/js/app.js"],
 	plugins: [new MinifyPlugin()],
 	resolve:{
 		alias:{
@@ -29,7 +29,7 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
 				options:{
-					presets:['env','vue']
+					presets:['@babel/env','vue']
 				}
             },
 			{
