@@ -89,7 +89,7 @@
     "query-string": "^6.1.0",
     "randomcolor": "^0.5.3",
     "randomstring": "^1.1.5",
-    "semantic-ui": "^2.3.0",
+    "semantic-ui": "^2.4.0",
     "sleep-promise": "^8.0.1",
     "tar": "^4.0.1",
     "temp": "^0.8.3",
