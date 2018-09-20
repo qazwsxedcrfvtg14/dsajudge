@@ -5,10 +5,14 @@
     .ui.segment
       a.ui.button.spaced( 
           v-link="{ name: 'problem', params: {id: problem._id}}" )
-        | Go to Problem Page
+        | Problem Page
       a.ui.button.spaced( 
           v-link="{ name: 'admin.submissions', query: {probID: problem._id}}" )
-        | Go to Submissions
+        | Submissions
+      button.primary.right.labeled.icon.ui.button.spaced( 
+        @click.prevent="updateOnly" type="button" ) 
+        i.refresh.icon
+        | Refresh from meta.json
       button.ui.right.labeled.icon.red.button.spaced( 
         @click.prevent="rejudgeProblem" )
         i.refresh.icon
@@ -95,9 +99,6 @@
           button.ui.right.labeled.icon.green.button.spaced( @click="addNewGroup" )
             i.plus.icon
             | Add new groups
-          button.primary.right.labeled.icon.ui.button.spaced( @click.prevent="updateOnly" type="button" ) 
-            i.refresh.icon
-            | Update Only
 
     .ui.segment.clear-after
       h3.ui.dividing.header Problem Statement
