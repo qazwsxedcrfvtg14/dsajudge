@@ -56,7 +56,7 @@ Head on to https://ada18-judge.csie.org and try it!
 ` );
 
     const mailOptions = {
-        from: '"ADA2018" <ada-ta@csie.org>',
+        from: '"ADA2018" <ada-ta@csie.ntu.edu.tw >',
         to: email,
         subject: '[ADA2018]Your ADA Judge Account',
         text,
