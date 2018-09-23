@@ -16,6 +16,8 @@ const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
 const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
 const CTMP = path.join('/tmp', 'judge-comp');
 
+const SCORE_FACTOR = 100;
+
 const resultMap = {
     'CE': 100000,
     'RE': 10000,
@@ -218,7 +220,7 @@ export default class Judger {
                 if (checkerRes.RE) {
                     await saveResult(testResult, 'WA');
                 } else {
-                    await saveResult(testResult, 'AC', testResult.maxPoints);
+                    await saveResult(testResult, 'AC', SCORE_FACTOR);
                 }
             })();
             this.remains[gid] --;
@@ -226,9 +228,10 @@ export default class Judger {
                 const _groupResult = _.reduce(
                     this.testResults[gid],
                     resultReducer(),
-                    {result: 'AC', runtime: 0, points: groupResult.maxPoints}
+                    {result: 'AC', runtime: 0, points: SCORE_FACTOR}
                 );
                 _.assignIn(groupResult, _groupResult);
+                groupResult.points = groupResult.points * groupResult.maxPoints / SCORE_FACTOR;
                 await groupResult.save();
             }
         };
@@ -242,9 +245,10 @@ export default class Judger {
                 const _groupResult = _.reduce(
                     this.testResults[gid],
                     resultReducer(),
-                    {result: 'AC', runtime: 0, points: groupResult.maxPoints}
+                    {result: 'AC', runtime: 0, points: SCORE_FACTOR}
                 );
                 _.assignIn(groupResult, _groupResult);
+                groupResult.points = groupResult.points * groupResult.maxPoints / SCORE_FACTOR;
                 await groupResult.save();
             }
         };
@@ -258,7 +262,7 @@ export default class Judger {
         for (let [gid, group] of this.groups.entries()) {
             const groupResult = new Result({
                 name: `${this.problem._id}.${gid}`,
-                maxPoints: group.points,
+                maxPoints: SCORE_FACTOR,
             });
 
             const tests = [];
@@ -273,7 +277,7 @@ export default class Judger {
                 else {
                     const testResult = new Result({
                         name: `${this.problem._id}_${test}`,
-                        maxPoints: group.points,
+                        maxPoints: SCORE_FACTOR,
                     });
                     await testResult.save();
                     groupResult.subresults.push(testResult._id);
