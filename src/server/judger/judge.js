@@ -262,7 +262,7 @@ export default class Judger {
         for (let [gid, group] of this.groups.entries()) {
             const groupResult = new Result({
                 name: `${this.problem._id}.${gid}`,
-                maxPoints: SCORE_FACTOR,
+                maxPoints: group.points,
             });
 
             const tests = [];
