@@ -71,7 +71,7 @@ const GCCLink = [
 const GPP = [
     '/usr/bin/env',
     'g++',
-    '-std=c++14',
+    '-std=c++17',
     '-static',
     '-O2',
 ];
