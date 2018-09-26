@@ -2,10 +2,13 @@
   .ui.segment
     form#profile-form.ui.form(method="POST")
       h4.ui.dividing.header User Info
-      .two.fields
+      .three.fields
+        .field
+          label ID
+          input( readonly="" type="text", :value="user ? user.meta.id : ''" )
         .field
           label Name
-          input( readonly="" type="text", :value="user ? user.name : ''" )
+          input( readonly="" type="text", :value="user ? user.meta.name : ''" )
         .field
           label Role
           input( readonly="" type="text", :value="user ? getRole(user) : 'None'" )
