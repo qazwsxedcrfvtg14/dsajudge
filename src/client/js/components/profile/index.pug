@@ -1,6 +1,14 @@
 .ui.text.container
   .ui.segment
     form#profile-form.ui.form(method="POST")
+      h4.ui.dividing.header User Info
+      .two.fields
+        .field
+          label Name
+          input( readonly="" type="text", :value="user ? user.name : ''" )
+        .field
+          label Role
+          input( readonly="" type="text", :value="user ? getRole(user) : 'None'" )
       .field
         label User email
         input( readonly="" type="text", :value="user ? user.email : ''" )

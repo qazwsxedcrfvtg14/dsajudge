@@ -61,6 +61,22 @@ export default Vue.extend({
         init() {
             this.initComponents();
         },
+        getRole(user) {
+            let role = '';
+            if(user && user.roles.indexOf('admin') !== -1){
+                role = role === '' ? 'Admin' : role + ' & Admin';
+            }
+            if(user && user.roles.indexOf('student') !== -1){
+                role = role === '' ? 'Student' : role + ' & Student';
+            }
+            if(user && user.roles.indexOf('TA') !== -1){
+                role = role === '' ? 'TA' : role + ' & TA';
+            }
+            if(role === ''){
+                role = 'Auditor';
+            }
+            return role;
+        },
         initComponents() {
             const me = this;
 
