@@ -4,7 +4,7 @@
       h2.ui.heading 
         | # {{ problem._id }}: {{ problem.name }}
 
-    .ui.segment( v-if="stats" )
+    .ui.segment( v-if="stats.probStats" )
       h3.ui.header Statistic
       .ui.grid.three.column.row
         .column.center.aligned
