@@ -21,6 +21,12 @@ router.get('/problem/:id', requireLogin, checkProblem(), wrap(async (req, res) =
     const stats = _.zipObject(['probStats', 'resultBuckets', 
         'pointsDistribution', 'fastest', 'adminFastest'], result);
     const problem = req.problem;
+    if( !problem.resource ){
+        problem.resource = [];
+    }
+    if( (req.user.isAdmin()||req.user.isTA()) && !problem.resource.includes('solution') ){
+        problem.resource.push('solution');
+    }
     res.send({
         stats,
         problem,
