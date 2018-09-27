@@ -40,7 +40,7 @@
             th Runtime
         tbody
           tr( v-for="sub of (stats.fastest?stats.fastest:[])",
-            v-link="problem.solutionVisible || (user && (user.roles.indexOf('admin') !== -1 || user.roles.indexOf('TA') !== -1)) ? {name: 'submission', params: {id: sub._id}} : null" )
+              v-link="problem.solutionVisible || (user && (user.roles.indexOf('admin') !== -1 || user.roles.indexOf('TA') !== -1)) ? {name: 'submission', params: {id: sub._id}} : null" )
             td.collapsing.center.aligned( :class="{ 'blue-link': problem.solutionVisible }" ) {{ sub._id }}
             td {{ _.get(sub, 'submittedBy.meta.name', '') }} ({{ _.get(sub, 'submittedBy.meta.id') }})
             td {{ probUtils.toDisplayTime(sub.runtime) }}

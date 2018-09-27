@@ -34,7 +34,7 @@ export default Vue.extend({
             id: null,
             homeworks: [ ],
             problem: null,
-            stats: null,
+            stats: [],
         };
     },
     template: html,
