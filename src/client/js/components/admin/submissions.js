@@ -62,6 +62,11 @@ export default Vue.extend({
             this.filter.user = user.meta.id;
             await this.queryChanged();
         },
+        async changeProbID(pid) {
+            this.curTabId = 0;
+            this.filter.probID = pid;
+            await this.queryChanged();
+        },
         async rejudge(id) {
             let result;
             try {
