@@ -667,6 +667,7 @@ static void setup_seccomp(char **args)
   if (seccomp_load(seccomp_ctx) != 0) {
       die("LOAD_SECCOMP_FAILED");
   }
+  seccomp_release(seccomp_ctx);
 }
 
 static int
@@ -681,7 +682,7 @@ box_inside(char **args)
   if (set_cwd && chdir(set_cwd))
     die("chdir: %m");
   if(seccomp_on)
-    seccomp_release(seccomp_ctx);
+    setup_seccomp(args);
   execve(args[0], args, env);
   die("execve(\"%s\"): %m", args[0]);
 }
@@ -710,8 +711,6 @@ box_proxy(void *arg)
   meta_close();
   reset_signals();
 
-  if(seccomp_on)
-    setup_seccomp(args);
   pid_t inside_pid = fork();
   if (inside_pid < 0)
     die("Cannot run process, fork failed: %m");
@@ -964,6 +963,7 @@ enum opt_code {
 static const char short_opts[] = "b:c:d:DeE:f:i:k:m:M:o:p::q:r:st:vw:x:";
 
 static const struct option long_opts[] = {
+  { "z-seccomp",		1, NULL, 'z' },
   { "box-id",		1, NULL, 'b' },
   { "chdir",		1, NULL, 'c' },
   { "cg",		0, NULL, OPT_CG },
