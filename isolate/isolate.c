@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <sys/vfs.h>
 #include <sys/wait.h>
+#include <sys/syscall.h>
 #include <time.h>
 #include <unistd.h>
 #include <seccomp.h>
@@ -640,7 +641,9 @@ static void setup_seccomp(char **args)
                                   SCMP_SYS(close), SCMP_SYS(readlink),
                                   SCMP_SYS(sysinfo), SCMP_SYS(write),
                                   SCMP_SYS(writev), SCMP_SYS(lseek),
-                                  SCMP_SYS(clock_gettime),SCMP_SYS(futex)};
+                                  SCMP_SYS(clock_gettime), SCMP_SYS(futex),
+                                  SCMP_SYS(getpid), SCMP_SYS(gettid),
+                                  SCMP_SYS(rt_sigprocmask)};
 
   int syscalls_whitelist_length = sizeof(syscalls_whitelist) / sizeof(int);
   
@@ -653,6 +656,14 @@ static void setup_seccomp(char **args)
       if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, syscalls_whitelist[i], 0) != 0) {
       die("LOAD_SECCOMP_FAILED");
       }
+  }
+  // add extra rule for tgkill
+  if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, SCMP_SYS(tgkill), 3,
+                      SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t)(syscall(SYS_getpid))),
+                      SCMP_A1(SCMP_CMP_EQ, (scmp_datum_t)(syscall(SYS_gettid))),
+                      SCMP_A2(SCMP_CMP_EQ, (scmp_datum_t)(SIGABRT))
+                      ) != 0) {
+      die("LOAD_SECCOMP_FAILED");
   }
   // add extra rule for execve
   if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1, SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t)(args[0]))) != 0) {
