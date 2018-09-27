@@ -640,7 +640,7 @@ static void setup_seccomp(char **args)
                                   SCMP_SYS(close), SCMP_SYS(readlink),
                                   SCMP_SYS(sysinfo), SCMP_SYS(write),
                                   SCMP_SYS(writev), SCMP_SYS(lseek),
-                                  SCMP_SYS(clock_gettime)};
+                                  SCMP_SYS(clock_gettime),SCMP_SYS(futex)};
 
   int syscalls_whitelist_length = sizeof(syscalls_whitelist) / sizeof(int);
   
