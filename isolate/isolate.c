@@ -80,6 +80,7 @@ static char *redir_stdin, *redir_stdout, *redir_stderr;
 static int redir_stderr_to_stdout;
 static char *set_cwd;
 static int share_net;
+static int seccomp_on;
 static int inherit_fds;
 static int default_dirs = 1;
 
@@ -629,15 +630,8 @@ setup_rlimits(void)
 #undef RLIM
 }
 
-static int
-box_inside(char **args)
+static void setup_seccomp(char **args)
 {
-  cg_enter();
-  setup_root();
-  setup_rlimits();
-  setup_credentials();
-  setup_fds();
-  char **env = setup_environment();
   int syscalls_whitelist[] = {SCMP_SYS(read), SCMP_SYS(fstat),
                                   SCMP_SYS(mmap), SCMP_SYS(mprotect),
                                   SCMP_SYS(munmap), SCMP_SYS(uname),
@@ -674,11 +668,21 @@ box_inside(char **args)
       die("LOAD_SECCOMP_FAILED");
   }
   seccomp_release(ctx);
+}
 
-
+static int
+box_inside(char **args)
+{
+  cg_enter();
+  setup_root();
+  setup_rlimits();
+  setup_credentials();
+  setup_fds();
+  char **env = setup_environment();
   if (set_cwd && chdir(set_cwd))
     die("chdir: %m");
-
+  if(seccomp_on)
+    setup_seccomp(args);
   execve(args[0], args, env);
   die("execve(\"%s\"): %m", args[0]);
 }
@@ -1019,6 +1023,9 @@ main(int argc, char **argv)
   while ((c = getopt_long(argc, argv, short_opts, long_opts, NULL)) >= 0)
     switch (c)
       {
+      case 'z':
+	seccomp_on = opt_uint(optarg);
+	break;
       case 'b':
 	box_id = opt_uint(optarg);
 	break;
