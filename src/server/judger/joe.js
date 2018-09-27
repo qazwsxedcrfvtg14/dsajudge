@@ -116,6 +116,7 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
     const timeLimitCeil = timeLimit;
 
     const opt = {
+        z:1,
         cg:true,
         "box-id": worker_id,
         meta: path.join(metaDir,worker_id.toString()),

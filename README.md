@@ -33,6 +33,8 @@ gulp init
 # Build
 gulp build
 
+sudo apt install libseccomp-dev libseccomp2 seccomp
+
 # Build and copy isolate
 sudo -H gulp isolate
 
