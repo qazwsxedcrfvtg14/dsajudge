@@ -115,6 +115,7 @@ static int status_pipes[2];
 static int get_wall_time_ms(void);
 static int get_run_time_ms(struct rusage *rus);
 
+static scmp_filter_ctx seccomp_ctx = NULL;
 /*** Messages and exits ***/
 
 static void
@@ -629,7 +630,6 @@ setup_rlimits(void)
 
 #undef RLIM
 }
-
 static void setup_seccomp(char **args)
 {
   int syscalls_whitelist[] = {SCMP_SYS(read), SCMP_SYS(fstat),
@@ -642,32 +642,31 @@ static void setup_seccomp(char **args)
                                   SCMP_SYS(writev), SCMP_SYS(lseek)};
 
   int syscalls_whitelist_length = sizeof(syscalls_whitelist) / sizeof(int);
-  scmp_filter_ctx ctx = NULL;
+  
   // load seccomp rules
-  ctx = seccomp_init(SCMP_ACT_KILL);
-  if (!ctx) {
+  seccomp_ctx = seccomp_init(SCMP_ACT_KILL);
+  if (!seccomp_ctx) {
       die("LOAD_SECCOMP_FAILED");
   }
   for (int i = 0; i < syscalls_whitelist_length; i++) {
-      if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, syscalls_whitelist[i], 0) != 0) {
+      if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, syscalls_whitelist[i], 0) != 0) {
       die("LOAD_SECCOMP_FAILED");
       }
   }
   // add extra rule for execve
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1, SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t)(args[0]))) != 0) {
+  if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1, SCMP_A0(SCMP_CMP_EQ, (scmp_datum_t)(args[0]))) != 0) {
       die("LOAD_SECCOMP_FAILED");
   }
   // do not allow "w" and "rw"
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) != 0) {
+  if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) != 0) {
       die("LOAD_SECCOMP_FAILED");
   }
-  if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) != 0) {
+  if (seccomp_rule_add(seccomp_ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0)) != 0) {
       die("LOAD_SECCOMP_FAILED");
   }
-  if (seccomp_load(ctx) != 0) {
+  if (seccomp_load(seccomp_ctx) != 0) {
       die("LOAD_SECCOMP_FAILED");
   }
-  seccomp_release(ctx);
 }
 
 static int
@@ -682,7 +681,7 @@ box_inside(char **args)
   if (set_cwd && chdir(set_cwd))
     die("chdir: %m");
   if(seccomp_on)
-    setup_seccomp(args);
+    seccomp_release(seccomp_ctx);
   execve(args[0], args, env);
   die("execve(\"%s\"): %m", args[0]);
 }
@@ -711,6 +710,8 @@ box_proxy(void *arg)
   meta_close();
   reset_signals();
 
+  if(seccomp_on)
+    setup_seccomp(args);
   pid_t inside_pid = fork();
   if (inside_pid < 0)
     die("Cannot run process, fork failed: %m");
