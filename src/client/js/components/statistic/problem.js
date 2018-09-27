@@ -69,6 +69,7 @@ export default Vue.extend({
                 TLE: [200, 0, 150],
                 CE: [0, 0, 255],
                 RE: [220, 100, 0],
+                SE: [150, 150, 150],
                 JE: [0, 0, 0],
             };
             const [labelNames, color] = _.zip(..._.toPairs(labels));

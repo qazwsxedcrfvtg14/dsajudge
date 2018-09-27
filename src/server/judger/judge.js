@@ -190,6 +190,10 @@ export default class Judger {
                     this.problem.timeLimit);
 
                 testResult.runtime = userRes.time;
+                if (userRes.SE) {
+                    await saveResult(testResult, 'SE');
+                    return;
+                }
                 if (userRes.RE) {
                     await saveResult(testResult, 'RE');
                     return;
@@ -217,7 +221,7 @@ export default class Judger {
                 if (checkerRes.TLE) {
                     throw new Error('Judge Error: Checker TLE.');
                 }
-                if (checkerRes.RE) {
+                if (checkerRes.RE || checkerRes.SE) {
                     await saveResult(testResult, 'WA');
                 } else {
                     await saveResult(testResult, 'AC', SCORE_FACTOR);

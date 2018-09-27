@@ -102,8 +102,12 @@ export async function compile(worker_id, cppFile, execName, GPP, GPPLink) {
     result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"...\n"));
     if(result.status=="RE")
         result.RE=true;
-    if(result.status=="SG")
-        result.RE=true;
+    if(result.status=="SG"){
+        if(result.message.endsWith(" 31"))
+            result.SE=true;
+        else
+            result.RE=true;
+    }
     if(result.status=="TO")
         result.TLE=true;
     if(result.status=="XX")
@@ -145,8 +149,12 @@ export async function run(worker_id, exec, inFile, outFile, errFile, timeLimit, 
     result=_.assignIn(result,YAML.parse("---\n"+fl.toString().replace(/:/g,": ")+"...\n"));
     if(result.status=="RE")
         result.RE=true;
-    if(result.status=="SG")
-        result.RE=true;
+    if(result.status=="SG"){
+        if(result.message.endsWith(" 31"))
+            result.SE=true;
+        else
+            result.RE=true;
+    }
     if(result.status=="TO")
         result.TLE=true;
     if(result.status=="XX")

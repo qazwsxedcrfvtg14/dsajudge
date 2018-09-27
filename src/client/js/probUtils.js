@@ -7,6 +7,7 @@ const RESULT_MAP = {
     'AC': 'Accepted',
     'CE': 'Compile Error',
     'RE': 'Runtime Error',
+    'SE': 'Security Error',
     'GE': 'Git Error',
 };
 
