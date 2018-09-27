@@ -52,7 +52,7 @@
     "webpack-stream": "^5.1.1"
   },
   "dependencies": {
-    "ace-builds": "^1.2.5",
+    "ace-builds": "^1.4.1",
     "ajv": "^6.2.1",
     "argparse": "^1.0.9",
     "babel-plugin-transform-runtime": "^6.15.0",
