@@ -1,3 +1,4 @@
 minify js
 add loading animation
 add user manager
+calc sha256 of checker, if not chang then reuse the compiled checker.

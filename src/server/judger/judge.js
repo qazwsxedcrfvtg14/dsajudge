@@ -107,7 +107,7 @@ export default class Judger {
             await copyToDir(this.userCpp, this.rootDir, 'user.c');
 
             const result = await compile(compileBoxId, 'user.c', 'user', GPP, GPPLink);
-            if (result.RE) {
+            if (result.RE || result.SE || result.TLE) {
                 saveResult(this.result, 'CE');
                 await copyToDir(
                     path.join(this.rootDir, 'compile.err'),
@@ -131,7 +131,7 @@ export default class Judger {
             await copyToDir(TESTLIB, this.rootDir);
 
             const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP, GPPLink);
-            if (result.RE) {
+            if (result.RE || result.SE || result.TLE) {
                 throw Error('Judge Error: Checker Compiled Error.');
             }
             await copyToDir(path.join(this.rootDir, 'checker'),CTMP,this.sub._id.toString()+'_checker');
