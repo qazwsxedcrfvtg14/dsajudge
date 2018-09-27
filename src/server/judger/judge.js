@@ -72,6 +72,7 @@ const GPP = [
     '/usr/bin/env',
     'g++',
     '-std=c++17',
+    '-march=native',
     '-static',
     '-O2',
 ];
