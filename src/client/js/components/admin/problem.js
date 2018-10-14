@@ -44,7 +44,14 @@ export default Vue.extend({
                 return errToast(e);
             }
             this.problem = result.data;
+            const this_ = this;
             Vue.nextTick( () => {
+                const editor = monaco.editor.create(document.getElementById('editor'), {
+                    value: this_.problem.desc, language: 'markdown'
+                });
+                editor.onDidChangeModelContent(function (e) {
+                    this_.problem.desc = editor.getValue();
+                });
                 $('.ui.dropdown')
                     .dropdown()
                 ;
@@ -52,12 +59,6 @@ export default Vue.extend({
                     .tab()
                 ;
             } );
-            const editor = monaco.editor.create(document.getElementById('editor'), {
-                value: this.problem.desc, language: 'markdown'
-            });
-            editor.onDidChangeModelContent(function (e) {
-                this.problem.desc = editor.getValue();
-            });
         },
         async updateProblem(ev) {
             const formData = new FormData(ev.target);
@@ -118,9 +119,12 @@ export default Vue.extend({
     },
     watch: {
         'problem.desc': function() {
-            Vue.nextTick(() => {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            });
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(()=>{
+                Vue.nextTick(() => {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                })}
+            ,3000);
         },
     },
     computed: {
