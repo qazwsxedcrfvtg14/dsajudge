@@ -3,7 +3,7 @@ import html from './index.pug';
 import './index.css';
 import sleep from 'sleep-promise';
 import probUtils from 'js/mixins/probUtils';
-
+import * as monaco from 'monaco-editor';
 
 export default Vue.extend({
     mixins: [probUtils],
@@ -38,11 +38,12 @@ export default Vue.extend({
             } catch(e) {
                 console.log(e);
             }
-            const editor = ace.edit('editor');
-            const session = editor.getSession();
-            session.setValue(result.data);
-            session.setMode('ace/mode/c_cpp');
-            editor.setReadOnly(true);
+            
+            monaco.editor.create(document.getElementById('editor'), {
+                value: result.data,
+                language: 'cpp',
+                readOnly: true
+            });
         },
         async getSubmission() {
             let _result;

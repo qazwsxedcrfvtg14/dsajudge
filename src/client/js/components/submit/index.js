@@ -2,6 +2,7 @@ import Vue from 'vue';
 import html from './index.pug';
 import './index.css';
 import toastr from 'toastr';
+import * as monaco from 'monaco-editor';
 export default Vue.extend({
     data() {
         return { 
@@ -13,8 +14,7 @@ export default Vue.extend({
     template: html,
     ready() {
         this.$tab = $('#upload-tab .item').tab({history: false});
-        this.editor = ace.edit('editor');
-        this.editor.getSession().setMode('ace/mode/c_cpp');
+        this.editor = monaco.editor.create(document.getElementById('editor'), {value: '', language: 'cpp'});
     },
     filters: {
         getPath(x) {
