@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 import Problems from './components/problems';
 import Problem from './components/problem';
 import Submit from './components/submit';
-import Submit2 from './components/submit2';
 import Admin from './components/admin';
 import Submissions from './components/submissions';
 import Submission from './components/submission';
@@ -49,10 +48,6 @@ router.map({
     '/submit/:id': {
         name: 'submit',
         component: Submit,
-    },
-    '/submit2/:id': {
-        name: 'submit2',
-        component: Submit2,
     },
     '/admin': {
         name: 'admin',
