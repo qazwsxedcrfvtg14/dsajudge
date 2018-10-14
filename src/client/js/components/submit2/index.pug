@@ -1,0 +1,21 @@
+.ui.text.container
+  #upload-tab.ui.top.attached.tabular.menu
+    a.active.item( data-tab="editor" ) Editor
+    a.item( data-tab="upload" ) Upload File
+    .right.menu
+      .item
+        a.ui.right.labeled.icon.primary.button( @click="clickSubmit" )
+          i.send.icon
+          | Submit
+
+  .ui.bottom.attached.active.tab.segment( data-tab="editor" )
+    #editor
+    .ui.error.message( v-if="errEditor" ) {{ errEditor }}
+
+  .ui.bottom.attached.tab.segment( data-tab="upload" )
+    label.ui.icon.button( for="source-file" )
+      i.file.icon
+      | Open File
+    input#source-file(type="file" v-model="filename" )
+    span.filename-text {{ filename | getPath }}
+    .ui.error.message( v-if="errFile" ) {{ errFile }}

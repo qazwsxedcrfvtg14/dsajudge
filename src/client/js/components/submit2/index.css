@@ -1,0 +1,10 @@
+#editor {
+    min-height: 70vh;
+}
+
+input[type="file"] {
+    display: none;
+}
+.filename-text {
+    margin-left: 10px;
+}

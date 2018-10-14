@@ -5,10 +5,13 @@ const cssnano = require('cssnano')({autoprefixer: false});
 const webpack = require('webpack');
 const path = require('path');
 //const MinifyPlugin = require("babel-minify-webpack-plugin");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 	entry: ["@babel/polyfill", "./src/client/js/app.js"],
-//	plugins: [new MinifyPlugin()],
+	plugins: [
+		new UglifyJSPlugin()
+	],
 	resolve:{
 		alias:{
 			vue: 'vue/dist/vue.js'
