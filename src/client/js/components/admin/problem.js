@@ -5,6 +5,7 @@ import toastr from 'toastr';
 import sleep from 'sleep-promise';
 import './problem.css';
 import marked from 'js/marked_mutated';
+import * as monaco from 'monaco-editor';
 
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
@@ -51,10 +52,12 @@ export default Vue.extend({
                     .tab()
                 ;
             } );
-            //this.editor = ace.edit('editor');
-            //const session = this.editor.getSession();
-            //session.setMode('ace/mode/markdown');
-            //session.setValue(this.problem.desc);
+            const editor = monaco.editor.create(document.getElementById('editor'), {
+                value: this.problem.desc, language: 'markdown'
+            });
+            editor.onDidChangeModelContent(function (e) {
+                this.problem.desc = editor.getValue();
+            });
         },
         async updateProblem(ev) {
             const formData = new FormData(ev.target);
