@@ -635,7 +635,7 @@ static void setup_seccomp(char **args)
 {
   int syscalls_whitelist[] = {SCMP_SYS(read), SCMP_SYS(fstat),
                                   SCMP_SYS(mmap), SCMP_SYS(mprotect),
-                                  SCMP_SYS(munmap), SCMP_SYS(uname),
+                                  SCMP_SYS(munmap), SCMP_SYS(uname), SCMP_SYS(mremap),
                                   SCMP_SYS(arch_prctl), SCMP_SYS(brk),
                                   SCMP_SYS(access), SCMP_SYS(exit_group),
                                   SCMP_SYS(close), SCMP_SYS(readlink),
