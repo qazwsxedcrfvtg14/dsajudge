@@ -61,7 +61,7 @@ export default Vue.extend({
             }
             if(!this.diffEditor){
                 this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'));
-                diffEditor.setModel({
+                this.diffEditor.setModel({
                     original: this.originalModel,
                     modified: this.modifiedModel
                 });
