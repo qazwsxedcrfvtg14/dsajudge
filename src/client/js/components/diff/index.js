@@ -59,8 +59,7 @@ export default Vue.extend({
             else{
                 this.modifiedModel = monaco.editor.createModel(result2.data, 'cpp');
             }
-
-            if(this.diffEditor){
+            if(!this.diffEditor){
                 this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'));
                 diffEditor.setModel({
                     original: this.originalModel,
