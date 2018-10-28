@@ -38,12 +38,15 @@ export default Vue.extend({
             } catch(e) {
                 console.log(e);
             }
-            
-            monaco.editor.create(document.getElementById('editor'), {
-                value: result.data,
-                language: 'cpp',
-                readOnly: true
-            });
+            if(this.editor){
+                this.editor.setValue(result.data);
+            }else{
+                this.editor = monaco.editor.create(document.getElementById('editor'), {
+                    value: result.data,
+                    language: 'cpp',
+                    readOnly: true
+                });
+            }
         },
         async getSubmission() {
             let _result;
@@ -74,5 +77,16 @@ export default Vue.extend({
                 && this.submission.result !== 'CE');
         }
     },
+    watch: {
+        'id': function() {
+            this.fetch();
+            this.fetchSrc();
+        }
+    },
+    route: {
+        data() {
+            this.id = this.$route.params.id;
+        }
+    }
 });
 
