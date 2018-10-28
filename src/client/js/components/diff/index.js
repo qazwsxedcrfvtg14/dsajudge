@@ -33,7 +33,6 @@ export default Vue.extend({
                 await sleep(2000);
                 await this.getSubmission();
             }
-            
         },
         async fetchSrc() {
             let result;
@@ -48,14 +47,26 @@ export default Vue.extend({
             } catch(e) {
                 console.log(e);
             }
-            const originalModel = monaco.editor.createModel(result.data, 'cpp');
-            const modifiedModel = monaco.editor.createModel(result2.data, 'cpp');
+            if(this.originalModel){
+                this.originalModel.setValue(result.data);
+            }
+            else{
+                this.originalModel = monaco.editor.createModel(result.data, 'cpp');
+            }
+            if(this.modifiedModel){
+                this.modifiedModel.setValue(result2.data);
+            }
+            else{
+                this.modifiedModel = monaco.editor.createModel(result2.data, 'cpp');
+            }
 
-            const diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'));
-            diffEditor.setModel({
-                original: originalModel,
-                modified: modifiedModel
-            });
+            if(this.diffEditor){
+                this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'));
+                diffEditor.setModel({
+                    original: this.originalModel,
+                    modified: this.modifiedModel
+                });
+            }
         },
         async getSubmission() {
             let _result;
@@ -107,6 +118,30 @@ export default Vue.extend({
             this.showResult2 = (this.submission2
                 && this.submission2.status !== 'pending'
                 && this.submission2.result !== 'CE');
+        },
+        async queryChanged() {
+            await this.getSubmission();
+            while (this.submission.status === 'pending' || this.submission.status === 'judging' ||
+                this.submission2.status === 'pending' || this.submission2.status === 'judging') {
+                await sleep(2000);
+                await this.getSubmission();
+            }
+        },
+    },
+    watch: {
+        'id': function() {
+            this.fetch();
+            this.fetchSrc();
+        },
+        'id2': function() {
+            this.fetch();
+            this.fetchSrc();
+        }
+    },
+    route: {
+        data() {
+            this.id = this.$route.params.id;
+            this.id2 = this.$route.params.id2;
         }
     },
 });
