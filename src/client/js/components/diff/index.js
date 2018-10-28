@@ -60,7 +60,9 @@ export default Vue.extend({
                 this.modifiedModel = monaco.editor.createModel(result2.data, 'cpp');
             }
             if(!this.diffEditor){
-                this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'));
+                this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'),{
+                    automaticLayout: true
+                });
                 this.diffEditor.setModel({
                     original: this.originalModel,
                     modified: this.modifiedModel
