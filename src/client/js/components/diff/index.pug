@@ -1,0 +1,174 @@
+.ui.text.grid.two.column.row.divided
+  component( v-if="submission" )
+    .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
+      .ui.basic.segment
+        .ui.grid.two.column.row.divided
+          .column.center.aligned
+            .ui.statistic
+              .value {{ this.probUtils.getPointsString(submission) }}
+                small(style='font-size: 40%; margin-left: 4px;') / {{submission.problem.testdata.points}}
+              .label Points
+          .column.center.aligned
+            .ui.statistic( :class="{ \
+                  green: probUtils.isAC(submission), \
+                  red: probUtils.isNotAC(submission) \
+                }")
+              .value.text
+                | {{ this.probUtils.getResultString(submission) }}
+                br
+                i.hourglass.empty.icon( v-show="!probUtils.isAC(submission) && !probUtils.isNotAC(submission)" )
+                i.checkmark.icon( v-show="probUtils.isAC(submission)" )
+                i.remove.icon( v-show="probUtils.isNotAC(submission)" )
+              .label Result
+
+      table.ui.definition.table
+        tbody
+          tr
+            td.collapsing Problem name
+            td {{ submission.problem.name }}
+          tr
+            td.collapsing Submitted by
+            td {{ submission.submittedBy.meta.name }} ({{ submission.submittedBy.meta.id }})
+              | {{ submission.submittedBy.email ? ' - ' + submission.submittedBy.email : '' }}
+          tr
+            td.collapsing Submission time
+            td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
+          tr( v-if="!_.isNil(submission.runtime)" )
+            td.collapsing Runtime
+            td {{ probUtils.toDisplayTime(submission.runtime) }}
+
+    .ui.divider
+    component( v-if="submission.compilationLog" )
+      h2.ui.dividing.header Compilation Log
+      .ui.segment
+        pre( style="overflow-x: auto; margin: 10px 0px" )
+          code {{submission.compilationLog}}
+            
+    component( v-if="showResult" )
+      h2.ui.dividing.header Results
+
+      .ui.divided.items
+        .item( v-for="(gid, group) in submission._result.subresults" )
+          .content
+            .dividing.header {{ 'Group #' + gid }}
+            .description
+              table.ui.table.result-table
+                thead
+                  th Testcase
+                  th Result
+                  th.collapsing Runtime
+                  th.collapsing.center.aligned Points
+                tbody
+                  tr.title-row
+                    td Overall
+                    td( :class="{ \
+                        positive: probUtils.isAC(group), \
+                        negative: probUtils.isNotAC(group) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="group.result === 'Judging'" )
+                      i.checkmark.icon( v-show="probUtils.isAC(group)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(group)" )
+                      | {{ group.result }}
+                    td.collapsing {{ group.runtime }}
+                    td.collapsing.center.aligned {{ group.points }}
+
+                  tr( v-for="(tid, test) of group.subresults")
+                    td {{ test.name }}
+                    td( :class="{ \
+                        positive: probUtils.isAC(test), \
+                        negative: probUtils.isNotAC(test) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="test.result === 'Judging'" )
+                      i.checkmark.icon( v-show="probUtils.isAC(test)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(test)" )
+                      | {{ test.result }}
+                    td.collapsing {{ test.runtime }}
+                    td.collapsing.center.aligned -
+  component( v-if="submission2" )
+    .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
+      .ui.basic.segment
+        .ui.grid.two.column.row.divided
+          .column.center.aligned
+            .ui.statistic
+              .value {{ this.probUtils.getPointsString(submission2) }}
+                small(style='font-size: 40%; margin-left: 4px;') / {{submission2.problem.testdata.points}}
+              .label Points
+          .column.center.aligned
+            .ui.statistic( :class="{ \
+                  green: probUtils.isAC(submission2), \
+                  red: probUtils.isNotAC(submission2) \
+                }")
+              .value.text
+                | {{ this.probUtils.getResultString(submission2) }}
+                br
+                i.hourglass.empty.icon( v-show="!probUtils.isAC(submission2) && !probUtils.isNotAC(submission2)" )
+                i.checkmark.icon( v-show="probUtils.isAC(submission2)" )
+                i.remove.icon( v-show="probUtils.isNotAC(submission2)" )
+              .label Result
+
+      table.ui.definition.table
+        tbody
+          tr
+            td.collapsing Problem name
+            td {{ submission2.problem.name }}
+          tr
+            td.collapsing Submitted by
+            td {{ submission2.submittedBy.meta.name }} ({{ submission2.submittedBy.meta.id }})
+              | {{ submission2.submittedBy.email ? ' - ' + submission2.submittedBy.email : '' }}
+          tr
+            td.collapsing submission2 time
+            td {{ submission2.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
+          tr( v-if="!_.isNil(submission2.runtime)" )
+            td.collapsing Runtime
+            td {{ probUtils.toDisplayTime(submission2.runtime) }}
+
+    .ui.divider
+    component( v-if="submission2.compilationLog" )
+      h2.ui.dividing.header Compilation Log
+      .ui.segment
+        pre( style="overflow-x: auto; margin: 10px 0px" )
+          code {{submission2.compilationLog}}
+            
+    component( v-if="showResult" )
+      h2.ui.dividing.header Results
+
+      .ui.divided.items
+        .item( v-for="(gid, group) in submission2._result.subresults" )
+          .content
+            .dividing.header {{ 'Group #' + gid }}
+            .description
+              table.ui.table.result-table
+                thead
+                  th Testcase
+                  th Result
+                  th.collapsing Runtime
+                  th.collapsing.center.aligned Points
+                tbody
+                  tr.title-row
+                    td Overall
+                    td( :class="{ \
+                        positive: probUtils.isAC(group), \
+                        negative: probUtils.isNotAC(group) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="group.result === 'Judging'" )
+                      i.checkmark.icon( v-show="probUtils.isAC(group)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(group)" )
+                      | {{ group.result }}
+                    td.collapsing {{ group.runtime }}
+                    td.collapsing.center.aligned {{ group.points }}
+
+                  tr( v-for="(tid, test) of group.subresults")
+                    td {{ test.name }}
+                    td( :class="{ \
+                        positive: probUtils.isAC(test), \
+                        negative: probUtils.isNotAC(test) \
+                      }" )  
+                      i.hourglass.empty.icon( v-show="test.result === 'Judging'" )
+                      i.checkmark.icon( v-show="probUtils.isAC(test)" )
+                      i.remove.icon( v-show="probUtils.isNotAC(test)" )
+                      | {{ test.result }}
+                    td.collapsing {{ test.runtime }}
+                    td.collapsing.center.aligned -
+  h2.ui.dividing.header Source Code
+  #editor
+

@@ -6,6 +6,7 @@ import Submit from './components/submit';
 import Admin from './components/admin';
 import Submissions from './components/submissions';
 import Submission from './components/submission';
+import Diff from './components/diff';
 import Home from './components/home';
 import Profile from './components/profile';
 import ProblemStatistic from './components/statistic/problem';
@@ -44,6 +45,10 @@ router.map({
     '/submission/:id': {
         name: 'submission',
         component: Submission,
+    },
+    '/diff/:id/:id2': {
+        name: 'diff',
+        component: Diff,
     },
     '/submit/:id': {
         name: 'submit',

@@ -1,0 +1,15 @@
+$emph-grey: #AAAAAA;
+
+.title-row {
+    font-weight: bold;
+    > td {
+        border-bottom: 2px solid $emph-grey;
+        border-top: 2px solid $emph-grey !important;
+    }
+    > td:first-child {
+        border-left: 2px solid $emph-grey;
+    }
+    > td:last-child {
+        border-right: 2px solid $emph-grey;
+    }
+}
