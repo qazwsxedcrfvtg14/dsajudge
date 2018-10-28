@@ -1,5 +1,5 @@
 .ui.text.grid.two.column.row.divided
-  component( v-if="submission" )
+  component.column( v-if="submission" )
     .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
       .ui.basic.segment
         .ui.grid.two.column.row.divided
@@ -84,7 +84,7 @@
                       | {{ test.result }}
                     td.collapsing {{ test.runtime }}
                     td.collapsing.center.aligned -
-  component( v-if="submission2" )
+  component.column( v-if="submission2" )
     .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
       .ui.basic.segment
         .ui.grid.two.column.row.divided
@@ -170,5 +170,5 @@
                     td.collapsing {{ test.runtime }}
                     td.collapsing.center.aligned -
 h2.ui.dividing.header Source Code
-#editor
+#editor(style="height: 100vh")
 
