@@ -44,7 +44,7 @@ async function updateProblemByGzip(id, file) {
 }
 
 router.get('/', wrap(async (req, res) => {
-    let query = Problem.find();
+    let query = Problem.find().sort("_id");
     if (req.query) query.select(_.mapValues(req.query, parseInt));
     const problems = await query;
     res.send(problems);
