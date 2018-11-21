@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
     const isTA = req.user && (req.user.isAdmin()||req.user.isTA());
-    let data = await Problem.find(isTA ? {} : {visible: true});
+    let data = await Problem.find(isTA ? {} : {visible: true}).sort("_id");
     data = await Promise.all(data.map( _prob => (async () => {
         let prob = _prob.toObject();
         const pr = req.user ? 
