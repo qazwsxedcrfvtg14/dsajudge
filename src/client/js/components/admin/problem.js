@@ -46,12 +46,14 @@ export default Vue.extend({
             this.problem = result.data;
             const this_ = this;
             Vue.nextTick( () => {
-                const editor = monaco.editor.create(document.getElementById('editor'), {
-                    value: this_.problem.desc, language: 'markdown'
-                });
-                editor.onDidChangeModelContent(function (e) {
-                    this_.problem.desc = editor.getValue();
-                });
+                if(!this_.editor){
+                    this_.editor = monaco.editor.create(document.getElementById('editor'), {
+                        value: this_.problem.desc, language: 'markdown'
+                    });
+                    editor.onDidChangeModelContent(function (e) {
+                        this_.problem.desc = this_.editor.getValue();
+                    });
+                }
                 $('.ui.dropdown')
                     .dropdown()
                 ;
