@@ -17,6 +17,7 @@ const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
 const CTMP = path.join('/tmp', 'judge-comp');
 
 const SCORE_FACTOR = 100;
+const AC_SCORE = 100;
 
 const resultMap = {
     'CE': 100000,
@@ -348,6 +349,9 @@ export default class Judger {
             {result: 'AC', runtime: 0, points: 0}
         );
         _.assignIn(this.result, reducedResult);
+        if(this.result.points > AC_SCORE){
+            this.result.result='AC';
+        }
         await this.result.save();
     }
     async cleanUp() {
