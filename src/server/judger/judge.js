@@ -349,7 +349,7 @@ export default class Judger {
             {result: 'AC', runtime: 0, points: 0}
         );
         _.assignIn(this.result, reducedResult);
-        if(this.result.points > AC_SCORE){
+        if(this.result.points >= AC_SCORE){
             this.result.result='AC';
         }
         await this.result.save();
