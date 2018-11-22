@@ -50,7 +50,7 @@ export default Vue.extend({
                     this_.editor = monaco.editor.create(document.getElementById('editor'), {
                         value: this_.problem.desc, language: 'markdown'
                     });
-                    editor.onDidChangeModelContent(function (e) {
+                    this_.editor.onDidChangeModelContent(function (e) {
                         this_.problem.desc = this_.editor.getValue();
                     });
                 }
