@@ -58,3 +58,19 @@ body{
     background: #2e2828!important;
     color: #f2e9e9!important;
 }
+
+.ui.inverted.menu {
+    border: 0 solid transparent;
+    background: #1b1c1d;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.ui.inverted.menu .ui.dropdown .menu>.item {
+    color: rgba(255,255,255,.87)!important;
+}
+
+.ui.inverted.menu.menu .ui.dropdown .menu>.active.item {
+    background: rgba(255,255,255,.03)!important;
+    color: rgba(255,255,255,.95)!important;
+}

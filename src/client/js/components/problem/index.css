@@ -22,6 +22,7 @@
     height: 30px;
     line-height: 30px;
     text-align: center;
+    overflow: hidden;
     /*vertical-align: middle;*/
 
     &:first-child {
