@@ -36,7 +36,7 @@ table.ui.inverted.table.selectable.pointer td {
 }
 
 body{
-    background: #323232;
+    background: #4a4a4a;
 }
 
 .ui.inverted.table tr.positive{
@@ -96,4 +96,8 @@ body{
 .ui.inverted.ui.inverted.selection.dropdown .ui.label {
     background-color: #5a5a5a;
     color: rgba(255,255,255,.6);
+}
+
+.ui.inverted.items>.item>.content>.header {
+    color: rgba(255,255,255,.85);
 }
