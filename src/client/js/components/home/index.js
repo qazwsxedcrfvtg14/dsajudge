@@ -122,7 +122,7 @@ export default Vue.extend({
             if (pr < 1.0 / 24) s = 'gold';
             else if (pr < 1.0 / 8) s = 'silver';
             else if (pr < 1.0 / 4) s = 'bronze';
-            return s ? `static/images/medal_${s}.jpg` : null; 
+            return s ? `static/images/medal_${s}.png` : null; 
         },
         getHwId(hw) {
             return hw.homework_id; 
