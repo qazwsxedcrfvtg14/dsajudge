@@ -20,7 +20,7 @@
     }
 }
 
-table.ui.table.selectable.pointer td {
+table.ui.inverted.table.selectable.pointer td {
     cursor: pointer;
 }
 

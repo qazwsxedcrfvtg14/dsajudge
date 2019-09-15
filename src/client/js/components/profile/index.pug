@@ -1,7 +1,7 @@
-.ui.text.container
-  .ui.segment
-    form#profile-form.ui.form(method="POST")
-      h4.ui.dividing.header User Info
+.ui.inverted.text.container
+  .ui.inverted.segment
+    form#profile-form.ui.inverted.form(method="POST")
+      h4.ui.inverted.dividing.header User Info
       .three.fields
         .field
           label ID
@@ -16,7 +16,7 @@
         label User email
         input( readonly="" type="text", :value="user ? user.email : ''" )
 
-      h4.ui.dividing.header Change password
+      h4.ui.inverted.dividing.header Change password
       .two.fields
         .field
           label New password
@@ -25,14 +25,14 @@
           label Confirm
           input( name="confirm-password" placeholder="Comfirm new password" type="password" )
 
-      h4.ui.dividing.header Submit changes
+      h4.ui.inverted.dividing.header Submit changes
       .field
         .two.fields
           .twelve.wide.field
             label Current password
             input( name="current-password" placeholder="Input current password" type="password" )
           .four.wide.field( style="align-self: flex-end;" )
-            button.ui.right.floated.primary.right.labeled.icon.button
+            button.ui.inverted.right.floated.primary.right.labeled.icon.button
               i.send.icon
               | Send
-      .ui.error.message
+      .ui.inverted.error.message

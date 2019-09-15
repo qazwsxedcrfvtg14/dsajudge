@@ -1,15 +1,15 @@
-.ui.text.grid.two.column.row.divided
+.ui.inverted.text.grid.two.column.row.divided
   component.column( v-if="submission" )
-    .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
-      .ui.basic.segment
-        .ui.grid.two.column.row.divided
+    .ui.inverted.masthead.vertical.clearing(style="padding-bottom: 0px")
+      .ui.inverted.basic.segment
+        .ui.inverted.grid.two.column.row.divided
           .column.center.aligned
-            .ui.statistic
+            .ui.inverted.statistic
               .value {{ this.probUtils.getPointsString(submission) }}
                 small(style='font-size: 40%; margin-left: 4px;') / {{submission.problem.testdata.points}}
               .label Points
           .column.center.aligned
-            .ui.statistic( :class="{ \
+            .ui.inverted.statistic( :class="{ \
                   green: probUtils.isAC(submission), \
                   red: probUtils.isNotAC(submission) \
                 }")
@@ -21,7 +21,7 @@
                 i.remove.icon( v-show="probUtils.isNotAC(submission)" )
               .label Result
 
-      table.ui.definition.table
+      table.ui.inverted.definition.table
         tbody
           tr
             td.collapsing Problem name
@@ -37,22 +37,22 @@
             td.collapsing Runtime
             td {{ probUtils.toDisplayTime(submission.runtime) }}
 
-    .ui.divider
+    .ui.inverted.divider
     component( v-if="submission.compilationLog" )
-      h2.ui.dividing.header Compilation Log
-      .ui.segment
+      h2.ui.inverted.dividing.header Compilation Log
+      .ui.inverted.segment
         pre( style="overflow-x: auto; margin: 10px 0px" )
           code {{submission.compilationLog}}
             
     component( v-if="showResult" )
-      h2.ui.dividing.header Results
+      h2.ui.inverted.dividing.header Results
 
-      .ui.divided.items
+      .ui.inverted.divided.items
         .item( v-for="(gid, group) in submission._result.subresults" )
           .content
             .dividing.header {{ 'Group #' + gid }}
             .description
-              table.ui.table.result-table
+              table.ui.inverted.table.result-table
                 thead
                   th Testcase
                   th Result
@@ -85,16 +85,16 @@
                     td.collapsing {{ test.runtime }}
                     td.collapsing.center.aligned -
   component.column( v-if="submission2" )
-    .ui.masthead.vertical.clearing(style="padding-bottom: 0px")
-      .ui.basic.segment
-        .ui.grid.two.column.row.divided
+    .ui.inverted.masthead.vertical.clearing(style="padding-bottom: 0px")
+      .ui.inverted.basic.segment
+        .ui.inverted.grid.two.column.row.divided
           .column.center.aligned
-            .ui.statistic
+            .ui.inverted.statistic
               .value {{ this.probUtils.getPointsString(submission2) }}
                 small(style='font-size: 40%; margin-left: 4px;') / {{submission2.problem.testdata.points}}
               .label Points
           .column.center.aligned
-            .ui.statistic( :class="{ \
+            .ui.inverted.statistic( :class="{ \
                   green: probUtils.isAC(submission2), \
                   red: probUtils.isNotAC(submission2) \
                 }")
@@ -106,7 +106,7 @@
                 i.remove.icon( v-show="probUtils.isNotAC(submission2)" )
               .label Result
 
-      table.ui.definition.table
+      table.ui.inverted.definition.table
         tbody
           tr
             td.collapsing Problem name
@@ -122,22 +122,22 @@
             td.collapsing Runtime
             td {{ probUtils.toDisplayTime(submission2.runtime) }}
 
-    .ui.divider
+    .ui.inverted.divider
     component( v-if="submission2.compilationLog" )
-      h2.ui.dividing.header Compilation Log
-      .ui.segment
+      h2.ui.inverted.dividing.header Compilation Log
+      .ui.inverted.segment
         pre( style="overflow-x: auto; margin: 10px 0px" )
           code {{submission2.compilationLog}}
             
     component( v-if="showResult" )
-      h2.ui.dividing.header Results
+      h2.ui.inverted.dividing.header Results
 
-      .ui.divided.items
+      .ui.inverted.divided.items
         .item( v-for="(gid, group) in submission2._result.subresults" )
           .content
             .dividing.header {{ 'Group #' + gid }}
             .description
-              table.ui.table.result-table
+              table.ui.inverted.table.result-table
                 thead
                   th Testcase
                   th Result
@@ -169,6 +169,6 @@
                       | {{ test.result }}
                     td.collapsing {{ test.runtime }}
                     td.collapsing.center.aligned -
-h2.ui.dividing.header Source Code
+h2.ui.inverted.dividing.header Source Code
 #editor(style="height: 100vh")
 

@@ -1,42 +1,42 @@
-.ui.text.container( v-if="problem" )
-  .ui.segments
-    .ui.segment
-      h2.ui.header Problem \#{{problem._id}} : {{problem.name}}
-    .ui.segment
-      a.ui.button.spaced( 
+.ui.inverted.text.container( v-if="problem" )
+  .ui.inverted.segments
+    .ui.inverted.segment
+      h2.ui.inverted.header Problem \#{{problem._id}} : {{problem.name}}
+    .ui.inverted.segment
+      a.ui.inverted.button.spaced( 
           v-link="{ name: 'problem', params: {id: problem._id}}" )
         | Problem Page
-      a.ui.button.spaced( 
+      a.ui.inverted.button.spaced( 
           v-link="{ name: 'admin.submissions', query: {probID: problem._id}}" )
         | Submissions
-      button.primary.right.labeled.icon.ui.button.spaced( 
+      button.primary.right.labeled.icon.ui.inverted.button.spaced( 
         @click.prevent="updateOnly" type="button" ) 
         i.refresh.icon
         | Refresh from meta.json
-      button.ui.right.labeled.icon.red.button.spaced( 
+      button.ui.inverted.right.labeled.icon.red.button.spaced( 
         @click.prevent="rejudgeProblem" )
         i.refresh.icon
         | Rejudge All
 
-    .ui.segment
-      h2.ui.header Problem settings
-    .ui.segment.clear-after
-      h3.ui.dividing.header Directly upload tar.gz
+    .ui.inverted.segment
+      h2.ui.inverted.header Problem settings
+    .ui.inverted.segment.clear-after
+      h3.ui.inverted.dividing.header Directly upload tar.gz
       iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
-      form.ui.form( action="/admin/newProblem" method="POST" 
+      form.ui.inverted.form( action="/admin/newProblem" method="POST" 
           enctype="multipart/form-data" target="dummyframe" @submit.prevent="updateProblem" )
-        label.ui.icon.button( for="problem-file" )
+        label.ui.inverted.icon.button( for="problem-file" )
           i.file.icon
           | Open File
         input#problem-file(type="file" v-model="filename" name="problem-file" )
         span.filename-text {{ filename | getPath }}
-        button.primary.right.floated.right.labeled.icon.ui.button(type="submit") 
+        button.primary.right.floated.right.labeled.icon.ui.inverted.button(type="submit") 
           i.right.arrow.icon
           | Submit
 
-    .ui.segment
-      h3.ui.dividing.header Settings
-      form.ui.form
+    .ui.inverted.segment
+      h3.ui.inverted.dividing.header Settings
+      form.ui.inverted.form
         .three.fields
           .twelve.wide.field
             label Name
@@ -49,23 +49,23 @@
             input(type="text" v-model="problem.quota") 
         .three.fields
           .field
-            .ui.toggle.checkbox
+            .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="problem.visible")
               label Visible to non-admin
           .field
-            .ui.toggle.checkbox
+            .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="problem.notGitOnly")
               label Allow submit without git
           .field
-            .ui.toggle.checkbox
+            .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="problem.showStatistic")
               label Show statistic
               
 
-    .ui.segment.clear-after
-      h3.ui.dividing.header Test Groups
-      h4.ui.dividing.header Total
-      form.ui.form
+    .ui.inverted.segment.clear-after
+      h3.ui.inverted.dividing.header Test Groups
+      h4.ui.inverted.dividing.header Total
+      form.ui.inverted.form
         .two.fields
           .four.wide.field
             label Count
@@ -74,13 +74,13 @@
             label Points
             input(type="number" readonly :value="totalPoints") 
 
-      .ui.segments
-        .ui.segment( v-for="(idx, group) of problem.testdata.groups" )
-          h4.ui.header Group {{ '#'+idx }}
-          form.ui.form
+      .ui.inverted.segments
+        .ui.inverted.segment( v-for="(idx, group) of problem.testdata.groups" )
+          h4.ui.inverted.header Group {{ '#'+idx }}
+          form.ui.inverted.form
             .field
               label Tests
-              select.ui.fluid.dropdown( v-model="group.tests", value="test", multiple )
+              select.ui.inverted.fluid.dropdown( v-model="group.tests", value="test", multiple )
                 option( v-for="tests of problem.testFiles" ) {{ tests }}
             .two.fields
               .four.wide.field
@@ -91,26 +91,26 @@
                 input(type="number", v-model="group.points" number) 
               .four.wide.field(style="position: relative; height: 60px;")
                 | &nbsp;
-                button.ui.right.labeled.icon.red.button.spaced.stick-left-bottom( 
+                button.ui.inverted.right.labeled.icon.red.button.spaced.stick-left-bottom( 
                   @click.prevent="deleteGroup(idx)")
                   i.remove.icon
                   | Delete
-        .ui.attached.bottom.segment
-          button.ui.right.labeled.icon.green.button.spaced( @click="addNewGroup" )
+        .ui.inverted.attached.bottom.segment
+          button.ui.inverted.right.labeled.icon.green.button.spaced( @click="addNewGroup" )
             i.plus.icon
             | Add new groups
 
-    .ui.segment.clear-after
-      h3.ui.dividing.header Problem Statement
-      .ui.top.attached.tabular.menu#problem-statement-tab
+    .ui.inverted.segment.clear-after
+      h3.ui.inverted.dividing.header Problem Statement
+      .ui.inverted.top.attached.tabular.menu#problem-statement-tab
         a.item.active( data-tab="markdown" ) markdown
         a.item( data-tab="preview" ) preview
-      .ui.bottom.attached.tab.segment.active( data-tab="markdown" )
+      .ui.inverted.bottom.attached.tab.segment.active( data-tab="markdown" )
         #editor.no-mathjax
-        //-form.ui.form
+        //-form.ui.inverted.form
           textarea( v-model="problem.desc" row="20" style="font-family: monospace;" )
-      .ui.bottom.attached.tab.segment( data-tab="preview" )
+      .ui.inverted.bottom.attached.tab.segment( data-tab="preview" )
         .mathjax( v-html="problem.desc | marked" )
-      button.ui.primary.right.floated.primary.right.labeled.icon.button( @click.prevent="updateProblemSettings" )
+      button.ui.inverted.primary.right.floated.primary.right.labeled.icon.button( @click.prevent="updateProblemSettings" )
         i.right.arrow.icon
         | Submit

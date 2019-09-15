@@ -1,38 +1,38 @@
-.ui.text.container
-  .ui.segments
-    .ui.segment( v-if="problem" )
-      h2.ui.heading 
+.ui.inverted.text.container
+  .ui.inverted.segments
+    .ui.inverted.segment( v-if="problem" )
+      h2.ui.inverted.heading 
         | # {{ problem._id }}: {{ problem.name }}
 
-    .ui.segment( v-if="stats.probStats" )
-      h3.ui.header Statistic
-      .ui.grid.three.column.row
+    .ui.inverted.segment( v-if="stats.probStats" )
+      h3.ui.inverted.header Statistic
+      .ui.inverted.grid.three.column.row
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.probStats.count }}
             .label Number of users tried
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.probStats.AC }}
             .label Number of AC users
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.probStats.average | toFixed 1 }}
             .label Average points
 
-    .ui.segment
-      h3.ui.header Results
+    .ui.inverted.segment
+      h3.ui.inverted.header Results
       div
         canvas#result-chart
 
-    .ui.segment
-      h3.ui.header Points distribution
+    .ui.inverted.segment
+      h3.ui.inverted.header Points distribution
       div
         canvas#points-chart
 
-    .ui.segment
-      h3.ui.header Fastest among AC
-      table.ui.celled.table.selectable( :class="{pointer: problem && problem.solutionVisible}" )
+    .ui.inverted.segment
+      h3.ui.inverted.header Fastest among AC
+      table.ui.inverted.celled.table.selectable( :class="{pointer: problem && problem.solutionVisible}" )
         thead
           tr
             th.collapsing.center.aligned ID

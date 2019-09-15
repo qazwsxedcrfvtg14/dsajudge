@@ -1,13 +1,13 @@
-.ui.text.container
+.ui.inverted.text.container
   h2.dividing Upload new problem
   iframe#dummyframe(width="0" height="0" border="0" style="display: none;" name="dummyframe")
-  form.ui.form( action="/admin/newProblem" method="POST" 
+  form.ui.inverted.form( action="/admin/newProblem" method="POST" 
       enctype="multipart/form-data" target="dummyframe" @submit.prevent="postNewProblem" )
-    label.ui.icon.button( for="problem-file" )
+    label.ui.inverted.icon.button( for="problem-file" )
       i.file.icon
       | Open File
     input#problem-file(type="file" v-model="filename" name="problem-file" )
     span.filename-text {{ filename | getPath }}
-    button.primary.right.floated.right.labeled.icon.ui.button(type="submit") 
+    button.primary.right.floated.right.labeled.icon.ui.inverted.button(type="submit") 
       i.right.arrow.icon
       | submit

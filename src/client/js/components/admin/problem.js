@@ -42,7 +42,7 @@ export default Vue.extend({
   ready () {
     this.id = this.$route.params.id;
     this.getProblem();
-    $(this.$el).find('.ui.checkbox').checkbox();
+    $(this.$el).find('.ui.inverted.checkbox').checkbox();
   },
   filters: {
     getPath (x) {
@@ -72,7 +72,7 @@ export default Vue.extend({
             this_.problem.desc = this_.editor.getValue();
           });
         }
-        $('.ui.dropdown')
+        $('.ui.inverted.dropdown')
           .dropdown()
         ;
         $('#problem-statement-tab .item')
@@ -128,7 +128,7 @@ export default Vue.extend({
         tests: []
       });
       Vue.nextTick(() => {
-        $('.ui.dropdown')
+        $('.ui.inverted.dropdown')
           .dropdown()
         ;
       });

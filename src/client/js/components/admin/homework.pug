@@ -1,19 +1,19 @@
-.ui.text.container( v-if="hw" )
-  .ui.segments
-    .ui.segment
-      h2.ui.header Homework settings
-    .ui.segment
-      form.ui.form
+.ui.inverted.text.container( v-if="hw" )
+  .ui.inverted.segments
+    .ui.inverted.segment
+      h2.ui.inverted.header Homework settings
+    .ui.inverted.segment
+      form.ui.inverted.form
         .field
           label Name
           input(type="text" v-model="hw.name")
         .two.fields
           .field
-            .ui.toggle.checkbox
+            .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="hw.visible")
               label Visible to non-admin
           .field
-            .ui.toggle.checkbox
+            .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="hw.showStatistic")
               label Show statistic
         .field
@@ -22,9 +22,9 @@
         .field
           label Description
           textarea(rows="10" v-model="hw.desc")
-    .ui.segment
-      h3.ui.header Problems
-      table.ui.celled.table.selectable.pointer
+    .ui.inverted.segment
+      h3.ui.inverted.header Problems
+      table.ui.inverted.celled.table.selectable.pointer
         thead
           tr
             th ID
@@ -36,22 +36,22 @@
             td {{ prob.problem }}
             td {{ probMap[prob.problem] }}
             td 
-              .ui.input
+              .ui.inverted.input
                 input(v-model="prob.weight")
             td
-              button.ui.icon.red.button( @click="removeProblem(idx)" )
+              button.ui.inverted.icon.red.button( @click="removeProblem(idx)" )
                 i.remove.icon
           tr
             td.center.aligned( colspan="4" ) 
-              select.ui.search.dropdown#prob-select( v-model="choosedID" )
+              select.ui.inverted.search.dropdown#prob-select( v-model="choosedID" )
                 option( v-for="prob of probs", :value="prob._id" ) {{ prob._id + ': ' + prob.name }}
-              button.ui.button.right.labeled.icon.green.button( @click="addProblem" )#new-prob-btn
+              button.ui.inverted.button.right.labeled.icon.green.button( @click="addProblem" )#new-prob-btn
                 i.plus.icon
                 | Add new problem
-    .ui.segment
-      h3.ui.header Action
-    .ui.segment
-      button.ui.button.right.labeled.icon.primary.button( @click="sendUpdate" )
+    .ui.inverted.segment
+      h3.ui.inverted.header Action
+    .ui.inverted.segment
+      button.ui.inverted.button.right.labeled.icon.primary.button( @click="sendUpdate" )
         | Submit
         i.right.arrow.icon
 

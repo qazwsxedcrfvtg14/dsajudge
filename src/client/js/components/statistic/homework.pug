@@ -1,33 +1,33 @@
-.ui.text.container
-  .ui.segments
-    .ui.segment( v-if="problem" )
-      h2.ui.heading 
+.ui.inverted.text.container
+  .ui.inverted.segments
+    .ui.inverted.segment( v-if="problem" )
+      h2.ui.inverted.heading 
         | # {{ problem._id }}: {{ problem.name }}
 
-    .ui.segment( v-if="stats" )
-      h3.ui.header Statistic
-      .ui.grid.three.column.row
+    .ui.inverted.segment( v-if="stats" )
+      h3.ui.inverted.header Statistic
+      .ui.inverted.grid.three.column.row
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.hwStats.count }}
             .label Number of users tried
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.hwStats.AC }}
             .label #users with full grade
         .column.center.aligned
-          .ui.statistic
+          .ui.inverted.statistic
             .value {{ stats.hwStats.average | toFixed 1 }}
             .label Average points
 
-    .ui.segment
-      h3.ui.header Points distribution
+    .ui.inverted.segment
+      h3.ui.inverted.header Points distribution
       div
         canvas#points-chart
 
-    //-.ui.segment
-      h3.ui.header First to AC
-      table.ui.table
+    //-.ui.inverted.segment
+      h3.ui.inverted.header First to AC
+      table.ui.inverted.table
         tr( v-for="sub of stats.earliest" )
           td {{ sub.submittedBy.email }}
           

@@ -78,7 +78,7 @@ export default Vue.extend({
                     }
                 }
             });
-            $('.ui.dropdown').dropdown();
+            $('.ui.inverted.dropdown').dropdown();
         },
         clickLogin() {
             this.$loginModal.modal('show');

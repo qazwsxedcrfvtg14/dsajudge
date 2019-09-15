@@ -1,10 +1,10 @@
-.ui.text.container
-  .ui.top.attached.pagination.menu
+.ui.inverted.text.container
+  .ui.inverted.top.attached.pagination.menu
     a.item( v-for="idx of tabRange", 
       :class="[idx == curTabId ? 'active' : '']",
       v-link="{name: 'submissions', query: {s: idx}, activeClass: 'zzz'}" ) {{ idx }}
     a.item ...
-  table.ui.attached.celled.table
+  table.ui.inverted.attached.celled.table
     thead
       tr
         th.center.aligned.collapsing ID

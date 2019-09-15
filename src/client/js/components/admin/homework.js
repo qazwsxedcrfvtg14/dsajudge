@@ -76,7 +76,7 @@ export default Vue.extend({
                 tests: [],
             });
             await sleep(500);
-            $('.ui.dropdown')
+            $('.ui.inverted.dropdown')
                 .dropdown()
             ;
         },

@@ -1,25 +1,25 @@
-.ui.text.container
+.ui.inverted.text.container
   component( v-if="problem" )
-    .ui.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
-      h1.ui.left.floated.header {{ problem.name }}
+    .ui.inverted.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
+      h1.ui.inverted.left.floated.header {{ problem.name }}
         .sub.header Time Limit: {{ this.probUtils.toDisplayTime(problem.timeLimit) }}
-      .ui.right.floated.header(style="margin-bottom: 5px; padding-top: 20px;")
+      .ui.inverted.right.floated.header(style="margin-bottom: 5px; padding-top: 20px;")
         div.clear-after
           .hack
           a( v-if="user && (user.isAdmin || user.isTA || problem.showStatistic)"
-            v-link="{name: 'problem.statistic', params: {id: problem._id}}" ).ui.right.labeled.icon.green.button.spaced
+            v-link="{name: 'problem.statistic', params: {id: problem._id}}" ).ui.inverted.right.labeled.icon.green.button.spaced
             i.area.chart.icon
             | Statistic
           a( v-if="user && (user.isAdmin || problem.notGitOnly)",
-            v-link="{name: 'submit', params: {id: problem._id}}" ).ui.right.labeled.icon.primary.button.spaced
+            v-link="{name: 'submit', params: {id: problem._id}}" ).ui.inverted.right.labeled.icon.primary.button.spaced
             i.send.icon
             | Submit
           a( v-if="user && user.isAdmin",
-            v-link="{name: 'admin.problem', params: {id: problem._id}}" ).ui.right.labeled.icon.orange.button.spaced
+            v-link="{name: 'admin.problem', params: {id: problem._id}}" ).ui.inverted.right.labeled.icon.orange.button.spaced
             i.doctor.icon
             | Admin
 
     .mathjax.markdown( v-html="problem.desc | marked" )
 
-    h2.ui.dividing.header Test Groups
+    h2.ui.inverted.dividing.header Test Groups
     #testgroup-bar-wrapper

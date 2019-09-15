@@ -1,8 +1,8 @@
 component
-  .ui.grid.computer.only
-    .top-menu.ui.fixed.top.secondary.pointing.brown.menu
-      .ui.container
-        div.item.menu-font( style="color: #a5673f !important;" )
+  .ui.inverted.grid.computer.only
+    .top-menu.ui.inverted.fixed.top.secondary.pointing.olive.menu
+      .ui.inverted.container
+        div.item.menu-font( style="color: #B5CC18 !important;" )
           i.terminal.icon
           | ADA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
@@ -18,10 +18,10 @@ component
         .right.menu( v-else="user" )
           a.item( v-if="!user" @click="clickLogin" ) Login
 
-  .ui.grid.mobile.only.tablet.only
-    .top-menu.ui.fixed.top.secondary.pointing.brown.menu
-      .ui.container
-        div.ui.simple.dropdown.item
+  .ui.inverted.grid.mobile.only.tablet.only
+    .top-menu.ui.inverted.fixed.top.secondary.pointing.olive.menu
+      .ui.inverted.container
+        div.ui.inverted.simple.dropdown.item
           i.content.icon
           .menu(style="margin-top: 0px;")
             a.item( v-link="{ path: '/', exact: true }" ) Home
@@ -32,7 +32,7 @@ component
             a.item( v-if="user" v-link="{ name: 'profile' }" ) Profile
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
-        div.item.menu-font( style="color: #a5673f !important;" )
+        div.item.menu-font( style="color: #B5CC18 !important;" )
           i.terminal.icon
           | ADA Judge
         .item| {{(datetime-datetimebase+nowdatetime) | toFormattedTime 'MM/DD HH:mm:ss'}}
