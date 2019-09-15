@@ -6,7 +6,7 @@
 }
 
 .top-menu {
-    background-color: white !important;
+    background-color: #2d2d2d !important;
 }
 
 #main-header {
@@ -33,4 +33,13 @@ table.ui.inverted.table.selectable.pointer td {
 .blue-link {
     text-decoration: underline;
     color: #4183C4;
+}
+
+body{
+    background: #3a3a3a;
+}
+
+.ui.inverted.table tr.positive{
+    background: #282e28!important;
+    color: #e9f2e9!important;
 }

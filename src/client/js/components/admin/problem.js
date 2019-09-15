@@ -28,7 +28,7 @@ self.MonacoEnvironment = {
 const renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
   const escaped = text.toLowerCase().replace(/[^\w]+/g, '-');
-  return `<div></div><h${level} class="ui dividing header">${text}</h${level}>`;
+  return `<div></div><h${level} class="ui inverted dividing header">${text}</h${level}>`;
 };
 
 export default Vue.extend({
