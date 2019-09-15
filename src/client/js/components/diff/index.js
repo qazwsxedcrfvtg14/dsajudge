@@ -77,7 +77,8 @@ export default Vue.extend({
       }
       if (!this.diffEditor) {
         this.diffEditor = monaco.editor.createDiffEditor(document.getElementById('editor'), {
-          automaticLayout: true
+          automaticLayout: true,
+          theme: 'vs-dark'
         });
         this.diffEditor.setModel({
           original: this.originalModel,

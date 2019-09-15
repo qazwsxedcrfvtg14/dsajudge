@@ -33,7 +33,11 @@ export default Vue.extend({
   template: html,
   ready () {
     this.$tab = $('#upload-tab .item').tab({history: false});
-    this.editor = monaco.editor.create(document.getElementById('editor'), {value: '', language: 'cpp'});
+    this.editor = monaco.editor.create(document.getElementById('editor'), {
+      value: '',
+      language: 'cpp',
+      theme: 'vs-dark'
+    });
   },
   filters: {
     getPath (x) {

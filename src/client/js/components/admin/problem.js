@@ -66,7 +66,9 @@ export default Vue.extend({
       Vue.nextTick(() => {
         if (!this_.editor) {
           this_.editor = monaco.editor.create(document.getElementById('editor'), {
-            value: this_.problem.desc, language: 'markdown'
+            value: this_.problem.desc,
+            language: 'markdown',
+            theme: 'vs-dark'
           });
           this_.editor.onDidChangeModelContent(function (e) {
             this_.problem.desc = this_.editor.getValue();

@@ -61,6 +61,7 @@ export default Vue.extend({
         this.editor = monaco.editor.create(document.getElementById('editor'), {
           value: result.data,
           language: 'cpp',
+          theme: 'vs-dark',
           readOnly: true
         });
       }
