@@ -74,3 +74,7 @@ body{
     background: rgba(255,255,255,.03)!important;
     color: rgba(255,255,255,.95)!important;
 }
+
+.ui.inverted.toggle.checkbox input:checked~.box, .ui.toggle.checkbox input:checked~label {
+    color: rgba(255,255,255,.95)!important;
+}
