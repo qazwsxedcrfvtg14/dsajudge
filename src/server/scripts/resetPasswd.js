@@ -45,19 +45,19 @@ const resetUser = async (email, transporter) => {
   user.password = hashed;
   await user.save();
   const text = (
-    `Welcome to ADA2018, this email is to inform you that your ADA Judge account has been created.
+    `Welcome to ADA2019, this email is to inform you that your ADA Judge account has been created.
 Here is your account and temporary password. (You can change your password after logging in.)
 
 - Account: ${email}
 - Password: ${randPass}
 
-Head on to https://ada18-judge.csie.org and try it!
+Head on to https://ada19-judge.csie.org and try it!
 `);
 
   const mailOptions = {
-    from: '"ADA2018" <ada-ta@csie.ntu.edu.tw >',
+    from: '"ADA2019" <ada-ta@csie.ntu.edu.tw >',
     to: email,
-    subject: '[ADA2018]Your ADA Judge Account',
+    subject: '[ADA2019]Your ADA Judge Account',
     text
   };
 

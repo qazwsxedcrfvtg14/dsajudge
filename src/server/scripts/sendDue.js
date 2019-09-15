@@ -49,7 +49,7 @@ Your current score is ${hwResult ? hwResult.points : "0 (it seems that you haven
 Thank you`;
 
         const mailOptions = {
-            from: '"ADA2018" <ada-ta@csie.ntu.edu.tw>',
+            from: '"ADA2019" <ada-ta@csie.ntu.edu.tw>',
             to: user.email,
             subject: `Reminder of the deadline of homework 1`,
             text,
