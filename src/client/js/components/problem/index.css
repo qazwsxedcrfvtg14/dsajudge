@@ -22,7 +22,7 @@
     height: 30px;
     line-height: 30px;
     text-align: center;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
 
     &:first-child {
         border-radius: 4px 0 0 4px;
@@ -30,5 +30,9 @@
 
     &:last-child {
         border-radius: 0 4px 4px 0;
+    }
+
+    &:only-child {
+        border-radius: 4px 4px 4px 4px;
     }
 }

@@ -43,3 +43,18 @@ body{
     background: #282e28!important;
     color: #e9f2e9!important;
 }
+
+.ui.inverted.table tr.negative{
+    background: #2e2828!important;
+    color: #f2e9e9!important;
+}
+
+.ui.inverted.table td.positive{
+    background: #282e28!important;
+    color: #e9f2e9!important;
+}
+
+.ui.inverted.table td.negative{
+    background: #2e2828!important;
+    color: #f2e9e9!important;
+}
