@@ -75,6 +75,25 @@ body{
     color: rgba(255,255,255,.95)!important;
 }
 
-.ui.inverted.toggle.checkbox input:checked~.box, .ui.toggle.checkbox input:checked~label {
+.ui.inverted.toggle.checkbox input:checked~.box, .ui.inverted.toggle.checkbox input:checked~label {
     color: rgba(255,255,255,.95)!important;
+}
+
+.ui.inverted.form input:not([type]), .ui.inverted.form input[type=date], .ui.inverted.form input[type=datetime-local], .ui.inverted.form input[type=email], .ui.inverted.form input[type=file], .ui.inverted.form input[type=number], .ui.inverted.form input[type=password], .ui.inverted.form input[type=search], .ui.inverted.form input[type=tel], .ui.inverted.form input[type=text], .ui.inverted.form input[type=time], .ui.inverted.form input[type=url] {
+    background: #2b2b2b;
+    border-color: rgba(255,255,255,.1);
+    color: rgba(255, 255, 255, 0.87);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.ui.inverted.selection.dropdown {
+    background: #2b2b2b;
+    color: rgba(255, 255, 255, 0.87);
+    border: 1px solid rgba(255,255,255,.1);
+}
+
+.ui.inverted.ui.inverted.selection.dropdown .ui.label {
+    background-color: #5a5a5a;
+    color: rgba(255,255,255,.6);
 }
