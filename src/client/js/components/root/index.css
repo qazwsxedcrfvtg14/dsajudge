@@ -10,13 +10,18 @@
 }
 
 #main-header {
-    margin-top: 10vh;
     font-size: 6rem !important;
 }
 
+#main-header-out {
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+}
+
 @media screen and (max-width: 767px) {
-    #main-header {
+    #main-header-out {
         margin-top: 0;
+        margin-bottom: 0;
     }
 }
 

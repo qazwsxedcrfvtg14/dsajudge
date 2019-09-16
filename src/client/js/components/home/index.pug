@@ -77,8 +77,8 @@
     i.add.icon
 
 component( v-else )
-  .ui.inverted.vertical.masthead.center.aligned.segment
-    .ui.inverted.text.container
+  .ui.inverted.masthead.center.aligned.segment
+    .ui.inverted.text.container#main-header-out
       h1.ui.inverted.olive.header#main-header.menu-font
         p
           i.terminal.icon
@@ -88,8 +88,8 @@ component( v-else )
       h2.ui.inverted.olive.header.menu-font Login to begin...
 
 component( v-if="user && homeworks.length==0" )
-  .ui.inverted.vertical.masthead.center.aligned.segment
-    .ui.inverted.text.container
+  .ui.inverted.masthead.center.aligned.segment
+    .ui.inverted.text.container#main-header-out
       h1.ui.inverted.olive.header#main-header.menu-font
         p
           i.terminal.icon
