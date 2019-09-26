@@ -45,23 +45,23 @@ body{
 }
 
 .ui.inverted.table tr.positive{
-    background: #172e17!important;
-    color: #e9f2e9!important;
+    background: #282e28!important;
+    color: #a2e845!important;
 }
 
 .ui.inverted.table tr.negative{
-    background: #2e1717!important;
-    color: #f2e9e9!important;
+    background: #2e2020!important;
+    color: #fb7291!important;
 }
 
 .ui.inverted.table td.positive{
-    background: #172e17!important;
-    color: #e9f2e9!important;
+    background: #282e28!important;
+    color: #a2e845!important;
 }
 
 .ui.inverted.table td.negative{
-    background: #2e1717!important;
-    color: #f2e9e9!important;
+    background: #2e2020!important;
+    color: #fb7291!important;
 }
 
 .ui.inverted.menu {
