@@ -53,10 +53,13 @@ export default Vue.extend({
       const percent = [];
       for (let [i, g] of this.problem.testdata.groups.entries()) {
         const div = $('<div>');
-        div.text(`#${i} (${g.points})`);
         div.addClass('bar');
         div.addClass(colors[count]);
         count = (count + 1) % colors.length;
+        const progress = $('div');
+        progress.addClass('progress');
+        progress.text(`#${i} (${g.points})`);
+        div.append(progress);
         wrapper.append(div);
         percent.push(100 * g.points / totp);
       }
