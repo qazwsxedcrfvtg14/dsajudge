@@ -51,20 +51,27 @@ export default Vue.extend({
       let count = 0;
       const totp = this.problem.testdata.points;
       const percent = [];
+      const title = [];
       for (let [i, g] of this.problem.testdata.groups.entries()) {
         const div = $('<div>');
-        div.addClass('bar');
         div.addClass(colors[count]);
+        div.addClass('bar');
         count = (count + 1) % colors.length;
         const progress = $('<div>');
         progress.addClass('progress');
-        progress.text(`#${i} (${g.points})`);
+        title.push(`#${i} (${g.points})`);
         div.append(progress);
         wrapper.append(div);
         percent.push(100 * g.points / totp);
       }
-      wrapper.progress({percent: percent});
-      wrapper.progress('remove active');
+
+      wrapper.progress({
+        showActivity: false,
+        text: {
+          percent: percent,
+          bars: title
+        }
+      });
     }
   },
   filters: {
