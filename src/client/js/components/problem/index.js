@@ -56,7 +56,7 @@ export default Vue.extend({
         div.addClass('bar');
         div.addClass(colors[count]);
         count = (count + 1) % colors.length;
-        const progress = $('div');
+        const progress = $('<div>');
         progress.addClass('progress');
         progress.text(`#${i} (${g.points})`);
         div.append(progress);
