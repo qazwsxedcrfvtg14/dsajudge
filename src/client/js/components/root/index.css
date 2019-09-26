@@ -113,3 +113,6 @@ body{
 .ui.inverted.selection.dropdown .menu>.item {
     border-top: 1px solid #fafafa00;
 }
+.ui.inverted.table tr td.disabled:not([class=disabled]), .ui.inverted.table tr.disabled td[class]:not(.disabled), .ui.inverted.table tr.disabled:not([class=disabled]) td, .ui.inverted.table tr:hover td.disabled:not([class=disabled]) {
+    color: rgba(255, 255, 255, 0.3);
+}
