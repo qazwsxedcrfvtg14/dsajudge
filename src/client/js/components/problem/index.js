@@ -4,7 +4,6 @@ import marked from 'js/marked_mutated';
 import sleep from 'sleep-promise';
 import probUtils from 'js/mixins/probUtils';
 import './index.css';
-import randomColor from 'randomcolor';
 import store, {getUser} from 'js/store';
 
 const renderer = new marked.Renderer();
@@ -48,7 +47,7 @@ export default Vue.extend({
       const wrapper = $('#testgroup-bar');
       wrapper.empty();
       const colors = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink'];
-      let count = 0;
+      let count = Math.floor(Math.random() * colors.length);
       const totp = this.problem.testdata.points;
       const percent = [];
       const title = [];
@@ -56,7 +55,7 @@ export default Vue.extend({
         const div = $('<div>');
         div.addClass(colors[count]);
         div.addClass('bar');
-        count = (count + 1) % colors.length;
+        count = (count + Math.floor(Math.random() * (colors.length - 1) + 1)) % colors.length;
         const progress = $('<div>');
         progress.addClass('progress');
         title.push(`#${i} (${g.points})`);
