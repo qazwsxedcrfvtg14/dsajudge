@@ -45,20 +45,23 @@ export default Vue.extend({
     },
     drawBar () {
       if (!this.problem) return;
-      const wrapper = $('#testgroup-bar-wrapper');
+      const wrapper = $('#testgroup-bar');
       wrapper.empty();
-      const tc = this.problem.testdata.groups.length;
+      const colors = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink'];
+      let count = 0;
       const totp = this.problem.testdata.points;
-      const totl = wrapper.width();
-      const rc = randomColor({ count: tc, format: 'rgb', luminosity: 'bright' });
+      const percent = [];
       for (let [i, g] of this.problem.testdata.groups.entries()) {
         const div = $('<div>');
         div.text(`#${i} (${g.points})`);
-        div.addClass('testgroup-bar');
-        div.width(g.points / totp * totl);
-        div.css('background-color', 'rgba' + rc[i].substring(3, rc[i].length - 1) + ', 0.5)');
+        div.addClass('bar');
+        div.addClass(colors[count]);
+        count = (count + 1) % colors.length;
         wrapper.append(div);
+        percent.append(100 * g.points / totp);
       }
+      wrapper.progress({percent: percent});
+      wrapper.progress('remove active');
     }
   },
   filters: {
