@@ -106,3 +106,10 @@ body{
 .ui.inverted.items>.item>.content>.header {
     color: rgba(255,255,255,.85);
 }
+
+.ui.inverted.dropdown .menu{
+    background: #2b2b2b;
+}
+.ui.inverted.selection.dropdown .menu>.item {
+    border-top: 1px solid #fafafa00;
+}
