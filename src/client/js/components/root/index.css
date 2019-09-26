@@ -45,22 +45,22 @@ body{
 }
 
 .ui.inverted.table tr.positive{
-    background: #173c17!important;
+    background: #172e17!important;
     color: #e9f2e9!important;
 }
 
 .ui.inverted.table tr.negative{
-    background: #3c1717!important;
+    background: #2e1717!important;
     color: #f2e9e9!important;
 }
 
 .ui.inverted.table td.positive{
-    background: #173c17!important;
+    background: #172e17!important;
     color: #e9f2e9!important;
 }
 
 .ui.inverted.table td.negative{
-    background: #3c1717!important;
+    background: #2e1717!important;
     color: #f2e9e9!important;
 }
 
