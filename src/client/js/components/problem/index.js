@@ -58,7 +58,7 @@ export default Vue.extend({
         div.addClass(colors[count]);
         count = (count + 1) % colors.length;
         wrapper.append(div);
-        percent.append(100 * g.points / totp);
+        percent.push(100 * g.points / totp);
       }
       wrapper.progress({percent: percent});
       wrapper.progress('remove active');
