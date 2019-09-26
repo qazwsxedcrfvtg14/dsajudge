@@ -55,32 +55,33 @@ const main = async () => {
 
   // Choose the correct columns according to input xls file
   // const ID=3, NAME = 4, EMAIL = 5;
-  const ID = 0, NAME = 1, EMAIL = 2;
+  const ID = 4, NAME = 2, EMAIL = 1, ROLE = 3;
   for (let r of rows) {
     if (!r || !r.length) break;
     const td = r.split(',');
     const user = {
       email: td[EMAIL],
       id: td[ID] || '',
-      name: td[NAME]
+      name: td[NAME],
+      roles: [td[ROLE]]
     };
-    console.log(td[EMAIL], td[ID], td[NAME]);
-    await newUser(td[EMAIL], td[ID], td[NAME], mailTransporter);
+    console.log(td[EMAIL], td[ID], td[NAME], td[ROLE]);
+    await newUser(td[EMAIL], td[ID], td[NAME], td[ROLE], mailTransporter);
   }
 
   console.log('Ended...');
 };
 
-const newUser = async (email, id, name, transporter) => {
+const newUser = async (email, id, name, role, transporter) => {
   const randPass = randomString.generate(10);
   const hashed = await promisify(bcrypt.hash)(randPass, 10);
 
-  const roles = ['student'];
+  // const roles = ['student'];
 
   const user = new User({
     email: email,
     password: hashed,
-    roles,
+    roles: [role],
     meta: {
       id,
       name
@@ -94,7 +95,7 @@ Here is your account and temporary password. (You can change your password after
 - Account: ${email}
 - Password: ${randPass}
 
-Head on to https://ada19-judge.csie.org and try it!
+Head on to https://ada-judge.csie.ntu.edu.tw/ and try it!
 `);
 
   const mailOptions = {
