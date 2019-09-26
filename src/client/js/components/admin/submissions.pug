@@ -18,7 +18,7 @@
             i.inverted.circular.search.link.icon( @click="queryChanged" )
         .item
           h4.ui.inverted.header Status
-          select.ui.inverted.search.selection.dropdown#status-select( v-model='filter.result' )
+          select.ui.inverted.selection.dropdown#status-select( v-model='filter.result' )
             option( value="ALL" ) All
             option( value="AC" ) Accepted (AC)
             option( value="WA" ) Wrong Answer (WA)
