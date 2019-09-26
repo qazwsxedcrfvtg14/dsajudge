@@ -68,9 +68,10 @@ export default Vue.extend({
       wrapper.progress({
         showActivity: false,
         text: {
-          percent: percent,
+          percent: '{bar}',
           bars: title
-        }
+        },
+        percent: percent
       });
     }
   },
