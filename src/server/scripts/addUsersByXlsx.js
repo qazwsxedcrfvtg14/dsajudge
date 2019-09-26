@@ -77,16 +77,23 @@ const newUser = async (email, id, name, role, transporter) => {
   const hashed = await promisify(bcrypt.hash)(randPass, 10);
 
   // const roles = ['student'];
-
-  const user = new User({
-    email: email,
-    password: hashed,
-    roles: [role],
-    meta: {
-      id,
-      name
-    }
-  });
+  let user = await User.find({email: email});
+  if (!user) {
+    user = new User({
+      email: email,
+      password: hashed,
+      roles: [role],
+      meta: {
+        id,
+        name
+      }
+    });
+  } else {
+    user.password = hashed;
+    user.roles = [role];
+    user.meta.id = id;
+    user.meta.name = name;
+  }
 
   const text = (
     `Welcome to ADA2019, this email is to inform you that your ADA Judge account has been created.
@@ -104,6 +111,7 @@ Head on to https://ada-judge.csie.ntu.edu.tw/ and try it!
     subject: '[ADA2019]Your ADA Judge Account',
     text
   };
+  console.log(user);
   await user.save();
   await new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, result) => {
