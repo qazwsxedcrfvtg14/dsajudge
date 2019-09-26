@@ -55,7 +55,7 @@ export default Vue.extend({
         const div = $('<div>');
         div.addClass(colors[count]);
         div.addClass('bar');
-        count = (count + Math.floor(Math.random() * (colors.length - 1) + 1)) % colors.length;
+        count = (count + 1) % colors.length;
         const progress = $('<div>');
         progress.addClass('progress');
         title.push(`#${i} (${g.points})`);
