@@ -77,7 +77,7 @@ const newUser = async (email, id, name, role, transporter) => {
   const hashed = await promisify(bcrypt.hash)(randPass, 10);
 
   // const roles = ['student'];
-  let user = await User.find({email: email});
+  let user = await User.findOne({email: email});
   if (!user) {
     user = new User({
       email: email,
