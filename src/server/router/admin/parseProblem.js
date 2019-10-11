@@ -24,6 +24,7 @@ async function updateMeta (id, prob) {
   if (_.has(json, 'name')) prob.name = _.get(json, 'name');
   // eslint-disable-next-line require-atomic-updates
   if (_.has(json, 'timeLimit')) prob.timeLimit = _.get(json, 'timeLimit');
+  // eslint-disable-next-line require-atomic-updates
   if (_.has(json, 'memLimit')) prob.memLimit = _.get(json, 'memLimit');
   // eslint-disable-next-line require-atomic-updates
   if (_.has(json, 'hasSpecialJudge')) prob.hasSpecialJudge = _.get(json, 'hasSpecialJudge');
