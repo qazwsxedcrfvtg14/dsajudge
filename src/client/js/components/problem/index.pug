@@ -4,7 +4,7 @@
       .ui.inverted.masthead.vertical.clearing.segment(style="padding-bottom: 0px")
         h1.ui.inverted.left.floated.header {{ problem.name }}
           .sub.header Time Limit: {{ this.probUtils.toDisplayTime(problem.timeLimit) }}
-          .sub.header Mem Limit: {{ this.probUtils.toDisplayTime(problem.memLimit) }} KB
+          .sub.header Mem Limit: {{ problem.memLimit }} KB
         .ui.inverted.right.floated.header(style="margin-bottom: 5px; padding-top: 20px;")
           div.clear-after
             .hack
