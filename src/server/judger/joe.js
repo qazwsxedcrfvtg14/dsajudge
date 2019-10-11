@@ -112,7 +112,7 @@ export async function compile (worker_id, cppFile, execName, GPP, GPPLink) {
 export async function run (worker_id, exec, inFile, outFile, errFile, timeLimit, memLimit = (1 << 20), args = []) {
   // const timeLimitCeil = Math.ceil(timeLimit);
   const timeLimitCeil = timeLimit;
-  if (memLimit) {
+  if (!memLimit) {
     memLimit = 1 << 20;
   }
   const opt = {

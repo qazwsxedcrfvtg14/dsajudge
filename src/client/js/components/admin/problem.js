@@ -62,7 +62,7 @@ export default Vue.extend({
         return errToast(e);
       }
       this.problem = result.data;
-      if (this.problem.memLimit) {
+      if (!this.problem.memLimit) {
         this.problem.memLimit = 1 << 20;
       }
       const this_ = this;

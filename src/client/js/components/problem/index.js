@@ -34,7 +34,7 @@ export default Vue.extend({
         const data = (await this.$http.get(`/problem/${this.$route.params.id}`)).data;
         if (JSON.stringify(data) !== JSON.stringify(this.problem)) {
           this.problem = data;
-          if (this.problem.memLimit) {
+          if (!this.problem.memLimit) {
             this.problem.memLimit = 1 << 20;
           }
           Vue.nextTick(() => {
