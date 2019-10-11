@@ -186,7 +186,7 @@ export default class Judger {
 
         const userRes = await run(worker_id, 'user',
           'prob.in', 'prob.out', 'prob.err',
-          this.problem.timeLimit);
+          this.problem.timeLimit, this.problem.memLimit);
 
         testResult.runtime = userRes.time;
         if (userRes.SE) {
