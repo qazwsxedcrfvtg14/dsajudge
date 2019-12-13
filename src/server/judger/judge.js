@@ -115,7 +115,7 @@ export default class Judger {
       }
       const linkArg=[].concat(GPPLink,this.problem.compileEXLink||[]);
       const gppArg=[].concat(GPP,this.problem.compileEXArg||[]);
-      const files=[].concat('user.c',exfile);
+      const files=[].concat('user.c',exFile);
       const result = await compile(compileBoxId, files, 'user', gppArg, linkArg);
       if (result.RE || result.SE || result.TLE) {
         saveResult(this.result, 'CE');
