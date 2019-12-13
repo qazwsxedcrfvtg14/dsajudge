@@ -105,8 +105,18 @@ export default class Judger {
       await reset(compileBoxId);
       this.rootDir = path.join(isolateDir, compileBoxId.toString(), 'box');
       await copyToDir(this.userCpp, this.rootDir, 'user.c');
-
-      const result = await compile(compileBoxId, 'user.c', 'user', GPP, GPPLink);
+      const exFile = this.problem.compileEXFile||[];
+      for (let file in exFile){
+        await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
+      }
+      const exHeader = this.problem.compileEXHeader||[];
+      for (let file in exHeader){
+        await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
+      }
+      const linkArg=[].concat(GPPLink,this.problem.compileEXLink||[]);
+      const gppArg=[].concat(GPP,this.problem.compileEXArg||[]);
+      const files=[].concat('user.c',exfile);
+      const result = await compile(compileBoxId, files, 'user', gppArg, linkArg);
       if (result.RE || result.SE || result.TLE) {
         saveResult(this.result, 'CE');
         await copyToDir(
@@ -130,7 +140,7 @@ export default class Judger {
       await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
       await copyToDir(TESTLIB, this.rootDir);
 
-      const result = await compile(compileBoxId, 'checker.cpp', 'checker', GPP, GPPLink);
+      const result = await compile(compileBoxId, ['checker.cpp'], 'checker', GPP, GPPLink);
       if (result.RE || result.SE || result.TLE) {
         throw Error('Judge Error: Checker Compiled Error.');
       }

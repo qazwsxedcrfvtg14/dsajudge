@@ -82,11 +82,11 @@ router.put('/',
     try {
       await updateProblemByGzip(id, file);
       await updateMeta(problem._id, problem);
+      await problem.save();
     } catch (e) {
       logger.error(e);
       return res.status(500).send(e.toString());
     }
-    await problem.save();
 
     return res.send({id: problem._id});
   }
@@ -128,10 +128,10 @@ router.post('/:id/updateTests',
 
     try {
       await updateMeta(problem._id, problem);
+      await problem.save();
     } catch (e) {
       return res.status(500).send(e.toString());
     }
-    await problem.save();
 
     return res.send(`Successfully update problem #${id}`);
   }

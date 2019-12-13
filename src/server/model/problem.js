@@ -48,7 +48,11 @@ const schema = Schema({
     }]
   },
   testFiles: [String],
-  resource: [String]
+  resource: [String],
+  compileEXArg: [String],
+  compileEXHeader: [String],
+  compileEXFile: [String],
+  compileEXLink: [String]
 });
 
 schema.plugin(autoIncrement.plugin, 'Problem');
