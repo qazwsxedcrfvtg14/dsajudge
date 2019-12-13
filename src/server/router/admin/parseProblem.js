@@ -52,9 +52,11 @@ async function updateMeta (id, prob) {
   // eslint-disable-next-line require-atomic-updates
   if (_.has(json, 'compileEXArg')) prob.compileEXArg = _.get(json, 'compileEXArg');
   // eslint-disable-next-line require-atomic-updates
-  if (_.has(json, 'compileEXFile')) prob.compileEXArg = _.get(json, 'compileEXFile');
+  if (_.has(json, 'compileEXHeader')) prob.compileEXHeader = _.get(json, 'compileEXHeader');
   // eslint-disable-next-line require-atomic-updates
-  if (_.has(json, 'compileEXLink')) prob.compileEXArg = _.get(json, 'compileEXLink');
+  if (_.has(json, 'compileEXFile')) prob.compileEXFile = _.get(json, 'compileEXFile');
+  // eslint-disable-next-line require-atomic-updates
+  if (_.has(json, 'compileEXLink')) prob.compileEXLink = _.get(json, 'compileEXLink');
 }
 
 async function updateTestdata (id, prob) {
