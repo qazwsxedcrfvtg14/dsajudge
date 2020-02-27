@@ -88,7 +88,7 @@ gulp.task('isolate:cp', (next) => {
   next();
 });
 
-gulp.task('isolate', $.sequence(['make', 'cp'].map(x => `isolate:${x}`)));
+gulp.task('isolate', gulp.series('isolate:make','isolate:cp'));
 
 gulp.task('cfiles', () =>
   gulp.src(path.join(CONFIG.cfiles, '**', '*'))

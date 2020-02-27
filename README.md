@@ -34,7 +34,7 @@ gulp init
 gulp build
 
 # Install seccomp
-sudo apt install libseccomp-dev libseccomp2 seccomp
+sudo apt install libseccomp-dev libseccomp2 seccomp libcap-dev asciidoc
 
 # Build and copy isolate
 sudo -H gulp isolate
