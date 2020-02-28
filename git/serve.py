@@ -76,7 +76,7 @@ def print_result(header="",status=None,points=None,tim=None):
         out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
     if status and tim:
         out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
-    print(out)
+    print(out+"\033[K")
 
 def serve(
     cfg,
@@ -99,31 +99,41 @@ def serve(
             while not fin:
                 fin=True
                 r = requests.post("https://dsa.csie.org/submission/get/gitHash",json=data)
-                print("\033[s------------------------------------")
+                print("\033[s------------------------------------\033[K")
+                line=1
                 try:
                     results=json.loads(r.content)
                     for result in results:
-                        print(result["problem"]["name"])
-                        print("------------------------------------")
+                        print(result["problem"]["name"]+"\033[K")
+                        line+=1
+                        print("------------------------------------\033[K")
+                        line+=1
                         pad=len(str(result["_id"]))
-                        print("Submission #"+str(result["_id"])+":")
+                        print("Submission #"+str(result["_id"])+":\033[K")
+                        line+=1
                         if result["status"] != "finished":
-                            print("    \033[96m"+result["status"]+"\033[0m")
+                            print("    \033[96m"+result["status"]+"\033[0m\033[K")
+                            line+=1
                             fin=False
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                            line+=1
                             for grp, sb in enumerate(result["_result"]["subresults"]):
-                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"])) 
+                                line+=1
                                 for sb2 in sb["subresults"]:
                                     print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
+                                    line+=1
                 except:
-                    print("\033[91m"+r.content+"\033[0m")
+                    print("\033[91m"+r.content+"\033[0m\033[K")
+                    line+=1
                     fin=True
-                print("------------------------------------")
+                print("------------------------------------\033[K")
+                line+=1
                 if not fin:
                     sys.stdout.flush()
                     time.sleep(1)
-                    print("\033[u")
+                    print("\033["+str(line)+"A")
             sys.exit(0)
         except:
             #pass
@@ -256,30 +266,40 @@ class Main(app.App):
                 while not fin:
                     fin=True
                     r = requests.post("https://dsa.csie.org/submission/get/last",json=data)
-                    print("\033[s------------------------------------")
+                    print("------------------------------------\033[K")
+                    line=1
                     try:
                         result=json.loads(r.content)
-                        print(result["problem"]["name"])
-                        print("------------------------------------")
+                        print(result["problem"]["name"]+"\033[K")
+                        line+=1
+                        print("------------------------------------\033[K")
+                        line+=1
                         pad=len(str(result["_id"]))
-                        print("Submission #"+str(result["_id"])+":")
+                        print("Submission #"+str(result["_id"])+":"+"\033[K")
+                        line+=1
                         if result["status"] != "finished":
-                            print("    \033[96m"+result["status"]+"\033[0m")
+                            print("    \033[96m"+result["status"]+"\033[0m\033[K")
+                            line+=1
                             fin=False
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                            line+=1
                             for grp, sb in enumerate(result["_result"]["subresults"]):
                                 print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                                line+=1
                                 for sb2 in sb["subresults"]:
                                     print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
+                                    line+=1
                     except:
-                        print("\033[91m"+r.content+"\033[0m")
+                        print("\033[91m"+r.content+"\033[0m\033[K")
+                        line+=1
                         fin=True
-                    print("------------------------------------")
+                    print("------------------------------------\033[K")
+                    line+=1
                     if not fin:
                         sys.stdout.flush()
                         time.sleep(1)
-                        print("\033[u")
+                        print("\033["+str(line)+"A")
                 sys.exit(0)
             except:
                 #pass
