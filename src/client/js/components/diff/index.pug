@@ -31,6 +31,9 @@
             td {{ submission.submittedBy.meta.name }} ({{ submission.submittedBy.meta.id }})
               | {{ submission.submittedBy.email ? ' - ' + submission.submittedBy.email : '' }}
           tr
+            td.collapsing Git Commit Hash
+            td {{ submission.gitCommitHash ? submission.gitCommitHash : '' }}
+          tr
             td.collapsing Submission time
             td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
           tr( v-if="!_.isNil(submission.runtime)" )
@@ -116,7 +119,10 @@
             td {{ submission2.submittedBy.meta.name }} ({{ submission2.submittedBy.meta.id }})
               | {{ submission2.submittedBy.email ? ' - ' + submission2.submittedBy.email : '' }}
           tr
-            td.collapsing submission2 time
+            td.collapsing Git Commit Hash
+            td {{ submission2.gitCommitHash ? submission2.gitCommitHash : '' }}
+          tr
+            td.collapsing Submission time
             td {{ submission2.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
           tr( v-if="!_.isNil(submission2.runtime)" )
             td.collapsing Runtime

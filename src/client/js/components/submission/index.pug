@@ -31,6 +31,9 @@
             td {{ submission.submittedBy.meta.name }} ({{ submission.submittedBy.meta.id }})
               | {{ submission.submittedBy.email ? ' - ' + submission.submittedBy.email : '' }}
           tr
+            td.collapsing Git Commit Hash
+            td {{ submission.gitCommitHash ? submission.gitCommitHash : '' }}
+          tr
             td.collapsing Submission time
             td {{ submission.ts | toFormattedTime 'YYYY/MM/DD HH:mm:ss' }}
           tr( v-if="!_.isNil(submission.runtime)" )

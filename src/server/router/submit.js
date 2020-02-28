@@ -35,6 +35,7 @@ router.post('/:id', checkKey, checkProblem(), requireKeyOrNotGit, wrap(async (re
         submittedBy: user._id,
         status: 'pending',
         points: 0,
+        gitCommitHash: req.body.gitHash
     });
     await submission.save();
     const subId = submission._id;

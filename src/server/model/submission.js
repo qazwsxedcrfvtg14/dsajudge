@@ -23,10 +23,11 @@ const schema = Schema({
     result: String,
     points: Number,
     runtime: Number,
+    gitCommitHash: String,
     _result: {
         type: Schema.Types.ObjectId,
         ref: 'Result',
-    },
+    }
 });
 
 schema.methods.populateResult = function() {
