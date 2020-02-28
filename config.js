@@ -29,7 +29,8 @@ const CONFIG = {
   linkDirs: [
     'problems',
     'submissions',
-    'homeworks'
+    'homeworks',
+    'gitosis-admin'
   ],
   cfiles: 'src/server/cfiles'
 };
