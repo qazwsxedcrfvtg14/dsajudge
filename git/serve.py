@@ -55,26 +55,27 @@ class WriteAccessDenied(AccessDenied):
 
 class ReadAccessDenied(AccessDenied):
     """Repository read access denied"""
-    def print_result(self,header="",status=None,points=None,tim=None):
-        out=header
-        if status:
-            if status=="AC":
-                out=out+"\033[92m"+status+"\033[0m"
-            elif status=="TLE":
-                out=out+"\033[93m"+status+"\033[0m"
-            elif status=="WA":
-                out=out+"\033[91m"+status+"\033[0m"
-            elif status=="RE":
-                out=out+"\033[95m"+status+"\033[0m"
-            elif status=="CE":
-                out=out+"\033[96m"+status+"\033[0m"
-            else:
-                out=out+"\033[90m"+status+"\033[0m"
-        if status and points:
-            out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
-        if status and tim:
-            out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
-        print out
+
+def print_result(self,header="",status=None,points=None,tim=None):
+    out=header
+    if status:
+        if status=="AC":
+            out=out+"\033[92m"+status+"\033[0m"
+        elif status=="TLE":
+            out=out+"\033[93m"+status+"\033[0m"
+        elif status=="WA":
+            out=out+"\033[91m"+status+"\033[0m"
+        elif status=="RE":
+            out=out+"\033[95m"+status+"\033[0m"
+        elif status=="CE":
+            out=out+"\033[96m"+status+"\033[0m"
+        else:
+            out=out+"\033[90m"+status+"\033[0m"
+    if status and points:
+        out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
+    if status and tim:
+        out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
+    print out
 
 def serve(
     cfg,
