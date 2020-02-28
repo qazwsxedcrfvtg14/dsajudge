@@ -133,7 +133,7 @@ def serve(
                 if not fin:
                     sys.stdout.flush()
                     time.sleep(1)
-                    print("\033["+str(line)+"A")
+                    print("\033["+str(line+1)+"A")
             sys.exit(0)
         except:
             #pass
@@ -299,7 +299,7 @@ class Main(app.App):
                     if not fin:
                         sys.stdout.flush()
                         time.sleep(1)
-                        print("\033["+str(line)+"A")
+                        print("\033["+str(line+1)+"A")
                 sys.exit(0)
             except:
                 #pass
