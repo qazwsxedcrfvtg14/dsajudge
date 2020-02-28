@@ -113,10 +113,10 @@ export default class Judger {
       for (let file of exHeader){
         await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
       }
-      const linkArg=[].concat(GPPLink,this.problem.compileEXLink||[]);
-      const gppArg=[].concat(GPP,this.problem.compileEXArg||[]);
+      const linkArg=[].concat(GCCLink,this.problem.compileEXLink||[]);
+      const gccArg=[].concat(GCC,this.problem.compileEXArg||[]);
       const files=[].concat('user.c',exFile);
-      const result = await compile(compileBoxId, files, 'user', gppArg, linkArg);
+      const result = await compile(compileBoxId, files, 'user', gccArg, linkArg);
       if (result.RE || result.SE || result.TLE) {
         saveResult(this.result, 'CE');
         await copyToDir(
