@@ -13,6 +13,8 @@ if old_commit != "0000000000000000000000000000000000000000":
 else:
 	proc = subprocess.Popen(['git','show','--pretty=',"--name-only",new_commit],stdout=subprocess.PIPE)
 file_name="/main.c"
+exitcode=1
+exitcode2=0
 while True:
 	line = proc.stdout.readline()
 	if line != '':
@@ -24,24 +26,36 @@ while True:
 				if problem_id >=0:
 					prc=subprocess.Popen(['git',"show",new_commit+':'+line],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					f=open("hooks/key")
-					data={"file":prc.stdout.read(),"key":f.read()}
+					data={"file":prc.stdout.read().decode('utf-8',errors='ignore'),"key":f.read(),"gitHash":new_commit}
 					f.close()
 					if prc.wait() != 0:
 						raise Exception('Not Found')
 					#print json.dumps(data,ensure_ascii=False)
-					print("\033[92mYou submit Problem #"+str(problem_id)+" !\033[0m")
-					r = requests.post("https://dsa.csie.org/submit/"+str(problem_id),json=data)
+					print("\033[92mYou submit Problem #"+str(problem_id)+" with "+new_commit+" !\033[0m")
+					r=None
+					try:
+						r = requests.post("https://dsa.csie.org/submit/"+str(problem_id),json=data)
+					except:
+						pass
 					try:
 						result=json.loads(r.content)
-						print("\033[93mSubmissin: \033[94mhttps://dsa.csie.org/#!/submission/"+str(result["id"])+"\033[0m")
+						print("\033[93mSubmission: \033[94m\033[4mhttps://dsa.csie.org/#!/submission/"+str(result["id"])+"\033[0m")
+						print("You can \033[96mssh -T git@dsa.csie.org\033[0m for more detail!")
+						exitcode=0
 					except:
-						print("\033[91m"+r.content+"\033[0m")
+						try:
+							print("\033[91m"+r.content+"\033[0m")
+						except:
+							print("\033[91mSomething bad happen...\033[0m")
+							print("\033[91mMaybe you can try again later...\033[0m")
+						exitcode2=1
 					#print "You submit Proble #"+str(problem_id)+" !"
 			except:
 				pass
 		#print line
 	else:
 		break
+sys.exit(exitcode&exitcode2)
 #print "Moving '%s' from %s to %s" % (branch, old_commit, new_commit)
 # Abort pushing only this branch
 # sys.exit(1)
