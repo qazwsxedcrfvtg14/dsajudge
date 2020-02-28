@@ -2,7 +2,7 @@ component
   .ui.inverted.grid.computer.only
     .top-menu.ui.inverted.fixed.top.secondary.pointing.teal.menu
       .ui.inverted.container
-        div.item.menu-font( style="color: #B5CC18 !important;" )
+        div.item.menu-font( style="color: #6dffff !important;" )
           i.terminal.icon
           | DSA Judge
         a.item( v-link="{ path: '/', exact: true }" ) Home
@@ -32,7 +32,7 @@ component
             a.item( v-if="user" v-link="{ name: 'profile' }" ) Profile
             a.item( v-if="user" @click="clickLogout" ) Logout
             a.item( v-if="!user" @click="clickLogin" ) Login
-        .item.menu-font( style="color: #B5CC18 !important;" )
+        .item.menu-font( style="color: #6dffff !important;" )
           i.terminal.icon
           | DSA Judge
         .item| {{(datetime-datetimebase+nowdatetime) | toFormattedTime 'MM/DD HH:mm:ss'}}
