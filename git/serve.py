@@ -121,7 +121,7 @@ def serve(
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
                             line+=1
-                        if "subresults" in result["_result"]:
+                        if "_result" in result and "subresults" in result["_result"]:
                             for grp, sb in enumerate(result["_result"]["subresults"]):
                                 print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
                                 line+=1
@@ -288,7 +288,7 @@ class Main(app.App):
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
                             line+=1
-                        if "subresults" in result["_result"]:
+                        if "_result" in result and "subresults" in result["_result"]:
                             for grp, sb in enumerate(result["_result"]["subresults"]):
                                 print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
                                 line+=1
