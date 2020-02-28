@@ -85,6 +85,6 @@
                     td.collapsing {{ test.runtime }}
                     td.collapsing.center.aligned -
 
-  h2.ui.inverted.dividing.header Source Code
-  #editor
+  h2.ui.inverted.dividing.header( v-if="user&&(user.isAdmin||user.isTA)" ) Source Code
+  #editor( v-if="user&&(user.isAdmin||user.isTA)" )
 

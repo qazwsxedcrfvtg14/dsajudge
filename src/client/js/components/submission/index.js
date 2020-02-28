@@ -4,6 +4,7 @@ import './index.css';
 import sleep from 'sleep-promise';
 import probUtils from 'js/mixins/probUtils';
 import * as monaco from 'monaco-editor';
+import store, {getUser} from 'js/store';
 
 self.MonacoEnvironment = {
   getWorkerUrl: function (moduleId, label) {
@@ -99,6 +100,12 @@ export default Vue.extend({
     'id': function () {
       this.fetch();
       this.fetchSrc();
+    }
+  },
+  store,
+  vuex: {
+    getters: {
+      user: getUser
     }
   },
   route: {
