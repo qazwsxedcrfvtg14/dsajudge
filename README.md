@@ -27,6 +27,9 @@ gulp init
 # Semantic auto install is bugged
 # So choose extend my settings > automatic manually when prompted
 
+# Build semantic again...
+(cd semantic; gulp build)
+
 # Change src/server/config.js
 # example: config.example.js
 
