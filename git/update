@@ -34,13 +34,13 @@ while True:
 					print("\033[92mYou submit Problem #"+str(problem_id)+" !\033[0m")
 					r=None
 					try:
-						r = requests.post("https://ada18-judge.csie.org/submit/"+str(problem_id),json=data)
+						r = requests.post("https://dsa.csie.org/submit/"+str(problem_id),json=data)
 					except:
 						pass
 					try:
 						result=json.loads(r.content)
-						print("\033[93mSubmission: \033[94m\033[4mhttps://ada18-judge.csie.org/#!/submission/"+str(result["id"])+"\033[0m")
-						print("You can \033[96mssh -T git@ada18-judge.csie.org\033[0m for more detail!")
+						print("\033[93mSubmission: \033[94m\033[4mhttps://dsa.csie.org/#!/submission/"+str(result["id"])+"\033[0m")
+						print("You can \033[96mssh -T git@dsa.csie.org\033[0m for more detail!")
 						exitcode=0
 					except:
 						try:

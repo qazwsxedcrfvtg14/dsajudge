@@ -11,7 +11,7 @@ export default {
         isolate: "/dev/shm/isolate",
     },
     mongo: {
-        url: 'mongodb://localhost/adajudge',
+        url: 'mongodb://localhost/dsajudge',
     },
     maxWorkers: 4,
     maxNodeWorkers: 4,

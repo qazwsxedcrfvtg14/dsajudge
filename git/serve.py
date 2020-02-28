@@ -208,7 +208,7 @@ class Main(app.App):
                 key_file=open(os.path.join("repositories",args[0]+".git","hooks","key"),"r")
                 data={"key":key_file.read()}
                 key_file.close()
-                r = requests.post("https://ada18-judge.csie.org/submission/get/last",json=data)
+                r = requests.post("https://dsa.csie.org/submission/get/last",json=data)
                 print("------------------------------------")
                 try:
                     result=json.loads(r.content)

@@ -15,7 +15,7 @@ config_file=./dist/config.js
 semantic_src_dir=./semantic/src
 apache2_config_dir=/etc/apache2/sites-available/
 mkdir -p $root_dir
-mongodump --archive=$root_dir/adajudge.${DATE}.gz --gzip --db adajudge
+mongodump --archive=$root_dir/dsajudge.${DATE}.gz --gzip --db dsajudge
 tar -zcf $root_dir/submissions.tar.gz $submissions_dir
 tar -zcf $root_dir/homeworks.tar.gz $homeworks_dir
 tar -zcf $root_dir/git.tar.gz $git_dir

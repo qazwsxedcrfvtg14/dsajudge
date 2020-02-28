@@ -1,5 +1,5 @@
-# ADA Judge
-https://ada18-judge.csie.org
+# DSA Judge
+https://dsa.csie.org
 
 # Original Project
 https://github.com/bobogei81123/adajudge  
