@@ -56,7 +56,7 @@ class WriteAccessDenied(AccessDenied):
 class ReadAccessDenied(AccessDenied):
     """Repository read access denied"""
 
-def print_result(self,header="",status=None,points=None,tim=None):
+def print_result(header="",status=None,points=None,tim=None):
     out=header
     if status:
         if status=="AC":
@@ -75,7 +75,7 @@ def print_result(self,header="",status=None,points=None,tim=None):
         out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
     if status and tim:
         out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
-    print out
+    print(out)
 
 def serve(
     cfg,
