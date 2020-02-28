@@ -9,6 +9,7 @@ import logging
 import sys, os, re
 import requests
 import json
+import time
 from gitosis import access
 from gitosis import repository
 from gitosis import gitweb
@@ -94,26 +95,34 @@ def serve(
             key_file=open(os.path.join("repositories",user+".git","hooks","key"),"r")
             data={"key":key_file.read(),"gitHash":command}
             key_file.close()
-            r = requests.post("https://dsa.csie.org/submission/get/gitHash",json=data)
-            print("------------------------------------")
-            try:
-                results=json.loads(r.content)
-                for result in results:
-                    print(result["problem"]["name"])
-                    print("------------------------------------")
-                    pad=len(str(result["_id"]))
-                    print("Submission #"+str(result["_id"])+":")
-                    if result["status"] != "finished":
-                        print("    \033[96m"+result["status"]+"\033[0m")
-                    else:
-                        print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
-                        for grp, sb in enumerate(result["_result"]["subresults"]):
-                            print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
-                            for sb2 in sb["subresults"]:
-                                print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
-            except:
-                print("\033[91m"+r.content+"\033[0m")
-            print("------------------------------------")
+            fin=False
+            while not fin:
+                fin=True
+                r = requests.post("https://dsa.csie.org/submission/get/gitHash",json=data)
+                print("\033[s------------------------------------")
+                try:
+                    results=json.loads(r.content)
+                    for result in results:
+                        print(result["problem"]["name"])
+                        print("------------------------------------")
+                        pad=len(str(result["_id"]))
+                        print("Submission #"+str(result["_id"])+":")
+                        if result["status"] != "finished":
+                            print("    \033[96m"+result["status"]+"\033[0m")
+                            fin=False
+                        else:
+                            print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                            for grp, sb in enumerate(result["_result"]["subresults"]):
+                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                                for sb2 in sb["subresults"]:
+                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
+                except:
+                    print("\033[91m"+r.content+"\033[0m")
+                    fin=True
+                print("------------------------------------")
+                if not fin:
+                    time.sleep(1)
+                    print("\033[u")
             sys.exit(0)
         except:
             #pass
@@ -241,25 +250,34 @@ class Main(app.App):
                 key_file=open(os.path.join("repositories",args[0]+".git","hooks","key"),"r")
                 data={"key":key_file.read()}
                 key_file.close()
-                r = requests.post("https://dsa.csie.org/submission/get/last",json=data)
-                print("------------------------------------")
-                try:
-                    result=json.loads(r.content)
-                    print(result["problem"]["name"])
+                
+                fin=False
+                while not fin:
+                    fin=True
+                    r = requests.post("https://dsa.csie.org/submission/get/last",json=data)
+                    print("\033[s------------------------------------")
+                    try:
+                        result=json.loads(r.content)
+                        print(result["problem"]["name"])
+                        print("------------------------------------")
+                        pad=len(str(result["_id"]))
+                        print("Submission #"+str(result["_id"])+":")
+                        if result["status"] != "finished":
+                            print("    \033[96m"+result["status"]+"\033[0m")
+                            fin=False
+                        else:
+                            print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                            for grp, sb in enumerate(result["_result"]["subresults"]):
+                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                                for sb2 in sb["subresults"]:
+                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
+                    except:
+                        print("\033[91m"+r.content+"\033[0m")
+                        fin=True
                     print("------------------------------------")
-                    pad=len(str(result["_id"]))
-                    print("Submission #"+str(result["_id"])+":")
-                    if result["status"] != "finished":
-                        print("    \033[96m"+result["status"]+"\033[0m")
-                    else:
-                        print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
-                        for grp, sb in enumerate(result["_result"]["subresults"]):
-                            print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
-                            for sb2 in sb["subresults"]:
-                                print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
-                except:
-                    print("\033[91m"+r.content+"\033[0m")
-                print("------------------------------------")
+                    if not fin:
+                        time.sleep(1)
+                        print("\033[u")
                 sys.exit(0)
             except:
                 #pass
