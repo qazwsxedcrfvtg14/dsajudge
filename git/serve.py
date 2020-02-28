@@ -123,11 +123,12 @@ def serve(
                             line+=1
                         if "_result" in result and result["_result"] and "subresults" in result["_result"] and result["_result"]["subresults"]:
                             for grp, sb in enumerate(result["_result"]["subresults"]):
-                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
+                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb.get("result") or "   ","%3d"%(sb.get("points") or 0))
                                 line+=1
-                                for sb2 in sb["subresults"]:
-                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2.get("runtime") or 0))
-                                    line+=1
+                                if "subresults" in sb and sb["subresults"]:
+                                    for sb2 in sb["subresults"]:
+                                        print_result(" "*pad+"     Subtask: ",sb2.get("result") or "   ",None,"%7.3f"%(sb2.get("runtime") or 0))
+                                        line+=1
                 except:
                     print("\033[91m"+r.content+"\033[0m\033[K")
                     line+=1
@@ -290,11 +291,12 @@ class Main(app.App):
                             line+=1
                         if "_result" in result and result["_result"] and "subresults" in result["_result"] and result["_result"]["subresults"]:
                             for grp, sb in enumerate(result["_result"]["subresults"]):
-                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
+                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb.get("result") or "   ","%3d"%(sb.get("points") or 0))
                                 line+=1
-                                for sb2 in sb["subresults"]:
-                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2.get("runtime") or 0))
-                                    line+=1
+                                if "subresults" in sb and sb["subresults"]:
+                                    for sb2 in sb["subresults"]:
+                                        print_result(" "*pad+"     Subtask: ",sb2.get("result") or "   ",None,"%7.3f"%(sb2.get("runtime") or 0))
+                                        line+=1
                     except:
                         print("\033[91m"+r.content+"\033[0m\033[K")
                         line+=1
