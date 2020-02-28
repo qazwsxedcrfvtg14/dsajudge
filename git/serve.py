@@ -97,19 +97,20 @@ def serve(
             r = requests.post("https://dsa.csie.org/submission/get/gitHash",json=data)
             print("------------------------------------")
             try:
-                result=json.loads(r.content)
-                print(result["problem"]["name"])
-                print("------------------------------------")
-                pad=len(str(result["_id"]))
-                print("Submission #"+str(result["_id"])+":")
-                if result["status"] != "finished":
-                    print("    \033[96m"+result["status"]+"\033[0m")
-                else:
-                    print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
-                    for grp, sb in enumerate(result["_result"]["subresults"]):
-                        print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
-                        for sb2 in sb["subresults"]:
-                            print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
+                results=json.loads(r.content)
+                for result in results:
+                    print(result["problem"]["name"])
+                    print("------------------------------------")
+                    pad=len(str(result["_id"]))
+                    print("Submission #"+str(result["_id"])+":")
+                    if result["status"] != "finished":
+                        print("    \033[96m"+result["status"]+"\033[0m")
+                    else:
+                        print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
+                        for grp, sb in enumerate(result["_result"]["subresults"]):
+                            print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                            for sb2 in sb["subresults"]:
+                                print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
             except:
                 print("\033[91m"+r.content+"\033[0m")
             print("------------------------------------")

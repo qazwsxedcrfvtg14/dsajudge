@@ -148,7 +148,6 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
     const data = await Submission
         .find({submittedBy: user._id, gitCommitHash: req.body.gitHash})
         .sort('-_id')
-        .limit(1)
         .populate('problem', 'name testdata.points resource')
         .populate({
             path: '_result',
@@ -163,7 +162,7 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
         res.send("Submission Not Found!");
     else{
         //res.send(data[0]);
-        res.send(data[0]);
+        res.send(data);
     }
 }));
 
