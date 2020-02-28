@@ -121,6 +121,7 @@ def serve(
                     fin=True
                 print("------------------------------------")
                 if not fin:
+                    sys.stdout.flush()
                     time.sleep(1)
                     print("\033[u")
             sys.exit(0)
@@ -276,6 +277,7 @@ class Main(app.App):
                         fin=True
                     print("------------------------------------")
                     if not fin:
+                        sys.stdout.flush()
                         time.sleep(1)
                         print("\033[u")
                 sys.exit(0)
