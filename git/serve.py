@@ -70,6 +70,9 @@ def print_result(header="",status=None,points=None,tim=None):
             out=out+"\033[95m"+status+"\033[0m"
         elif status=="CE":
             out=out+"\033[96m"+status+"\033[0m"
+        elif status=="pending" or status=="judging":
+            status="   "
+            out=out+status
         else:
             out=out+"\033[90m"+status+"\033[0m"
     if status and points:
@@ -112,18 +115,18 @@ def serve(
                         print("Submission #"+str(result["_id"])+":\033[K")
                         line+=1
                         if result["status"] != "finished":
-                            print("    \033[96m"+result["status"]+"\033[0m\033[K")
+                            print(" Status: \033[96m"+result["status"]+"\033[0m\033[K")
                             line+=1
                             fin=False
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
                             line+=1
-                            for grp, sb in enumerate(result["_result"]["subresults"]):
-                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"])) 
+                        for grp, sb in enumerate(result["_result"]["subresults"]):
+                            print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
+                            line+=1
+                            for sb2 in sb["subresults"]:
+                                print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2.get("runtime") or 0))
                                 line+=1
-                                for sb2 in sb["subresults"]:
-                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
-                                    line+=1
                 except:
                     print("\033[91m"+r.content+"\033[0m\033[K")
                     line+=1
@@ -278,18 +281,18 @@ class Main(app.App):
                         print("Submission #"+str(result["_id"])+":"+"\033[K")
                         line+=1
                         if result["status"] != "finished":
-                            print("    \033[96m"+result["status"]+"\033[0m\033[K")
+                            print(" Status: \033[96m"+result["status"]+"\033[0m\033[K")
                             line+=1
                             fin=False
                         else:
                             print_result(" "*pad+"Final Result: ",result["result"],"%3d"%(result["points"]))
                             line+=1
-                            for grp, sb in enumerate(result["_result"]["subresults"]):
-                                print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb["points"]))
+                        for grp, sb in enumerate(result["_result"]["subresults"]):
+                            print_result(" "*pad+" "*(5-len(str(grp)))+"Group #"+str(grp)+": ",sb["result"],"%3d"%(sb.get("points") or 0))
+                            line+=1
+                            for sb2 in sb["subresults"]:
+                                print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2.get("runtime") or 0))
                                 line+=1
-                                for sb2 in sb["subresults"]:
-                                    print_result(" "*pad+"     Subtask: ",sb2["result"],None,"%7.3f"%(sb2["runtime"]))
-                                    line+=1
                     except:
                         print("\033[91m"+r.content+"\033[0m\033[K")
                         line+=1
