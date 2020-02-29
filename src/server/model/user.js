@@ -47,8 +47,7 @@ userSchema.methods.isTA = function () {
   return this.hasRole('TA');
 };
 
-// const default_quota = 5;
-
+// TODO: There may have some race condition in checkQuota. It may cause user breakthrough the quota limit.
 userSchema.methods.checkQuota = async function (pid) {
   const problem = await Problem.findOne({ _id: pid });
   if (!problem) return false;
