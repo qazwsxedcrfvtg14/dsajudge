@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import config from '/config';
-import errors from 'common-errors';
-import {TimeoutError, InvalidOperationError} from 'common-errors';
-import {compile, run, reset} from './joe';
+import {TimeoutError, InvalidOperationError} from errors from 'common-errors';
+
+import { compile, run, reset } from './joe';
 import Result from '/model/result';
 import logger from '/logger';
 import path from 'path';
@@ -18,15 +18,15 @@ const SCORE_FACTOR = 100;
 const AC_SCORE = 100;
 
 const resultMap = {
-  'CE': 100000,
-  'RE': 10000,
-  'WA': 1000,
-  'TLE': 100,
-  'AC': 1
+  CE: 100000,
+  RE: 10000,
+  WA: 1000,
+  TLE: 100,
+  AC: 1
 };
 const resultReducer = (pointReducer = (p1, p2) => Math.min(p1 || 0, p2 || 0)) => (res, x) => {
-  const resW = _.get(resultMap, res.result, 1e9),
-    xW = _.get(resultMap, x.result, 1e9);
+  const resW = _.get(resultMap, res.result, 1e9);
+    const xW = _.get(resultMap, x.result, 1e9);
   const res_ = {};
   res_.result = resW > xW ? res.result : x.result;
   res_.runtime = Math.max(res.runtime, x.runtime);
@@ -96,26 +96,28 @@ export default class Judger {
       maxPoints: this.testdata.points
     });
   }
+
   async prepare () {
     this.sub._result = this.result._id;
     await this.sub.save();
   }
+
   generateUserCompileTask () {
     return async (compileBoxId) => {
       await reset(compileBoxId);
       this.rootDir = path.join(isolateDir, compileBoxId.toString(), 'box');
       await copyToDir(this.userCpp, this.rootDir, 'user.c');
-      const exFile = this.problem.compileEXFile||[];
-      for (let file of exFile){
+      const exFile = this.problem.compileEXFile || [];
+      for (const file of exFile) {
         await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
       }
-      const exHeader = this.problem.compileEXHeader||[];
-      for (let file of exHeader){
+      const exHeader = this.problem.compileEXHeader || [];
+      for (const file of exHeader) {
         await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
       }
-      const linkArg=[].concat(GCCLink,this.problem.compileEXLink||[]);
-      const gccArg=[].concat(GCC,this.problem.compileEXArg||[]);
-      const files=[].concat('user.c',exFile);
+      const linkArg = [].concat(GCCLink, this.problem.compileEXLink || []);
+      const gccArg = [].concat(GCC, this.problem.compileEXArg || []);
+      const files = [].concat('user.c', exFile);
       const result = await compile(compileBoxId, files, 'user', gccArg, linkArg);
       if (result.RE || result.SE || result.TLE) {
         saveResult(this.result, 'CE');
@@ -149,6 +151,7 @@ export default class Judger {
       return true;
     };
   }
+
   async compileTask (workers, task, error_msg) {
     let error = null;
     while (true) {
@@ -172,13 +175,16 @@ export default class Judger {
     }
     if (error) { throw Error('Judge error when running.'); }
   }
+
   async compileUser (workers) {
     await this.compileTask(workers, this.generateUserCompileTask(), 'Judge error @ compileUser');
     return Boolean(this.userExec);
   }
+
   async compileChecker (workers) {
     await this.compileTask(workers, this.generateCheckerCompileTask(), 'Judge error @ compileChecker');
   }
+
   async prepareFiles () {
 
   }
@@ -239,7 +245,7 @@ export default class Judger {
         const _groupResult = _.reduce(
           this.testResults[gid],
           resultReducer(),
-          {result: 'AC', runtime: 0, points: SCORE_FACTOR}
+          { result: 'AC', runtime: 0, points: SCORE_FACTOR }
         );
         _.assignIn(groupResult, _groupResult);
         groupResult.points = groupResult.points * groupResult.maxPoints / SCORE_FACTOR;
@@ -256,7 +262,7 @@ export default class Judger {
         const _groupResult = _.reduce(
           this.testResults[gid],
           resultReducer(),
-          {result: 'AC', runtime: 0, points: SCORE_FACTOR}
+          { result: 'AC', runtime: 0, points: SCORE_FACTOR }
         );
         _.assignIn(groupResult, _groupResult);
         groupResult.points = groupResult.points * groupResult.maxPoints / SCORE_FACTOR;
@@ -264,20 +270,21 @@ export default class Judger {
       }
     };
   }
+
   async loadTasks () {
     this.remains = [];
     this.testResults = [];
     this.groupResults = [];
     const testSet = {};
     const testTaskSet = {};
-    for (let [gid, group] of this.groups.entries()) {
+    for (const [gid, group] of this.groups.entries()) {
       const groupResult = new Result({
         name: `${this.problem._id}.${gid}`,
         maxPoints: group.points
       });
 
       const tests = [];
-      for (let [tid, test] of group.tests.entries()) {
+      for (const [tid, test] of group.tests.entries()) {
         if (test in testSet) {
           groupResult.subresults.push(testSet[test]._id);
           tests.push(testSet[test]);
@@ -309,11 +316,12 @@ export default class Judger {
     this.tasks = Object.values(testTaskSet);
     await this.result.save();
   }
+
   async runAndCheck (workers) {
     while (work_count >= workers.length) { await sleep(100); }
     let error = null;
-    let run_workers = [];
-    for (let [taskID, task] of this.tasks.entries()) {
+    const run_workers = [];
+    for (const [taskID, task] of this.tasks.entries()) {
       work_count += 1;
       run_workers.push((async () => {
         while (true) {
@@ -347,7 +355,7 @@ export default class Judger {
     const reducedResult = _.reduce(
       this.groupResults,
       resultReducer((x, y) => x + y),
-      {result: 'AC', runtime: 0, points: 0}
+      { result: 'AC', runtime: 0, points: 0 }
     );
     _.assignIn(this.result, reducedResult);
     if (this.result.points >= AC_SCORE) {
@@ -355,10 +363,12 @@ export default class Judger {
     }
     await this.result.save();
   }
+
   async cleanUp () {
     if (this.userExec) await fs.remove(this.userExec);
     if (this.checkerExec) await fs.remove(this.checkerExec);
   }
+
   async go (workers) {
     try {
       logger.info('Preparing...');
