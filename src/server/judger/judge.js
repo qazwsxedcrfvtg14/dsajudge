@@ -1,7 +1,6 @@
 import fs from 'fs-extra';
 import config from '/config';
-import {TimeoutError, InvalidOperationError} from errors from 'common-errors';
-
+import { TimeoutError, InvalidOperationError } from 'common-errors';
 import { compile, run, reset } from './joe';
 import Result from '/model/result';
 import logger from '/logger';
@@ -26,7 +25,7 @@ const resultMap = {
 };
 const resultReducer = (pointReducer = (p1, p2) => Math.min(p1 || 0, p2 || 0)) => (res, x) => {
   const resW = _.get(resultMap, res.result, 1e9);
-    const xW = _.get(resultMap, x.result, 1e9);
+  const xW = _.get(resultMap, x.result, 1e9);
   const res_ = {};
   res_.result = resW > xW ? res.result : x.result;
   res_.runtime = Math.max(res.runtime, x.runtime);
