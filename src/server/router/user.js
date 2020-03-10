@@ -70,7 +70,8 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
   }
   let newSshKey = req.body['new-sshkey'];
   const newSshKeys = newSshKey.trim().replace(/\n/g, '').split(' ').filter(s => s !== ' ');
-  let changeSshKey = false; if (newSshKeys.length >= 2) {
+  let changeSshKey = false;
+  if (newSshKeys.length >= 2) {
     if (newSshKeys[0] !== 'ssh-rsa') {
       return res.status(400).send('Your SSH Key is not start with "ssh-rsa"');
     }
@@ -102,7 +103,6 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
           magicStr
         );
         await gitCpWrap([tmpPath + '.key', path.join(gitRepoDir, userId + '.git', 'hooks', 'key')]);
-
         req.user.ssh_key = newSshKey;
         req.user.git_upload_key = magicStr;
         await req.user.save();
