@@ -16,7 +16,7 @@
         label User email
         input( readonly="" type="text", :value="user ? user.email : ''" )
 
-      h4.ui.dividing.header Git information 
+      h4.ui.inverted.dividing.header Git information 
       .field
         label Git Repository
         input( readonly="" type="text", :value="user ? 'git@dsa.csie.org:'+user.meta.id+'.git' : ''" )
