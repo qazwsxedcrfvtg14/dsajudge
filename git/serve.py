@@ -107,7 +107,7 @@ def serve(
                 try:
                     results=json.loads(r.content)
                     for result in results:
-                        print(result["problem"]["name"]+"\033[K")
+                        print(result["problem"]["name"].encode("utf-8")+"\033[K")
                         line+=1
                         print("------------------------------------\033[K")
                         line+=1
@@ -275,7 +275,7 @@ class Main(app.App):
                     line=1
                     try:
                         result=json.loads(r.content)
-                        print(result["problem"]["name"]+"\033[K")
+                        print(result["problem"]["name"].encode("utf-8")+"\033[K")
                         line+=1
                         print("------------------------------------\033[K")
                         line+=1
