@@ -153,8 +153,10 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
       path: '_result',
       populate: {
         path: 'subresults',
+        select: '-_id -__v',
         populate: {
-          path: 'subresults'
+          path: 'subresults',
+          select: '-_id -__v -subresults -maxPoints -points'
         }
       }
     });
@@ -196,8 +198,10 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
       path: '_result',
       populate: {
         path: 'subresults',
+        select: '-_id -__v',
         populate: {
-          path: 'subresults'
+          path: 'subresults',
+          select: '-_id -__v -subresults -maxPoints -points'
         }
       }
     });
