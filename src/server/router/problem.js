@@ -39,6 +39,12 @@ router.get('/', wrap(async (req, res) => {
       }
     },
     {
+      $unwind: {
+        path: '$userRes',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
       $project: {
         _id: 1,
         quota: 1,
@@ -47,15 +53,8 @@ router.get('/', wrap(async (req, res) => {
         userRes: { $ifNull: ['$userRes', { AC: false, points: 0 }] }
       }
     },
-    {
-      $unwind: {
-        path: '$userRes',
-        preserveNullAndEmptyArrays: true
-      }
-    },
     { $project: { _id: 1, 'userRes.AC': 1, 'userRes.points': 1, quota: 1, name: 1, visible: 1 } }
   ]);
-
   res.send(data);
 }));
 
