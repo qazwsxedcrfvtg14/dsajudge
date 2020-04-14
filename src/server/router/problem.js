@@ -21,7 +21,7 @@ router.get('/', wrap(async (req, res) => {
     },
     {
       $lookup: {
-        from: 'problemresults',
+        from: ProblemResult.name,
         as: 'userRes',
         let: { id: '$_id' },
         pipeline: [

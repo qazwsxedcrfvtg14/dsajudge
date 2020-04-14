@@ -13,25 +13,49 @@ const router = express.Router();
 
 router.get('/', requireLogin, wrap(async (req, res) => {
   const skip = parseInt(req.query.start) || 0;
-
-  if (req.user && (req.user.isAdmin() || req.user.isTA())) {
-    const data = await Submission
-      .find({ submittedBy: req.user._id })
-      .sort('-_id')
-      .limit(15).skip(skip * 15)
-      .populate('problem', 'name')
-            ;
-    res.send(data);
-  } else {
-    const visibleProblems = (await Problem.find({ visible: true })).map(problem => problem._id);
-    const data = await Submission
-      .find({ submittedBy: req.user._id, problem: { $in: visibleProblems } })
-      .sort('-_id')
-      .limit(15).skip(skip * 15)
-      .populate('problem', 'name')
-            ;
-    res.send(data);
-  }
+  const isTA = req.user && (req.user.isAdmin() || req.user.isTA());
+  const data = await Submission.aggregate([
+    { $match: { submittedBy: req.user._id } },
+    {
+      $lookup: {
+        from: Problem.name,
+        as: 'problem',
+        let: { problem: '$problem' },
+        pipeline: [
+          {
+            $match: isTA ? {
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            } : {
+              visible: true,
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            }
+          }, {
+            $limit: 1
+          }
+        ]
+      }
+    },
+    { $unwind: '$problem' },
+    { $sort: { _id: -1 } },
+    { $limit: 15 },
+    { $skip: skip * 15 },
+    {
+      $project: {
+        _id: 1,
+        'problem._id': 1,
+        'problem.name': 1,
+        ts: 1,
+        result: 1,
+        runtime: 1,
+        status: 1
+      }
+    }
+  ]);
+  res.send(data);
   // console.log(skip);
 }));
 
