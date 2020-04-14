@@ -40,7 +40,7 @@ router.get('/', wrap(async (req, res) => {
       }
     },
     {
-      $project: {
+      $addFields: {
         userRes: { $ifNull: ['$userRes', { AC: false, points: 0 }] }
       }
     },
