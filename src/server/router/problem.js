@@ -12,28 +12,50 @@ const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
   const isTA = req.user && (req.user.isAdmin() || req.user.isTA());
-  let data = await Problem.find(isTA ? {} : { visible: true }).sort('_id');
-  data = await Promise.all(data.map(_prob => (async () => {
-    const prob = _prob.toObject();
-    const pr = req.user
-      ? await ProblemResult.findOne({
-        user: req.user,
-        problem: prob._id
-      })
-      : null;
-    if (pr) {
-      prob.userRes = {
-        AC: pr.AC,
-        points: pr.points
-      };
-    } else {
-      prob.userRes = {
-        AC: false,
-        points: 0
-      };
+  const data = Problem.aggregate([
+    { $match: isTA ? {} : { visible: true } },
+    {
+      $lookup: {
+        from: 'problemresults',
+        as: 'userRes',
+        let: { id: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              user: req.user,
+              $expr: {
+                $eq: ['$$id', '$problem']
+              }
+            }
+          }, {
+            $limit: 1
+          }
+        ]
+      }
+    },
+    {
+      $unwind: {
+        path: '$userRes',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        userRes: { $ifNull: ['$userRes', { AC: false, points: 0 }] }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        'userRes.AC': 1,
+        'userRes.points': 1,
+        quota: 1,
+        name: 1,
+        visible: 1
+      }
     }
-    return prob;
-  })()));
+  ]);
+
   res.send(data);
 }));
 
