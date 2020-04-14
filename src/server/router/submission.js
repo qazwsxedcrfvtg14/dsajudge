@@ -51,7 +51,8 @@ router.get('/', requireLogin, wrap(async (req, res) => {
         ts: 1,
         result: 1,
         runtime: 1,
-        status: 1
+        status: 1,
+        points: 1
       }
     }
   ]);
