@@ -27,7 +27,7 @@ router.get('/', wrap(async (req, res) => {
         pipeline: [
           {
             $match: {
-              user: req.user,
+              user: req.user._id,
               $expr: {
                 $eq: ['$$id', '$problem']
               }
