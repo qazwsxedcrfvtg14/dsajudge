@@ -111,10 +111,10 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
       path: '_result',
       populate: {
         path: 'subresults',
-        select: '-_id',
+        select: '-_id -__v',
         populate: {
           path: 'subresults',
-          select: '-_id'
+          select: '-_id -__v -subresults -maxPoints -points'
         }
       }
     });
