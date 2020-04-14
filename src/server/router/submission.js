@@ -41,8 +41,8 @@ router.get('/', requireLogin, wrap(async (req, res) => {
     },
     { $unwind: '$problem' },
     { $sort: { _id: -1 } },
-    { $limit: 15 },
     { $skip: skip * 15 },
+    { $limit: 15 },
     {
       $project: {
         _id: 1,
