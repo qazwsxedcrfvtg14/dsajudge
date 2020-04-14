@@ -15,6 +15,11 @@ router.get('/', wrap(async (req, res) => {
   const data = await Problem.aggregate([
     { $match: isTA ? {} : { visible: true } },
     {
+      $project: {
+        _id: 1, quota: 1, name: 1, visible: 1
+      }
+    },
+    {
       $lookup: {
         from: 'problemresults',
         as: 'userRes',
@@ -34,26 +39,21 @@ router.get('/', wrap(async (req, res) => {
       }
     },
     {
+      $project: {
+        _id: 1,
+        quota: 1,
+        name: 1,
+        visible: 1,
+        userRes: { $ifNull: ['$userRes', { AC: false, points: 0 }] }
+      }
+    },
+    {
       $unwind: {
         path: '$userRes',
         preserveNullAndEmptyArrays: true
       }
     },
-    {
-      $addFields: {
-        userRes: { $ifNull: ['$userRes', { AC: false, points: 0 }] }
-      }
-    },
-    {
-      $project: {
-        _id: 1,
-        'userRes.AC': 1,
-        'userRes.points': 1,
-        quota: 1,
-        name: 1,
-        visible: 1
-      }
-    }
+    { $project: { _id: 1, 'userRes.AC': 1, 'userRes.points': 1, quota: 1, name: 1, visible: 1 } }
   ]);
 
   res.send(data);
