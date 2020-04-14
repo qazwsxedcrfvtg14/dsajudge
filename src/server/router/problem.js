@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/', wrap(async (req, res) => {
   const isTA = req.user && (req.user.isAdmin() || req.user.isTA());
-  const data = Problem.aggregate([
+  const data = await Problem.aggregate([
     { $match: isTA ? {} : { visible: true } },
     {
       $lookup: {
