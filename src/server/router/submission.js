@@ -111,12 +111,13 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
       path: '_result',
       populate: {
         path: 'subresults',
+        select: '-id',
         populate: {
-          path: 'subresults'
+          path: 'subresults',
+          select: '-id'
         }
       }
-    })
-  ;
+    });
 
   if (!submission) return res.status(404).send(`Submission ${id} not found.`);
   if (!(req.user.isAdmin() || req.user.isTA()) &&
