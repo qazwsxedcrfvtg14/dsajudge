@@ -18,7 +18,7 @@ router.get('/', requireLogin, wrap(async (req, res) => {
     { $match: { submittedBy: req.user._id } },
     {
       $lookup: {
-        from: Problem.name,
+        from: Problem.collection.name,
         as: 'problem',
         let: { problem: '$problem' },
         pipeline: [
