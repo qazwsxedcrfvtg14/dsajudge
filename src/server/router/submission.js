@@ -193,7 +193,6 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
         }
       }
     });
-    data = data.toObject();
     if (!isTA && !data.problem.visible) {
       return res.status(403).send('Permission denided.');
     } else {
@@ -258,7 +257,6 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
         }
       }
     });
-    data = data.toObject();
     if (!isTA && !data.problem.visible) {
       return res.status(403).send('Permission denided.');
     } else {
