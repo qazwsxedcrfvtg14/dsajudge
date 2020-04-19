@@ -78,7 +78,7 @@ def print_result(header="",status=None,points=None,tim=None):
     if status and points:
         out=out+","+" "*(4-len(status))+"Points: \033[33m"+points+"\033[0m"
     if status and tim:
-        out=out+","+" "*(4-len(status))+" \033[94m"+tim+"\033[0m ms"
+        out=out+","+" "*(4-len(status))+"  \033[94m"+tim+"\033[0m s"
     print(out+"\033[K")
 
 def serve(
