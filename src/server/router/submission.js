@@ -142,7 +142,6 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
       delete subresult.subresults;
     }
   }
-  // console.log(JSON.stringify(submission, null, 4))
 
   res.send(submission);
 }));
@@ -196,6 +195,11 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
     if (!isTA && !data.problem.visible) {
       return res.status(403).send('Permission denided.');
     } else {
+      if (!data.problem.showDetailSubtask && !isTA) {
+        for (const subresult of data._result.subresults) {
+          delete subresult.subresults;
+        }
+      }
       res.send(data);
     }
   }
@@ -260,6 +264,11 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
     if (!isTA && !data.problem.visible) {
       return res.status(403).send('Permission denided.');
     } else {
+      if (!data.problem.showDetailSubtask && !isTA) {
+        for (const subresult of data._result.subresults) {
+          delete subresult.subresults;
+        }
+      }
       res.send([data]);
     }
   }

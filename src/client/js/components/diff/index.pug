@@ -75,7 +75,7 @@
                     td.collapsing {{ group.runtime }}
                     td.collapsing.center.aligned {{ group.points }}
 
-                  tr( v-for="(tid, test) of group.subresults")
+                  tr( v-if="group.subresults" v-for="(tid, test) of group.subresults")
                     td {{ test.name }}
                     td( :class="{ \
                         positive: probUtils.isAC(test), \
@@ -163,7 +163,7 @@
                     td.collapsing {{ group.runtime }}
                     td.collapsing.center.aligned {{ group.points }}
 
-                  tr( v-for="(tid, test) of group.subresults")
+                  tr( v-if="group.subresults" v-for="(tid, test) of group.subresults")
                     td {{ test.name }}
                     td( :class="{ \
                         positive: probUtils.isAC(test), \

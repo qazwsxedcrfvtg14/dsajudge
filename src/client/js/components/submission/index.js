@@ -4,7 +4,7 @@ import './index.css';
 import sleep from 'sleep-promise';
 import probUtils from 'js/mixins/probUtils';
 import * as monaco from 'monaco-editor';
-import store, {getUser} from 'js/store';
+import store, { getUser } from 'js/store';
 
 self.MonacoEnvironment = {
   getWorkerUrl: function (moduleId, label) {
@@ -87,7 +87,9 @@ export default Vue.extend({
         };
         data._result.subresults.forEach(x => {
           transform(x);
-          x.subresults.forEach(y => transform(y));
+          if (x.subresults) {
+            x.subresults.forEach(y => transform(y));
+          }
         });
       }
       this.submission = data;
@@ -97,7 +99,7 @@ export default Vue.extend({
     }
   },
   watch: {
-    'id': function () {
+    id: function () {
       this.fetch();
       this.fetchSrc();
     }

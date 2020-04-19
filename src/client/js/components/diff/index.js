@@ -108,7 +108,9 @@ export default Vue.extend({
         };
         data._result.subresults.forEach(x => {
           transform(x);
-          x.subresults.forEach(y => transform(y));
+          if (x.subresults) {
+            x.subresults.forEach(y => transform(y));
+          }
         });
       }
       this.submission = data;
@@ -129,7 +131,9 @@ export default Vue.extend({
         };
         data2._result.subresults.forEach(x => {
           transform(x);
-          x.subresults.forEach(y => transform(y));
+          if (x.subresults) {
+            x.subresults.forEach(y => transform(y));
+          }
         });
       }
       this.submission2 = data2;
