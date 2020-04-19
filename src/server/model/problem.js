@@ -38,6 +38,10 @@ const schema = Schema({
     type: Boolean,
     default: false
   },
+  showDetailSubtask: {
+    type: Boolean,
+    default: true
+  },
   testdata: {
     count: Number,
     points: Number,

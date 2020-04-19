@@ -8,6 +8,7 @@ import User from '/model/user';
 import { requireLogin, requireKey } from '/utils';
 import fs from 'fs-extra';
 import Problem from '/model/problem';
+import Result from '/model/result';
 
 const router = express.Router();
 
@@ -101,11 +102,12 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
 
 router.get('/:id', requireLogin, wrap(async (req, res) => {
   if (isNaN(req.params.id)) return res.status(400).send('id must be a number');
+  const isTA = req.user && (req.user.isAdmin() || req.user.isTA());
 
   const id = req.params.id;
   let submission;
   submission = await Submission.findById(id)
-    .populate('problem', 'name testdata.points resource visible notGitOnly')
+    .populate('problem', 'name testdata.points resource visible notGitOnly showDetailSubtask')
     .populate('submittedBy', (req.user.isAdmin() ? 'email meta' : 'meta'))
     .populate({
       path: '_result',
@@ -118,7 +120,6 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
         }
       }
     });
-
   if (!submission) return res.status(404).send(`Submission ${id} not found.`);
   if (!(req.user.isAdmin() || req.user.isTA()) &&
         !((submission.submittedBy.equals(req.user._id) && submission.problem.visible) || submission.problem.resource.includes('solution'))) {
@@ -129,12 +130,16 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
   if (submission.result === 'CE') {
     submission.compilationLog = await loadCompileErr(submission._id);
   }
-
   if (submission._result && !req.user.isAdmin()) {
     for (const [gid, group] of submission._result.subresults.entries()) {
       for (const [tid, test] of group.subresults.entries()) {
         test.name = `${gid}-${tid}`;
       }
+    }
+  }
+  if (!submission.problem.showDetailSubtask && !isTA) {
+    for (const subresult of submission._result.subresults) {
+      delete subresult.subresults;
     }
   }
   // console.log(JSON.stringify(submission, null, 4))
@@ -143,23 +148,48 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
 }));
 
 router.post('/get/last', requireKey, wrap(async (req, res) => {
-  const user = req.user;
-  const data = await Submission
-    .find({ submittedBy: user._id })
-    .sort('-_id')
-    .limit(1)
-    .populate('problem', 'name testdata.points resource')
-    .populate({
-      path: '_result',
+  const isTA = req.user && (req.user.isAdmin() || req.user.isTA());
+  let data = await Submission.aggregate([
+    { $match: { submittedBy: req.user._id } },
+    {
+      $lookup: {
+        from: Problem.collection.name,
+        as: 'problem',
+        let: { problem: '$problem' },
+        pipeline: [
+          {
+            $match: isTA ? {
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            } : {
+              visible: true,
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            }
+          }, {
+            $limit: 1
+          }
+        ]
+      }
+    },
+    { $unwind: '$problem' },
+    { $sort: { _id: -1 } },
+    { $limit: 1 }
+  ]);
+  data = await Result.populate(data, {
+    path: '_result',
+    populate: {
+      path: 'subresults',
+      select: '-_id -__v',
       populate: {
         path: 'subresults',
-        select: '-_id -__v',
-        populate: {
-          path: 'subresults',
-          select: '-_id -__v -subresults -maxPoints -points'
-        }
+        select: '-_id -__v -subresults -maxPoints -points'
       }
-    });
+    }
+  });
+  res.send(data);
   if (data.length === 0) {
     res.send({});
   } else {

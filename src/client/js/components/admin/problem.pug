@@ -50,7 +50,7 @@
           .four.wide.field
             label Quota
             input(type="text" v-model="problem.quota") 
-        .three.fields
+        .four.fields
           .field
             .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="problem.visible")
@@ -63,6 +63,10 @@
             .ui.inverted.toggle.checkbox
               input(type="checkbox" v-model="problem.showStatistic")
               label Show statistic
+          .field
+            .ui.inverted.toggle.checkbox
+              input(type="checkbox" v-model="problem.showDetailSubtask")
+              label Show Subtask
               
 
     .ui.inverted.segment.clear-after
