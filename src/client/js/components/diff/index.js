@@ -110,6 +110,8 @@ export default Vue.extend({
           transform(x);
           if (x.subresults) {
             x.subresults.forEach(y => transform(y));
+          } else {
+            x.subresults = [];
           }
         });
       }
@@ -133,6 +135,8 @@ export default Vue.extend({
           transform(x);
           if (x.subresults) {
             x.subresults.forEach(y => transform(y));
+          } else {
+            x.subresults = [];
           }
         });
       }
