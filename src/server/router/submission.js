@@ -178,53 +178,11 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
     { $sort: { _id: -1 } },
     { $limit: 1 }
   ]);
-  data = await Result.populate(data, {
-    path: '_result',
-    populate: {
-      path: 'subresults',
-      select: '-_id -__v',
-      populate: {
-        path: 'subresults',
-        select: '-_id -__v -subresults -maxPoints -points'
-      }
-    }
-  });
-  res.send(data);
+
   if (data.length === 0) {
     res.send({});
   } else {
-    // res.send(data[0]);
-    res.send(data[0]);
-  }
-}));
-
-router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
-  const user = req.user;
-  const smallerHash = req.body.gitHash.toLowerCase();
-  const biggerHash = smallerHash.substr(0, smallerHash.length - 1) + String.fromCharCode(smallerHash.charCodeAt(smallerHash.length - 1) + 1);
-  const dataFirst = await Submission
-    .find({
-      submittedBy: user._id,
-      gitCommitHash: {
-        $gte: smallerHash,
-        $lt: biggerHash
-      }
-    })
-    .sort('-_id')
-    .limit(1);
-  if (dataFirst.length === 0) {
-    res.send('Submission Not Found!');
-    return;
-  }
-
-  const data = await Submission
-    .find({
-      submittedBy: user._id,
-      gitCommitHash: dataFirst[0].gitCommitHash
-    })
-    .sort('-_id')
-    .populate('problem', 'name testdata.points resource')
-    .populate({
+    data = await Result.populate(data[0], {
       path: '_result',
       populate: {
         path: 'subresults',
@@ -235,10 +193,77 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
         }
       }
     });
+    data = data.toObject();
+    if (!isTA && !data.problem.visible) {
+      return res.status(403).send('Permission denided.');
+    } else {
+      res.send(data);
+    }
+  }
+}));
+
+router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
+  const user = req.user;
+  const isTA = user && (user.isAdmin() || user.isTA());
+  const smallerHash = req.body.gitHash.toLowerCase();
+  const biggerHash = smallerHash.substr(0, smallerHash.length - 1) + String.fromCharCode(smallerHash.charCodeAt(smallerHash.length - 1) + 1);
+  let data = await Submission.aggregate([
+    {
+      $match: {
+        submittedBy: req.user._id,
+        gitCommitHash: {
+          $gte: smallerHash,
+          $lt: biggerHash
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: Problem.collection.name,
+        as: 'problem',
+        let: { problem: '$problem' },
+        pipeline: [
+          {
+            $match: isTA ? {
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            } : {
+              visible: true,
+              $expr: {
+                $eq: ['$$problem', '$_id']
+              }
+            }
+          }, {
+            $limit: 1
+          }
+        ]
+      }
+    },
+    { $unwind: '$problem' },
+    { $sort: { _id: -1 } },
+    { $limit: 1 }
+  ]);
   if (data.length === 0) {
     res.send('Submission Not Found!');
   } else {
-    res.send(data);
+    data = await Result.populate(data[0], {
+      path: '_result',
+      populate: {
+        path: 'subresults',
+        select: '-_id -__v',
+        populate: {
+          path: 'subresults',
+          select: '-_id -__v -subresults -maxPoints -points'
+        }
+      }
+    });
+    data = data.toObject();
+    if (!isTA && !data.problem.visible) {
+      return res.status(403).send('Permission denided.');
+    } else {
+      res.send([data]);
+    }
   }
 }));
 
