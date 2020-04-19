@@ -24,12 +24,8 @@ router.get('/', requireLogin, wrap(async (req, res) => {
         let: { problem: '$problem' },
         pipeline: [
           {
-            $match: isTA ? {
-              $expr: {
-                $eq: ['$$problem', '$_id']
-              }
-            } : {
-              visible: true,
+            $match: {
+              ...(isTA ? {} : { visible: true }),
               $expr: {
                 $eq: ['$$problem', '$_id']
               }
@@ -157,12 +153,8 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
         let: { problem: '$problem' },
         pipeline: [
           {
-            $match: isTA ? {
-              $expr: {
-                $eq: ['$$problem', '$_id']
-              }
-            } : {
-              visible: true,
+            $match: {
+              ...(isTA ? {} : { visible: true }),
               $expr: {
                 $eq: ['$$problem', '$_id']
               }
@@ -227,12 +219,8 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
         let: { problem: '$problem' },
         pipeline: [
           {
-            $match: isTA ? {
-              $expr: {
-                $eq: ['$$problem', '$_id']
-              }
-            } : {
-              visible: true,
+            $match: {
+              ...(isTA ? {} : { visible: true }),
               $expr: {
                 $eq: ['$$problem', '$_id']
               }
