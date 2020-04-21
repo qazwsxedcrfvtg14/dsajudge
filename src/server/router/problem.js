@@ -19,7 +19,7 @@ router.get('/', wrap(async (req, res) => {
         _id: 1, quota: 1, name: 1, visible: 1
       }
     },
-    {
+    ...(req.user ? [{
       $lookup: {
         from: ProblemResult.collection.name,
         as: 'userRes',
@@ -37,7 +37,7 @@ router.get('/', wrap(async (req, res) => {
           }
         ]
       }
-    },
+    }] : []),
     {
       $unwind: {
         path: '$userRes',
