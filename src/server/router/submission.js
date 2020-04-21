@@ -134,7 +134,7 @@ router.get('/:id', requireLogin, wrap(async (req, res) => {
     }
   }
   if (!submission.problem.showDetailSubtask && !isTA) {
-    if (submission._result.subresults) {
+    if (submission._result && submission._result.subresults) {
       for (const subresult of submission._result.subresults) {
         subresult.subresults = [];
       }
@@ -190,7 +190,7 @@ router.post('/get/last', requireKey, wrap(async (req, res) => {
       return res.status(403).send('Permission denided.');
     } else {
       if (!data.problem.showDetailSubtask && !isTA) {
-        if (data._result.subresults) {
+        if (data._result && data._result.subresults) {
           for (const subresult of data._result.subresults) {
             subresult.subresults = [];
           }
@@ -257,7 +257,7 @@ router.post('/get/gitHash', requireKey, wrap(async (req, res) => {
       return res.status(403).send('Permission denided.');
     } else {
       if (!data.problem.showDetailSubtask && !isTA) {
-        if (data._result.subresults) {
+        if (data._result && data._result.subresults) {
           for (const subresult of data._result.subresults) {
             subresult.subresults = [];
           }
