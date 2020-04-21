@@ -72,8 +72,13 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
   const newSshKeys = newSshKey.trim().replace(/\n/g, '').split(' ').filter(s => s !== ' ');
   let changeSshKey = false;
   if (newSshKeys.length >= 2) {
-    if (newSshKeys[0] !== 'ssh-rsa') {
-      return res.status(400).send('Your SSH Key is not start with "ssh-rsa"');
+    if (newSshKeys[0] !== 'ssh-rsa' &&
+        newSshKeys[0] !== 'ssh-ed25519' &&
+        newSshKeys[0] !== 'ecdsa-sha2-nistp256' &&
+        newSshKeys[0] !== 'ecdsa-sha2-nistp384' &&
+        newSshKeys[0] !== 'ecdsa-sha2-nistp521'
+       ) {
+      return res.status(400).send('Unsupported SSH Key, only support "rsa", "ed25519", "ecdsa".');
     }
     if (!(/^AAAA[A-Za-z0-9/+]+[=]{0,3}$/i.test(newSshKeys[1]))) {
       return res.status(400).send('Your SSH Key is not valid.');
@@ -113,7 +118,7 @@ router.post('/changePassword', requireLogin, wrap(async (req, res) => {
       // res.send(`SSH Key changed successfully.`);
     }
   } else if (newSshKeys.length === 1) {
-    return res.status(400).send('Your SSH Key is not start with "ssh-rsa" or too short!');
+    return res.status(400).send('Unsupported SSH Key or it is too short!');
   }
   if (changePassword && changeSshKey) {
     res.send('Password & SSH Key changed successfully.');
