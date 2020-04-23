@@ -56,12 +56,14 @@ export default Vue.extend({
       let result;
       let result2;
       try {
-        result = await this.$http.get(`/submission/sourceCode/${this.id}`);
+        const query = this.$route.query.format ? '?format' : '';
+        result = await this.$http.get(`/submission/sourceCode/${this.id}${query}`);
       } catch (e) {
         console.log(e);
       }
       try {
-        result2 = await this.$http.get(`/submission/sourceCode/${this.id2}`);
+        const query = this.$route.query.format ? '?format' : '';
+        result2 = await this.$http.get(`/submission/sourceCode/${this.id2}${query}`);
       } catch (e) {
         console.log(e);
       }
@@ -155,11 +157,11 @@ export default Vue.extend({
     }
   },
   watch: {
-    'id': function () {
+    id: function () {
       this.fetch();
       this.fetchSrc();
     },
-    'id2': function () {
+    id2: function () {
       this.fetch();
       this.fetchSrc();
     }

@@ -9,6 +9,7 @@ import { requireLogin, requireKey } from '/utils';
 import fs from 'fs-extra';
 import Problem from '/model/problem';
 import Result from '/model/result';
+import { execFile } from 'child_process';
 
 const router = express.Router();
 
@@ -80,6 +81,17 @@ async function loadSourceCode (id) {
   }
 }
 
+function loadFormatSourceCode (id) {
+  return new Promise((resolve, reject) => {
+    execFile('clang-format', [path.join(config.dirs.submissions, `${id}.cpp`)], {},
+      (err, stdout, stderr) => {
+        if (err) return reject(err);
+        resolve(_.assignIn({ stdout, stderr }));
+      }
+    );
+  });
+}
+
 router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
   if (isNaN(req.params.id)) return res.status(400).send('id must be a number');
   const id = req.params.id;
@@ -92,8 +104,16 @@ router.get('/sourceCode/:id', requireLogin, wrap(async (req, res) => {
         !((submission.submittedBy.equals(req.user._id) && submission.problem.visible && submission.problem.notGitOnly) || submission.problem.resource.includes('solution'))) {
     return res.status(403).send('Permission denided.');
   }
-  const src = await loadSourceCode(id);
-  res.send(src);
+  if (req.query.format) {
+    try {
+      res.send(await loadFormatSourceCode(id));
+    } catch (e) {
+      res.send(await loadSourceCode(id));
+      console.log('clang-format failed.');
+    }
+  } else {
+    res.send(await loadSourceCode(id));
+  }
 }));
 
 router.get('/:id', requireLogin, wrap(async (req, res) => {
