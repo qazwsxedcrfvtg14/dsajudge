@@ -56,13 +56,13 @@ export default Vue.extend({
       let result;
       let result2;
       try {
-        const query = this.$route.query.format ? '?format' : '';
+        const query = this.$route.query.format ? '?format=true' : '';
         result = await this.$http.get(`/submission/sourceCode/${this.id}${query}`);
       } catch (e) {
         console.log(e);
       }
       try {
-        const query = this.$route.query.format ? '?format' : '';
+        const query = this.$route.query.format ? '?format=true' : '';
         result2 = await this.$http.get(`/submission/sourceCode/${this.id2}${query}`);
       } catch (e) {
         console.log(e);
