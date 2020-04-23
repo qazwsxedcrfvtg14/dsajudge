@@ -86,7 +86,7 @@ function loadFormatSourceCode (id) {
     execFile('clang-format', [path.join(config.dirs.submissions, `${id}.cpp`)], {},
       (err, stdout, stderr) => {
         if (err) return reject(err);
-        resolve(_.assignIn({ stdout, stderr }));
+        resolve(stdout);
       }
     );
   });
