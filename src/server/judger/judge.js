@@ -8,6 +8,7 @@ import path from 'path';
 import _ from 'lodash';
 import Worker from './pool';
 import sleep from 'sleep-promise';
+import { execFile } from 'child_process';
 
 const DEFAULT_CHECKER = path.join(config.dirs.cfiles, 'default_checker.cpp');
 const TESTLIB = path.join(config.dirs.cfiles, 'testlib.h');
@@ -38,8 +39,19 @@ async function saveResult (obj, result, points = 0) {
   obj.points = points;
   return await obj.save();
 }
+ 
+function numaCp (cpu,mem,src,dst) {
+  return new Promise((resolve, reject) => {
+    execFile('numactl',["--cpubind="+cpu.toString(),"--membind="+mem.toString(),'cp',src,dst], {},
+      (err, stdout, stderr) => {
+        if (err) return reject(err);
+        resolve(_.assignIn({ stdout, stderr }));
+      }
+    );
+  });
+}
 
-async function copyToDir (file, dir, newName) {
+async function copyToDir (file, dir, newName, boxId) {
   try {
     await fs.stat(file);
   } catch (e) {
@@ -47,7 +59,13 @@ async function copyToDir (file, dir, newName) {
   }
 
   const newDir = path.join(dir, newName || path.basename(file));
-  await fs.copy(file, newDir);
+  if(config.numa&&config.numaPool&&config.numaPool.length&&boxId!==undefined){
+    const poolId = (boxId*config.numaPool.length/config.maxWorkers) | 0;
+    const numaObj = config.numaPool[poolId];
+    await numaCp(numaObj.cpu,numaObj.mem,file,newDir);
+  } else {
+    await fs.copy(file, newDir);
+  }
   return newDir;
 }
 
@@ -105,14 +123,14 @@ export default class Judger {
     return async (compileBoxId) => {
       await reset(compileBoxId);
       this.rootDir = path.join(isolateDir, compileBoxId.toString(), 'box');
-      await copyToDir(this.userCpp, this.rootDir, 'user.c');
+      await copyToDir(this.userCpp, this.rootDir, 'user.c', compileBoxId);
       const exFile = this.problem.compileEXFile || [];
       for (const file of exFile) {
-        await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
+        await copyToDir(path.join(this.problemDir, file), this.rootDir, file, compileBoxId);
       }
       const exHeader = this.problem.compileEXHeader || [];
       for (const file of exHeader) {
-        await copyToDir(path.join(this.problemDir, file), this.rootDir, file);
+        await copyToDir(path.join(this.problemDir, file), this.rootDir, file, compileBoxId);
       }
       const linkArg = [].concat(GCCLink, this.problem.compileEXLink || []);
       const gccArg = [].concat(GCC, this.problem.compileEXArg || []);
@@ -138,8 +156,8 @@ export default class Judger {
       await reset(compileBoxId);
 
       this.rootDir = path.join(isolateDir, compileBoxId.toString(), 'box');
-      await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp');
-      await copyToDir(TESTLIB, this.rootDir);
+      await copyToDir(this.checkerCpp, this.rootDir, 'checker.cpp', compileBoxId);
+      await copyToDir(TESTLIB, this.rootDir, undefined, compileBoxId);
 
       const result = await compile(compileBoxId, ['checker.cpp'], 'checker', GPP, GPPLink);
       if (result.RE || result.SE || result.TLE) {
@@ -196,8 +214,8 @@ export default class Judger {
         const tdBase = path.join(this.problemDir, 'testdata', test);
         const [inp, outp] = ['in', 'out'].map(x => `${tdBase}.${x}`);
         const userTDir = path.join(isolateDir, worker_id.toString(), 'box');
-        await copyToDir(inp, userTDir, 'prob.in');
-        await copyToDir(this.userExec, userTDir, 'user');
+        await copyToDir(inp, userTDir, 'prob.in', worker_id);
+        await copyToDir(this.userExec, userTDir, 'user', worker_id);
 
         const userRes = await run(worker_id, 'user',
           'prob.in', 'prob.out', 'prob.err',
@@ -218,8 +236,8 @@ export default class Judger {
           return;
         }
 
-        await copyToDir(outp, userTDir, 'prob.ans');
-        await copyToDir(this.checkerExec, userTDir, 'checker');
+        await copyToDir(outp, userTDir, 'prob.ans', worker_id);
+        await copyToDir(this.checkerExec, userTDir, 'checker', worker_id);
 
         const files = [
           'prob.in',
@@ -327,12 +345,39 @@ export default class Judger {
           try {
             const worker_result = await Promise.race(workers.map(x => x.finish()));
             if (!worker_result.worker.isIdle) continue;
-            await worker_result.worker.run(task, (err) => {
-              if (err) {
-                logger.error(`Judge error @ ${taskID}`, err);
-                error = err;
+            const fat=false;
+            if(fat){
+              let resLock=null;
+              
+              const stallWorker=worker_result.worker.run((wid)=>new Promise((resolve)=>{resLock=resolve;}), (err) => {
+                if (err) {
+                  logger.error(`Judge error @ ${taskID}`, err);
+                  error = err;
+                }
+              });
+              while (true) {
+                const worker_result = await Promise.race(workers.map(x => x.finish()));
+                if (!worker_result.worker.isIdle) continue;
+                await worker_result.worker.run(task, (err) => {
+                  if (err) {
+                    logger.error(`Judge error @ ${taskID}`, err);
+                    error = err;
+                  }
+                });
+                break;
               }
-            });
+              resLock();
+              await stallWorker;
+
+
+            }else{
+              await worker_result.worker.run(task, (err) => {
+                if (err) {
+                  logger.error(`Judge error @ ${taskID}`, err);
+                  error = err;
+                }
+              });
+            }
           } catch (e) {
             if (e instanceof InvalidOperationError) {
               continue;

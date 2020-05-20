@@ -11,36 +11,73 @@ import {InvalidOperationError} from 'common-errors';
 
 const ISOLATE = path.join(__dirname, 'isolate');
 
-function isolateWrap (opt) {
+function isolateWrap (opt,boxId) {
   return new Promise((resolve, reject) => {
-    execFile(
-      ISOLATE,
-      opt,
-      {},
-      (err, stdout, stderr) => {
-        // if (err) return reject(err);
-        resolve(
-          _.assignIn({
-            stdout,
-            stderr
-          })
-        );
-      }
-    );
+    if(config.numa&&config.numaPool&&config.numaPool.length&&boxId!==undefined){
+      const poolId = (boxId*config.numaPool.length/config.maxWorkers) | 0;
+      const numaObj = config.numaPool[poolId];
+      const cpu = numaObj.cpu;
+      const mem = numaObj.mem;
+      execFile(
+        'numactl',
+        ["--cpubind="+cpu.toString(),"--membind="+mem.toString(),ISOLATE,...opt],
+        {},
+        (err, stdout, stderr) => {
+          // if (err) return reject(err);
+          resolve(
+            _.assignIn({
+              stdout,
+              stderr
+            })
+          );
+        }
+      );
+    }else{
+      execFile(
+        ISOLATE,
+        opt,
+        {},
+        (err, stdout, stderr) => {
+          // if (err) return reject(err);
+          resolve(
+            _.assignIn({
+              stdout,
+              stderr
+            })
+          );
+        }
+      );
+    }
   });
 }
 
-function isolateWrapNoReturn (opt) {
+function isolateWrapNoReturn (opt, boxId) {
   return new Promise((resolve, reject) => {
-    execFile(
-      ISOLATE,
-      opt,
-      {},
-      (err, stdout, stderr) => {
-        if (err) return reject(err);
-        resolve();
-      }
-    );
+    if(config.numa&&config.numaPool&&config.numaPool.length&&boxId!==undefined){
+      const poolId = (boxId*config.numaPool.length/config.maxWorkers) | 0;
+      const numaObj = config.numaPool[poolId];
+      const cpu = numaObj.cpu;
+      const mem = numaObj.mem;
+      execFile(
+        'numactl',
+        ["--cpubind="+cpu.toString(),"--membind="+mem.toString(),ISOLATE,...opt],
+        {},
+        (err, stdout, stderr) => {
+          if (err) return reject(err);
+          resolve();
+        }
+      );
+    }else{
+      execFile(
+        ISOLATE,
+        opt,
+        {},
+        (err, stdout, stderr) => {
+          if (err) return reject(err);
+          resolve();
+        }
+      );
+    }
   });
 }
 
@@ -97,7 +134,7 @@ export async function compile (worker_id, cppFiles, execName, GPP, GPPLink) {
     ...[...GPP, '-o', execName, ...cppFiles, ...GPPLink]
   ];
 
-  let result = await isolateWrap(_opt);
+  let result = await isolateWrap(_opt, worker_id);
   let fl = await fs.readFile(path.join(metaDir, worker_id.toString()));
   result = _.assignIn(result, YAML.parse('---\n' + fl.toString().replace(/:/g, ': ') + '...\n'));
   if (result.status == 'RE') { result.RE = true; }
@@ -140,7 +177,7 @@ export async function run (worker_id, exec, inFile, outFile, errFile, timeLimit,
     ...args
   ];
 
-  let result = await isolateWrap(_opt);
+  let result = await isolateWrap(_opt, worker_id);
   let fl = await fs.readFile(path.join(metaDir, worker_id.toString()));
   result = _.assignIn(result, YAML.parse('---\n' + fl.toString().replace(/:/g, ': ') + '...\n'));
   if (result.status == 'RE') { result.RE = true; }

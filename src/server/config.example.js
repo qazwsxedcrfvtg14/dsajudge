@@ -13,6 +13,8 @@ export default {
     mongo: {
         url: 'mongodb://localhost/dsajudge',
     },
+    numa: true,
+    numaPool: [{cpu:0,mem:0},{cpu:1,mem:1}],
     maxWorkers: 4,
     maxNodeWorkers: 4,
 };
