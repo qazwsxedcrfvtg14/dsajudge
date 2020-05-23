@@ -53,6 +53,7 @@ async function startJudge (sub, workers) {
     sub.points = 0;
     logger.error(`#${sub._id} judge error`, e);
     await sub.save();
+    count -= 1;
     return;
   }
   // eslint-disable-next-line require-atomic-updates
